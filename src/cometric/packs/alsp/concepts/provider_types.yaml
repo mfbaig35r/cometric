@@ -1,0 +1,154 @@
+scheme: provider_types
+title: Legal-services provider types
+concepts:
+- id: REGULATED_LAW_FIRM
+  label: Regulated law firm
+  synonyms: []
+  definition: >-
+    Provider type: regulated law firm. Contingent and outcome fees require legal review.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: [CLM-A-0027, CLM-A-0028, CLM-A-0029, CLM-A-0031, CLM-A-0048]
+  caveats:
+  - >-
+    Legal-counsel review is required before treating any contingent, success-based,
+    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  source_ref: report:provider-type-matrix
+  status: active
+  attributes:
+    us: >-
+      State ethics rules; fee reasonableness; nonlawyer fee-sharing restrictions often
+      applicable.
+    england_wales: Regulator requirements for solicitors and other regulated lawyers.
+    commercial_implications: Contingent and outcome fees require legal review.
+- id: LICENSED_BODY
+  label: Licensed body (alternative business structure)
+  synonyms: []
+  definition: >-
+    Provider type: licensed body (alternative business structure). Broader ownership
+    architecture, but regulated legal duties remain.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: [CLM-A-0030, CLM-A-0048]
+  caveats:
+  - >-
+    Legal-counsel review is required before treating any contingent, success-based,
+    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  source_ref: report:provider-type-matrix
+  status: active
+  attributes:
+    us: Available only in certain jurisdictions and structures.
+    england_wales: Express statutory framework exists under the Legal Services Act
+      2007.
+    commercial_implications: Broader ownership architecture, but regulated legal duties
+      remain.
+- id: NONLAW_ALSP
+  label: Non-law-firm ALSP
+  synonyms: []
+  definition: >-
+    Provider type: non-law-firm alsp. Outcome fees tied to legal representation may
+    be constrained.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-A-0047, CLM-A-0048]
+  caveats:
+  - >-
+    Legal-counsel review is required before treating any contingent, success-based,
+    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  source_ref: report:provider-type-matrix
+  status: active
+  attributes:
+    us: Must avoid unauthorized practice; lawyer supervision may be relevant.
+    england_wales: Scope depends on reserved or nonreserved activity and authorization.
+    commercial_implications: Outcome fees tied to legal representation may be constrained.
+- id: FLEXIBLE_TALENT
+  label: Flexible talent provider
+  synonyms: []
+  definition: >-
+    Provider type: flexible talent provider. Resource and FTE pricing is straightforward;
+    supervision allocation is critical.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: [CLM-A-0013, CLM-A-0009, CLM-A-0048]
+  caveats:
+  - >-
+    Legal-counsel review is required before treating any contingent, success-based,
+    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  source_ref: report:provider-type-matrix
+  status: active
+  attributes:
+    us: Often provides talent rather than law-firm representation.
+    england_wales: Structure-specific.
+    commercial_implications: >-
+      Resource and FTE pricing is straightforward; supervision allocation is critical.
+- id: LEGAL_TECH_VENDOR
+  label: Legal technology vendor
+  synonyms: []
+  definition: >-
+    Provider type: legal technology vendor. Usage and subscription models are generally
+    easier, but data and AI regulation applies.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-A-0047, CLM-A-0048]
+  caveats:
+  - >-
+    Legal-counsel review is required before treating any contingent, success-based,
+    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  source_ref: report:provider-type-matrix
+  status: active
+  attributes:
+    us: Technology rather than legal representation.
+    england_wales: Same distinction as in the US.
+    commercial_implications: >-
+      Usage and subscription models are generally easier, but data and AI regulation
+      applies.
+- id: MANAGED_SERVICES_PROVIDER
+  label: Legal managed-services provider
+  synonyms: []
+  definition: >-
+    Provider type: legal managed-services provider. The contract may require separation
+    of legal advice from processing and operations.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-A-0047, CLM-A-0015, CLM-A-0048]
+  caveats:
+  - >-
+    Legal-counsel review is required before treating any contingent, success-based,
+    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  source_ref: report:provider-type-matrix
+  status: active
+  attributes:
+    us: May combine regulated and nonregulated functions.
+    england_wales: Provider entity and work type matter.
+    commercial_implications: >-
+      The contract may require separation of legal advice from processing and operations.

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.DS_Store
+# Private research input: not for publication (spec section 11, Q-3).
+docs/alsp-commercial-models-deep-research.md

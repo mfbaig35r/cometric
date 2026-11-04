@@ -1,0 +1,258 @@
+{
+  "case": "E",
+  "title": "AI-enabled review with declining marginal QA cost",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-E",
+    "name": "AI-enabled document review",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "document",
+        "kind": "COUNT",
+        "counting_rule": "One reviewed document",
+        "acceptance_rule": "Accepted on client sign-off"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "document"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "platform_fee",
+            "service_id": "svc",
+            "calculation_method": "FIXED_RECURRING",
+            "billing_basis": "FIXED",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "fixed_amount": "15000"
+          },
+          {
+            "id": "per_document",
+            "service_id": "svc",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.documents",
+            "unit": "document",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "doc_rate"
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": [
+          {
+            "id": "doc_rate",
+            "currency": "USD",
+            "unit": "document",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "25"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "breach_mode": null,
+      "capacity": [],
+      "roles": [],
+      "demand_hours_source": null,
+      "cost_components": [
+        {
+          "id": "platform_ops",
+          "category": "PLATFORM_OPERATIONS",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "120000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "inference",
+          "category": "AI_INFERENCE",
+          "behavior": "VARIABLE",
+          "origin": "ILLUSTRATIVE",
+          "driver": "documents",
+          "rate": "1.50"
+        },
+        {
+          "id": "qa",
+          "category": "QA_REWORK",
+          "behavior": "TIERED_VARIABLE",
+          "origin": "ILLUSTRATIVE",
+          "driver": "documents",
+          "accumulation_period": "YEAR",
+          "tiers": [
+            {
+              "from": "0",
+              "to": "10000",
+              "rate": "8"
+            },
+            {
+              "from": "10000",
+              "to": "30000",
+              "rate": "6"
+            },
+            {
+              "from": "30000",
+              "to": null,
+              "rate": "4"
+            }
+          ]
+        },
+        {
+          "id": "engineering",
+          "category": "REUSABLE_ENGINEERING",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "100000",
+          "period": "ANNUAL"
+        }
+      ]
+    },
+    "risk_allocations": []
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "assumptions": [
+        {
+          "name": "documents",
+          "value": "10000",
+          "unit": "document",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "documents",
+          "value": "25000",
+          "unit": "document",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "assumptions": [
+        {
+          "name": "documents",
+          "value": "50000",
+          "unit": "document",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "as_published": {
+      "id": "as_published",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "ENGAGEMENT_AVOIDABLE",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    },
+    "reference": {
+      "id": "reference",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    }
+  },
+  "expected": {
+    "as_published": {
+      "low": {
+        "contractual_fee": "430000",
+        "direct_delivery_cost": "215000",
+        "contribution_profit": "115000"
+      },
+      "base": {
+        "contractual_fee": "805000",
+        "direct_delivery_cost": "327500",
+        "contribution_profit": "377500"
+      },
+      "high": {
+        "contractual_fee": "1430000",
+        "direct_delivery_cost": "475000",
+        "contribution_profit": "855000"
+      }
+    },
+    "reference": {
+      "low": {
+        "contribution_profit": "215000"
+      }
+    },
+    "break_even": {
+      "driver": "documents",
+      "exact_prefix": "2580.645",
+      "whole": "2581"
+    }
+  }
+}

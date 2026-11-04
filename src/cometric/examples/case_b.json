@@ -1,0 +1,212 @@
+{
+  "case": "B",
+  "title": "Variable-volume contract review priced per contract",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-B",
+    "name": "Variable-volume contract review",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "contract",
+        "kind": "COUNT",
+        "counting_rule": "One completed review of one eligible contract",
+        "acceptance_rule": "Accepted on client sign-off"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "contract"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "per_contract",
+            "service_id": "svc",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.contracts",
+            "unit": "contract",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "unit_rate"
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": [
+          {
+            "id": "unit_rate",
+            "currency": "USD",
+            "unit": "contract",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "95"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "breach_mode": null,
+      "capacity": [],
+      "roles": [],
+      "demand_hours_source": null,
+      "cost_components": [
+        {
+          "id": "unit_cost",
+          "category": "POOLED_LABOR",
+          "behavior": "VARIABLE",
+          "origin": "ILLUSTRATIVE",
+          "driver": "contracts",
+          "rate": "52"
+        },
+        {
+          "id": "qa_platform",
+          "category": "QA_REWORK",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "216000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "account_mgmt",
+          "category": "ENGAGEMENT_OVERHEAD",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "60000",
+          "period": "ANNUAL"
+        }
+      ]
+    },
+    "risk_allocations": []
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "assumptions": [
+        {
+          "name": "contracts",
+          "value": "6000",
+          "unit": "contract",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "contracts",
+          "value": "12000",
+          "unit": "contract",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "assumptions": [
+        {
+          "name": "contracts",
+          "value": "18000",
+          "unit": "contract",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "as_published": {
+      "id": "as_published",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    },
+    "reference": {
+      "id": "reference",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    }
+  },
+  "expected": {
+    "as_published": {
+      "low": {
+        "contractual_fee": "570000",
+        "direct_delivery_cost": "528000",
+        "contribution_profit": "-18000"
+      },
+      "base": {
+        "contractual_fee": "1140000",
+        "direct_delivery_cost": "840000",
+        "contribution_profit": "240000"
+      },
+      "high": {
+        "contractual_fee": "1710000",
+        "direct_delivery_cost": "1152000",
+        "contribution_profit": "498000"
+      }
+    },
+    "break_even": {
+      "driver": "contracts",
+      "exact_prefix": "6418.6046",
+      "whole": "6419"
+    }
+  }
+}

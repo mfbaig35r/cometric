@@ -1,0 +1,1149 @@
+scheme: metrics
+title: Financial metrics and commercial-health indicators
+concepts:
+- id: FM-001
+  label: Contracted revenue
+  synonyms: []
+  definition: Contractual consideration potentially payable, subject to terms.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0013]
+  caveats: []
+  source_ref: report:FM-001
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / contract
+    limitation: Not necessarily recognized, billed or collectible.
+    computed_by: contractual_fee
+    requires: null
+    family: financial
+- id: FM-002
+  label: Recognized revenue
+  synonyms: []
+  definition: Revenue recognized under the applicable accounting standard.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0011, CLM-B-0012, CLM-B-0013]
+  caveats: []
+  source_ref: report:FM-002
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / accounting period
+    limitation: Depends on performance obligations and policy.
+    computed_by: null
+    requires: accounting_adapter
+    family: financial
+- id: FM-003
+  label: Billed revenue
+  synonyms: []
+  definition: Amount invoiced.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0013]
+  caveats: []
+  source_ref: report:FM-003
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / period
+    limitation: Can lead or lag recognition.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-004
+  label: Collected revenue or cash receipts
+  synonyms: []
+  definition: Customer cash received.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0013]
+  caveats: []
+  source_ref: report:FM-004
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / period
+    limitation: Cash-flow concept, not profit.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-005
+  label: Annual contract value (ACV)
+  synonyms: []
+  definition: Annualized contracted value for a 12-month interval.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-005
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / year
+    limitation: Definition varies across companies; management metric.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-006
+  label: Total contract value (TCV)
+  synonyms: []
+  definition: Expected contractual consideration over the stated term.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-006
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / contract
+    limitation: >-
+      Options, variable consideration and termination rights complicate comparability.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-007
+  label: Recurring revenue
+  synonyms: []
+  definition: Contractually recurring consideration attributable to recurring service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-007
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / period
+    limitation: Should exclude one-time implementation unless policy says otherwise.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-008
+  label: Direct labor cost
+  synonyms: []
+  definition: Compensation directly attributable to delivery.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-008
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Define whether benefits and payroll burden are included.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-009
+  label: Loaded labor cost
+  synonyms: []
+  definition: >-
+    Direct compensation plus employer taxes, benefits and selected labor overhead.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-009
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency or currency / hour
+    limitation: Loading convention must be stated.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-010
+  label: Shared delivery cost
+  synonyms: []
+  definition: Cost of pooled delivery resources attributable to the engagement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0022]
+  caveats: []
+  source_ref: report:FM-010
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Requires an allocation driver.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-011
+  label: Dedicated delivery cost
+  synonyms: []
+  definition: Costs committed specifically to the engagement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0048]
+  caveats: []
+  source_ref: report:FM-011
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Often remains even when utilization falls.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-012
+  label: Third-party delivery cost
+  synonyms: []
+  definition: >-
+    Vendor, subcontractor or license cost directly attributable to the engagement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-012
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Pass-through accounting may differ.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-013
+  label: AI variable cost
+  synonyms: []
+  definition: Model, API, inference or processing cost caused by workload.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:FM-013
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / unit
+    limitation: Model architecture and vendor pricing can change.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-014
+  label: Technology operating cost
+  synonyms: []
+  definition: Hosting, licenses, monitoring and platform operations.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-014
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency / period
+    limitation: Fixed or step-variable classification required.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-015
+  label: Transition cost
+  synonyms: []
+  definition: Onboarding, migration, knowledge transfer and setup.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-015
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Expense versus capital treatment requires accounting judgment.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-016
+  label: Gross profit
+  synonyms: []
+  definition: Revenue less direct delivery cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0014]
+  caveats: []
+  source_ref: report:FM-016
+  status: active
+  attributes:
+    formula: GP = Revenue - DirectDeliveryCost
+    unit_period: currency
+    limitation: >-
+      'Direct' must be defined; one professional-services software definition uses
+      revenue less labor and direct or reimbursable expenses.
+    computed_by: gross_profit
+    requires: null
+    family: financial
+- id: FM-017
+  label: Gross margin
+  synonyms: []
+  definition: Gross profit as a share of revenue.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0023]
+  caveats: []
+  source_ref: report:FM-017
+  status: active
+  attributes:
+    formula: GM = GP / Revenue
+    unit_period: '%'
+    limitation: Not the same as markup.
+    computed_by: gross_margin
+    requires: null
+    family: financial
+- id: FM-018
+  label: Contribution profit
+  synonyms: []
+  definition: Revenue less variable costs and engagement-avoidable fixed costs.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0021]
+  caveats:
+  - >-
+    Cometric's contribution_profit subtracts margin layers (DIRECT_DELIVERY and ENGAGEMENT_AVOIDABLE);
+    it equals FM-018 only when all direct delivery costs are avoidable. The engine
+    reports unavoidable direct cost separately so FM-018 can be reconstructed.
+  source_ref: report:FM-018
+  status: active
+  attributes:
+    formula: CP = Revenue - VariableCosts - EngagementAvoidableFixedCosts
+    unit_period: currency
+    limitation: Scope of 'avoidable' must be explicit.
+    computed_by: contribution_profit
+    requires: null
+    family: financial
+- id: FM-019
+  label: Contribution margin
+  synonyms: []
+  definition: Contribution profit as a share of revenue.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0021]
+  caveats: []
+  source_ref: report:FM-019
+  status: active
+  attributes:
+    formula: CM = CP / Revenue
+    unit_period: '%'
+    limitation: Useful for incremental decisions; not a full P&L.
+    computed_by: contribution_margin
+    requires: null
+    family: financial
+- id: FM-020
+  label: Operating profit
+  synonyms: []
+  definition: >-
+    Revenue minus direct, allocated operating and overhead expenses as defined.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0021]
+  caveats: []
+  source_ref: report:FM-020
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Allocation policy can dominate the result.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-021
+  label: Markup
+  synonyms: []
+  definition: Price less cost, as a share of cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0023]
+  caveats: []
+  source_ref: report:FM-021
+  status: active
+  attributes:
+    formula: (Price - Cost) / Cost
+    unit_period: '%'
+    limitation: A 25% markup is not a 25% margin.
+    computed_by: markup
+    requires: null
+    family: financial
+- id: FM-022
+  label: Margin
+  synonyms: []
+  definition: Price less cost, as a share of price.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0023]
+  caveats: []
+  source_ref: report:FM-022
+  status: active
+  attributes:
+    formula: (Price - Cost) / Price
+    unit_period: '%'
+    limitation: A 25% margin implies a 33.33% markup.
+    computed_by: margin
+    requires: null
+    family: financial
+- id: FM-023
+  label: Effective billing rate
+  synonyms: []
+  definition: Revenue attributable to labor divided by productive hours.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-023
+  status: active
+  attributes:
+    formula: LaborRevenue / ProductiveHours
+    unit_period: currency / hour
+    limitation: For fixed fees, may be retrospective.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-024
+  label: Revenue per FTE
+  synonyms: []
+  definition: Revenue divided by average delivery FTEs.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-024
+  status: active
+  attributes:
+    formula: Revenue / AverageDeliveryFTE
+    unit_period: currency / FTE
+    limitation: Mix and automation make comparisons imperfect.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-025
+  label: Revenue per productive hour
+  synonyms: []
+  definition: Revenue divided by productive delivery hours.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-025
+  status: active
+  attributes:
+    formula: Revenue / ProductiveDeliveryHours
+    unit_period: currency / hour
+    limitation: Can increase when AI reduces human hours.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-026
+  label: Utilization
+  synonyms: []
+  definition: Productive hours divided by available working hours.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-026
+  status: active
+  attributes:
+    formula: ProductiveHours / AvailableWorkingHours
+    unit_period: '%'
+    limitation: Definition varies; 'productive' may include nonbillable client work.
+    computed_by: productive_hours_utilization
+    requires: null
+    family: financial
+- id: FM-027
+  label: Billable utilization
+  synonyms: []
+  definition: Billable hours divided by available hours.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-027
+  status: active
+  attributes:
+    formula: BillableHours / AvailableHours
+    unit_period: '%'
+    limitation: Not useful as the sole metric in output pricing.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-028
+  label: Realization
+  synonyms: []
+  definition: Billed value divided by standard or worked value, according to policy.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-028
+  status: active
+  attributes:
+    formula: BilledValue / StandardOrWorkedValue
+    unit_period: '%'
+    limitation: Definitions vary between organizations.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-029
+  label: Collection rate
+  synonyms: []
+  definition: Cash collected divided by the billed amount for a comparable cohort.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-029
+  status: active
+  attributes:
+    formula: CashCollected / BilledAmount
+    unit_period: '%'
+    limitation: Cohort timing needed; otherwise distortions occur.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-030
+  label: Unit contribution
+  synonyms: []
+  definition: Unit price less unit variable cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-030
+  status: active
+  attributes:
+    formula: UnitPrice - UnitVariableCost
+    unit_period: currency / unit
+    limitation: Only valid if the unit is homogeneous or normalized.
+    computed_by: unit_contribution
+    requires: null
+    family: financial
+- id: FM-031
+  label: Break-even volume
+  synonyms: []
+  definition: >-
+    Volume at which contribution reaches zero, where algebraically appropriate.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0025]
+  caveats: []
+  source_ref: report:FM-031
+  status: active
+  attributes:
+    formula: Q_BE = (FixedCost - FixedRevenue) / (UnitPrice - UnitVariableCost)
+    unit_period: units
+    limitation: Piecewise fees require a piecewise solution.
+    computed_by: break_even_volume
+    requires: null
+    family: financial
+- id: FM-032
+  label: Capacity utilization
+  synonyms: []
+  definition: Actual capacity consumed divided by usable committed capacity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0026]
+  caveats: []
+  source_ref: report:FM-032
+  status: active
+  attributes:
+    formula: ConsumedCapacity / UsableCommittedCapacity
+    unit_period: '%'
+    limitation: Different from personnel billable utilization.
+    computed_by: capacity_utilization
+    requires: null
+    family: financial
+- id: FM-033
+  label: Cost to serve
+  synonyms: []
+  definition: Attributable delivery and support cost for an account or service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0022]
+  caveats: []
+  source_ref: report:FM-033
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Allocation policy required.
+    computed_by: cost_to_serve
+    requires: null
+    family: financial
+- id: FM-034
+  label: Customer lifetime value (CLV)
+  synonyms: []
+  definition: >-
+    Discounted expected future contribution less acquisition and retention cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-034
+  status: active
+  attributes:
+    formula: null
+    unit_period: currency
+    limitation: Highly assumption-sensitive in professional services.
+    computed_by: null
+    requires: null
+    family: financial
+- id: FM-035
+  label: Renewal contribution value
+  synonyms: []
+  definition: >-
+    Expected contribution from renewal multiplied by its probability, less renewal
+    cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:FM-035
+  status: active
+  attributes:
+    formula: E[RenewalContribution] * P(renewal) - RenewalCost
+    unit_period: currency
+    limitation: Probability generally requires internal data.
+    computed_by: null
+    requires: null
+    family: financial
+- id: CHI-001
+  label: Commitment utilization ratio
+  synonyms: []
+  definition: >-
+    A low value signals possible under-consumption. Computed as Consumed eligible
+    value / committed eligible value.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-001
+  status: active
+  attributes:
+    formula: Consumed eligible value / committed eligible value
+    unit_period: null
+    limitation: Does not value availability.
+    computed_by: commitment_utilization
+    requires: null
+    interpretation: A low value signals possible under-consumption.
+    family: commercial_health
+- id: CHI-002
+  label: Effective client cost per unit
+  synonyms: []
+  definition: >-
+    A rising value may indicate poor economics. Computed as Total client fee / completed
+    normalized units.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-002
+  status: active
+  attributes:
+    formula: Total client fee / completed normalized units
+    unit_period: null
+    limitation: Unit normalization required.
+    computed_by: effective_client_unit_price
+    requires: null
+    interpretation: A rising value may indicate poor economics.
+    family: commercial_health
+- id: CHI-003
+  label: Capacity utilization
+  synonyms: []
+  definition: >-
+    Measures operational consumption. Computed as Used capacity / reserved capacity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-003
+  status: active
+  attributes:
+    formula: Used capacity / reserved capacity
+    unit_period: null
+    limitation: 100% may actually indicate insufficient buffer.
+    computed_by: capacity_utilization
+    requires: null
+    interpretation: Measures operational consumption.
+    family: commercial_health
+- id: CHI-004
+  label: Forecast variance
+  synonyms: []
+  definition: >-
+    Persistent directional error may indicate structural mismatch. Computed as (Actual
+    - Forecast) / Forecast.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-004
+  status: active
+  attributes:
+    formula: (Actual - Forecast) / Forecast
+    unit_period: null
+    limitation: Forecast quality matters.
+    computed_by: null
+    requires: actuals
+    interpretation: Persistent directional error may indicate structural mismatch.
+    family: commercial_health
+- id: CHI-005
+  label: Service-credit frequency
+  synonyms: []
+  definition: >-
+    Signals repeated performance misses. Computed as Credit events / measurement periods.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-005
+  status: active
+  attributes:
+    formula: Credit events / measurement periods
+    unit_period: null
+    limitation: Credits vary in severity.
+    computed_by: null
+    requires: actuals
+    interpretation: Signals repeated performance misses.
+    family: commercial_health
+- id: CHI-006
+  label: Quality-adjusted throughput
+  synonyms: []
+  definition: >-
+    Balances speed and quality. Computed as Completed units * quality adjustment /
+    period.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-006
+  status: active
+  attributes:
+    formula: Completed units * quality adjustment / period
+    unit_period: null
+    limitation: The quality adjustment can be subjective.
+    computed_by: null
+    requires: actuals
+    interpretation: Balances speed and quality.
+    family: commercial_health
+- id: CHI-007
+  label: Margin sensitivity to consumption
+  synonyms: []
+  definition: Identifies volume exposure. Computed as Delta(Margin) / Delta(Volume).
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-007
+  status: active
+  attributes:
+    formula: Delta(Margin) / Delta(Volume)
+    unit_period: null
+    limitation: Nonlinear contracts require scenario analysis.
+    computed_by: margin_sensitivity_to_volume
+    requires: null
+    interpretation: Identifies volume exposure.
+    family: commercial_health
+- id: CHI-008
+  label: Renewal price pressure
+  synonyms: []
+  definition: >-
+    Potential misalignment signal. Computed as Requested concession / current fee.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-008
+  status: active
+  attributes:
+    formula: Requested concession / current fee
+    unit_period: null
+    limitation: Negotiation behavior is noisy.
+    computed_by: null
+    requires: actuals
+    interpretation: Potential misalignment signal.
+    family: commercial_health
+- id: CHI-009
+  label: Client value-realization ratio
+  synonyms: []
+  definition: Broad economic comparison. Computed as Quantified realized value / fee.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-009
+  status: active
+  attributes:
+    formula: Quantified realized value / fee
+    unit_period: null
+    limitation: Many benefits cannot be reliably monetized.
+    computed_by: null
+    requires: actuals
+    interpretation: Broad economic comparison.
+    family: commercial_health
+- id: CHI-010
+  label: Unused commitment trend
+  synonyms: []
+  definition: >-
+    Persistent under-use may precede repricing. Computed as Unused entitlement over
+    rolling periods.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039, CLM-B-0040]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  - Not empirically validated as a retention predictor.
+  source_ref: report:CHI-010
+  status: active
+  attributes:
+    formula: Unused entitlement over rolling periods
+    unit_period: null
+    limitation: Not empirically validated as a retention predictor.
+    computed_by: null
+    requires: actuals
+    interpretation: Persistent under-use may precede repricing.
+    family: commercial_health
+- id: CHI-011
+  label: Capacity-service mismatch
+  synonyms: []
+  definition: >-
+    Highlights structural overcapacity. Computed as Reserved capacity - actual or
+    forecast demand.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-011
+  status: active
+  attributes:
+    formula: Reserved capacity - actual or forecast demand
+    unit_period: null
+    limitation: Depends on the capacity model.
+    computed_by: capacity_service_mismatch
+    requires: null
+    interpretation: Highlights structural overcapacity.
+    family: commercial_health
+- id: CHI-012
+  label: Effective cost trend
+  synonyms: []
+  definition: >-
+    Detects rising unit economics despite fixed spend. Computed as Current cost per
+    unit versus prior normalized periods.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0039]
+  caveats:
+  - Management indicator, not a validated industry threshold.
+  source_ref: report:CHI-012
+  status: active
+  attributes:
+    formula: Current cost per unit versus prior normalized periods
+    unit_period: null
+    limitation: Mix adjustment necessary.
+    computed_by: null
+    requires: actuals
+    interpretation: Detects rising unit economics despite fixed spend.
+    family: commercial_health
+- id: MAR-001
+  label: Margin-at-Risk
+  synonyms: []
+  definition: >-
+    Proposed measure of downside in contribution: target contribution less a chosen
+    lower quantile of the simulated contribution distribution.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0028, CLM-B-0027]
+  caveats:
+  - >-
+    The report classifies this C/D for management use unless an organization defines
+    it formally.
+  - Not computed in v1; requires calibrated probability distributions.
+  source_ref: report:demand-uncertainty
+  status: active
+  attributes:
+    formula: MaR_alpha = TargetContribution - Quantile_alpha(Contribution)
+    unit_period: currency / scenario horizon
+    limitation: Meaningful only with empirically calibrated distributions.
+    computed_by: null
+    requires: distributions
+    family: risk
+- id: MAR-002
+  label: Client Value-at-Risk
+  synonyms: []
+  definition: >-
+    Candidate advisory measure of downside in realized client value relative to committed
+    spend.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0029]
+  caveats:
+  - >-
+    Insufficient public evidence to treat as a validated metric; candidate advisory
+    construct only.
+  - Not computed in v1; requires calibrated probability distributions.
+  source_ref: report:demand-uncertainty
+  status: active
+  attributes:
+    formula: null
+    unit_period: null
+    limitation: No validated definition exists.
+    computed_by: null
+    requires: distributions
+    family: risk

@@ -1,0 +1,215 @@
+scheme: selection_framework
+title: Commercial model selection framework
+concepts:
+- id: SELF-01
+  label: Characterize the service
+  synonyms: []
+  definition: >-
+    Repeatability, scope, regulatory status, required expertise, locations and SLA.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 1
+- id: SELF-02
+  label: Identify economic drivers
+  synonyms: []
+  definition: >-
+    Labor hours, unit volumes, complexity, fixed capacity, technology, subcontractors.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 2
+- id: SELF-03
+  label: Quantify uncertainty
+  synonyms: []
+  definition: >-
+    Volume distribution, complexity variance, productivity, wage inflation, technology
+    cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 3
+- id: SELF-04
+  label: Identify client preferences
+  synonyms: []
+  definition: >-
+    Budget certainty, flexibility, transparency, avoidance of unused commitment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 4
+- id: SELF-05
+  label: Determine feasible billing bases
+  synonyms: []
+  definition: Time, resource, capacity, output, usage, fixed, outcome.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 5
+- id: SELF-06
+  label: Select compatible levers
+  synonyms: []
+  definition: Commitment, collar, overage, service credit, indexation, rollover.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 6
+- id: SELF-07
+  label: Screen regulatory and contract constraints
+  synonyms: []
+  definition: >-
+    Screen the candidate structures against regulatory and contractual constraints.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 7
+- id: SELF-08
+  label: Model economics
+  synonyms: []
+  definition: Model low, base and high cases and probabilistic economics.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 8
+- id: SELF-09
+  label: Assess client value
+  synonyms: []
+  definition: >-
+    Effective unit cost, unused entitlement, cycle time, quality, avoided alternatives.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 9
+- id: SELF-10
+  label: Compare candidates
+  synonyms: []
+  definition: Compare candidate structures rather than forcing one optimum.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 10
+- id: SELF-11
+  label: Identify negotiation exchanges
+  synonyms: []
+  definition: Identify concessions that can be exchanged across dimensions.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 11
+- id: SELF-12
+  label: Recommend alternatives
+  synonyms: []
+  definition: >-
+    Recommend alternatives with explicit assumptions and human-review triggers.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:selection-framework
+  status: active
+  attributes:
+    order: 12

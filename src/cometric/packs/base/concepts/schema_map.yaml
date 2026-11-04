@@ -1,0 +1,1100 @@
+scheme: schema_map
+title: Research entity classes and relationships mapped to the core schema
+concepts:
+- id: EC-001
+  label: Engagement
+  synonyms: []
+  definition: Commercial relationship instance.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-001
+  status: active
+  attributes:
+    core_model: Engagement
+    note: Direct match.
+- id: EC-002
+  label: ContractParty
+  synonyms: []
+  definition: Legal or commercial party.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-002
+  status: active
+  attributes:
+    core_model: ContractParty
+    note: Direct match; regulated status and provider type are party fields.
+- id: EC-003
+  label: Client
+  synonyms: []
+  definition: Buying party subtype.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-003
+  status: active
+  attributes:
+    core_model: ContractParty
+    note: Represented as a ContractParty with role CLIENT.
+- id: EC-004
+  label: ServiceOffering
+  synonyms: []
+  definition: Defined service delivered.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-004
+  status: active
+  attributes:
+    core_model: ServiceOffering
+    note: Direct match.
+- id: EC-005
+  label: ServiceCategory
+  synonyms: []
+  definition: Taxonomic service grouping.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-005
+  status: active
+  attributes:
+    core_model: pack:service_categories
+    note: Open vocabulary supplied by domain packs.
+- id: EC-006
+  label: PricingArrangement
+  synonyms: []
+  definition: Full commercial composition.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-006
+  status: active
+  attributes:
+    core_model: ArrangementVersion
+    note: Held as effective-dated arrangement versions.
+- id: EC-007
+  label: PricingModel
+  synonyms: []
+  definition: Named reusable pricing pattern.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-007
+  status: active
+  attributes:
+    core_model: pack:pricing_models
+    note: Knowledge concept, not an executable object.
+- id: EC-008
+  label: BillingBasis
+  synonyms: []
+  definition: Fundamental priced economic object.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-008
+  status: active
+  attributes:
+    core_model: pack:billing_bases
+    note: >-
+      Executed as the eight-value core billing-basis vocabulary on FeeComponent.
+- id: EC-009
+  label: RateStructure
+  synonyms: []
+  definition: Method for translating a basis into a rate.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-009
+  status: active
+  attributes:
+    core_model: RateSchedule
+    note: Tiers, tier method and scope live on RateSchedule.
+- id: EC-010
+  label: CommercialLever
+  synonyms: []
+  definition: Contract mechanism modifying economics.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-010
+  status: active
+  attributes:
+    core_model: pack:levers
+    note: Executable subset appears as commitments, entitlements and adjustments.
+- id: EC-011
+  label: ContractualCommitment
+  synonyms: []
+  definition: Binding minimum or availability obligation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-011
+  status: active
+  attributes:
+    core_model: Commitment
+    note: Direct match.
+- id: EC-012
+  label: VolumeBand
+  synonyms: []
+  definition: Range governing price or obligation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-012
+  status: active
+  attributes:
+    core_model: RateSchedule
+    note: Represented as rate tiers; may become a separate entity later.
+- id: EC-013
+  label: ResourceCommitment
+  synonyms: []
+  definition: Resource or FTE availability promise.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-013
+  status: active
+  attributes:
+    core_model: Commitment
+    note: >-
+      Represented as a RESERVED_CAPACITY commitment plus DeliveryPlan resources.
+- id: EC-014
+  label: DeliveryModel
+  synonyms: []
+  definition: Dedicated, pooled or hybrid topology.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-014
+  status: active
+  attributes:
+    core_model: DeliveryPlan
+    note: Topology field on DeliveryPlan.
+- id: EC-015
+  label: CostDriver
+  synonyms: []
+  definition: Variable affecting cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-015
+  status: active
+  attributes:
+    core_model: CostComponent
+    note: Driver and rate fields on CostComponent.
+- id: EC-016
+  label: RevenueDriver
+  synonyms: []
+  definition: Variable affecting consideration.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-016
+  status: active
+  attributes:
+    core_model: FeeComponent
+    note: Quantity source, base fee and rate fields on FeeComponent.
+- id: EC-017
+  label: PerformanceObligation
+  synonyms: []
+  definition: Promised service or output with accounting meaning.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-017
+  status: active
+  attributes:
+    core_model: deferred
+    note: Accounting performance obligations need an accounting adapter.
+- id: EC-018
+  label: SLA
+  synonyms: []
+  definition: Measurable service commitment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-018
+  status: active
+  attributes:
+    core_model: ServiceLevel
+    note: Direct match.
+- id: EC-019
+  label: IncentiveMechanism
+  synonyms: []
+  definition: Bonus, holdback or gain-share.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-019
+  status: active
+  attributes:
+    core_model: Adjustment
+    note: BONUS and HOLDBACK adjustment types; gain-share needs outcome pricing.
+- id: EC-020
+  label: RiskAllocation
+  synonyms: []
+  definition: Assignment of exposure.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-020
+  status: active
+  attributes:
+    core_model: RiskAllocation
+    note: Direct match; compared with derived exposure.
+- id: EC-021
+  label: AdjustmentMechanism
+  synonyms: []
+  definition: True-up, change order or indexation mechanism.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-021
+  status: active
+  attributes:
+    core_model: Adjustment
+    note: Direct match.
+- id: EC-022
+  label: FinancialMetric
+  synonyms: []
+  definition: Defined economic measure.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-022
+  status: active
+  attributes:
+    core_model: pack:metrics
+    note: Definitions in base metrics; values in CalculationResult.
+- id: EC-023
+  label: EconomicVariable
+  synonyms: []
+  definition: Engagement-specific numerical input.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-023
+  status: active
+  attributes:
+    core_model: Scenario
+    note: Scenario assumptions with value, unit, period and origin.
+- id: EC-024
+  label: ProfitabilityScenario
+  synonyms: []
+  definition: Set of assumptions and results.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-024
+  status: active
+  attributes:
+    core_model: Scenario
+    note: Direct match.
+- id: EC-025
+  label: ClientValueMetric
+  synonyms: []
+  definition: Value measure from the buyer perspective.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-025
+  status: active
+  attributes:
+    core_model: pack:metrics
+    note: Commercial-health indicators; v1 computes a subset.
+- id: EC-026
+  label: CommercialConstraint
+  synonyms: []
+  definition: Legal, operational or contractual restriction.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-026
+  status: active
+  attributes:
+    core_model: pack:rules
+    note: Declarative constraint rules in packs.
+- id: EC-027
+  label: MarketEvidence
+  synonyms: []
+  definition: Evidence record.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-027
+  status: active
+  attributes:
+    core_model: EvidenceSource
+    note: Direct match.
+- id: EC-028
+  label: Claim
+  synonyms: []
+  definition: Atomic research assertion.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-028
+  status: active
+  attributes:
+    core_model: EvidenceClaim
+    note: Direct match.
+- id: EC-029
+  label: PricingRecommendation
+  synonyms: []
+  definition: Advisory candidate structure.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-029
+  status: active
+  attributes:
+    core_model: PricingRecommendation
+    note: Direct match.
+- id: EC-030
+  label: ScenarioAssumption
+  synonyms: []
+  definition: Hypothetical uncertain input.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-030
+  status: active
+  attributes:
+    core_model: Scenario
+    note: Assumptions within a scenario.
+- id: EC-031
+  label: AutomationComponent
+  synonyms: []
+  definition: AI or automation production component.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-031
+  status: active
+  attributes:
+    core_model: CostComponent
+    note: Cost categories from the AI service-cost decomposition.
+- id: EC-032
+  label: ServiceCredit
+  synonyms: []
+  definition: Fee remedy for a performance miss.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-032
+  status: active
+  attributes:
+    core_model: Adjustment
+    note: SLA_CREDIT adjustment type.
+- id: EC-033
+  label: TransitionObligation
+  synonyms: []
+  definition: Onboarding or offboarding service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-033
+  status: active
+  attributes:
+    core_model: CostComponent
+    note: >-
+      Transition cost with an incurred schedule; contractual exit terms deferred.
+- id: EC-034
+  label: EvidenceApplicability
+  synonyms: []
+  definition: Scope of evidence.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Candidate entity class from the research; reconciled with the core schema at M0.
+  source_ref: report:EC-034
+  status: active
+  attributes:
+    core_model: EvidenceSource
+    note: Applicability block on source records.
+- id: REL-001
+  label: PricingModel uses BillingBasis
+  synonyms: []
+  definition: >-
+    Semantic relationship: PricingModel uses BillingBasis. Cardinality: 1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-001
+  status: active
+  attributes:
+    core_model: pack:pricing_models
+    note: The bases field on pricing-model concepts.
+    cardinality: 1..n
+- id: REL-002
+  label: PricingArrangement instantiates PricingModel
+  synonyms: []
+  definition: >-
+    Semantic relationship: PricingArrangement instantiates PricingModel. Cardinality:
+    1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-002
+  status: active
+  attributes:
+    core_model: deferred
+    note: >-
+      Arrangement versions hold executable components, not named pricing models.
+    cardinality: 1..n
+- id: REL-003
+  label: PricingArrangement incorporates CommercialLever
+  synonyms: []
+  definition: >-
+    Semantic relationship: PricingArrangement incorporates CommercialLever. Cardinality:
+    0..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-003
+  status: active
+  attributes:
+    core_model: ArrangementVersion
+    note: Commitments, entitlements and adjustments on the version.
+    cardinality: 0..n
+- id: REL-004
+  label: CommercialLever modifies RevenueDriver
+  synonyms: []
+  definition: >-
+    Semantic relationship: CommercialLever modifies RevenueDriver. Cardinality: 0..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-004
+  status: active
+  attributes:
+    core_model: Adjustment
+    note: Adjustments modify a named subtotal at a declared evaluation step.
+    cardinality: 0..n
+- id: REL-005
+  label: DeliveryModel influences CostDriver
+  synonyms: []
+  definition: >-
+    Semantic relationship: DeliveryModel influences CostDriver. Cardinality: 1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-005
+  status: active
+  attributes:
+    core_model: DeliveryPlan
+    note: Delivery plan drives cost and capacity.
+    cardinality: 1..n
+- id: REL-006
+  label: RiskAllocation assigns exposure to ContractParty
+  synonyms: []
+  definition: >-
+    Semantic relationship: RiskAllocation assigns exposure to ContractParty. Cardinality:
+    exactly one bearer or shared allocation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-006
+  status: active
+  attributes:
+    core_model: RiskAllocation
+    note: declared_bearer field.
+    cardinality: exactly one bearer or shared allocation
+- id: REL-007
+  label: ServiceOffering may be priced using PricingModel
+  synonyms: []
+  definition: >-
+    Semantic relationship: ServiceOffering may be priced using PricingModel. Cardinality:
+    n..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-007
+  status: active
+  attributes:
+    core_model: FeeComponent
+    note: service_id on each fee component.
+    cardinality: n..n
+- id: REL-008
+  label: CommercialConstraint restricts PricingModel
+  synonyms: []
+  definition: >-
+    Semantic relationship: CommercialConstraint restricts PricingModel. Cardinality:
+    0..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-008
+  status: active
+  attributes:
+    core_model: pack:rules
+    note: Constraint rules emit warnings and approval requirements only.
+    cardinality: 0..n
+- id: REL-009
+  label: FinancialMetric calculated from EconomicVariable
+  synonyms: []
+  definition: >-
+    Semantic relationship: FinancialMetric calculated from EconomicVariable. Cardinality:
+    1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-009
+  status: active
+  attributes:
+    core_model: CalculationResult
+    note: Metrics computed from scenario inputs.
+    cardinality: 1..n
+- id: REL-010
+  label: PricingRecommendation supported by MarketEvidence
+  synonyms: []
+  definition: >-
+    Semantic relationship: PricingRecommendation supported by MarketEvidence. Cardinality:
+    0..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-010
+  status: active
+  attributes:
+    core_model: PricingRecommendation
+    note: Recommendations cite evidence claims.
+    cardinality: 0..n
+- id: REL-011
+  label: SLA may trigger ServiceCredit
+  synonyms: []
+  definition: 'Semantic relationship: SLA may trigger ServiceCredit. Cardinality:
+    0..n.'
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-011
+  status: active
+  attributes:
+    core_model: ServiceLevel
+    note: remedy_id on ServiceLevel.
+    cardinality: 0..n
+- id: REL-012
+  label: SLA may trigger IncentiveMechanism
+  synonyms: []
+  definition: >-
+    Semantic relationship: SLA may trigger IncentiveMechanism. Cardinality: 0..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-012
+  status: active
+  attributes:
+    core_model: ServiceLevel
+    note: remedy_id may reference a bonus adjustment.
+    cardinality: 0..n
+- id: REL-013
+  label: ContractualCommitment may necessitate ResourceCommitment
+  synonyms: []
+  definition: >-
+    Semantic relationship: ContractualCommitment may necessitate ResourceCommitment.
+    Cardinality: conditional.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-013
+  status: active
+  attributes:
+    core_model: Commitment
+    note: Reserved-capacity commitments require delivery capacity.
+    cardinality: conditional
+- id: REL-014
+  label: VolumeBand determines RateStructure
+  synonyms: []
+  definition: >-
+    Semantic relationship: VolumeBand determines RateStructure. Cardinality: 1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-014
+  status: active
+  attributes:
+    core_model: RateSchedule
+    note: Tiers within a rate schedule.
+    cardinality: 1..n
+- id: REL-015
+  label: AutomationComponent creates CostDriver
+  synonyms: []
+  definition: >-
+    Semantic relationship: AutomationComponent creates CostDriver. Cardinality: 1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-015
+  status: active
+  attributes:
+    core_model: CostComponent
+    note: AI cost categories carry behavior and driver.
+    cardinality: 1..n
+- id: REL-016
+  label: AutomationComponent may improve ClientValueMetric
+  synonyms: []
+  definition: >-
+    Semantic relationship: AutomationComponent may improve ClientValueMetric. Cardinality:
+    conditional.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-016
+  status: active
+  attributes:
+    core_model: deferred
+    note: Not modeled in v1.
+    cardinality: conditional
+- id: REL-017
+  label: Claim has provenance in MarketEvidence
+  synonyms: []
+  definition: >-
+    Semantic relationship: Claim has provenance in MarketEvidence. Cardinality: 1..n
+    ideally.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-017
+  status: active
+  attributes:
+    core_model: EvidenceClaim
+    note: sources list on claims.
+    cardinality: 1..n ideally
+- id: REL-018
+  label: MarketEvidence qualified by EvidenceApplicability
+  synonyms: []
+  definition: >-
+    Semantic relationship: MarketEvidence qualified by EvidenceApplicability. Cardinality:
+    1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-018
+  status: active
+  attributes:
+    core_model: EvidenceSource
+    note: applicability block on sources.
+    cardinality: 1..n
+- id: REL-019
+  label: ScenarioAssumption parameterizes ProfitabilityScenario
+  synonyms: []
+  definition: >-
+    Semantic relationship: ScenarioAssumption parameterizes ProfitabilityScenario.
+    Cardinality: n..1.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-019
+  status: active
+  attributes:
+    core_model: Scenario
+    note: Assumptions belong to one scenario.
+    cardinality: n..1
+- id: REL-020
+  label: ProfitabilityScenario produces FinancialMetric
+  synonyms: []
+  definition: >-
+    Semantic relationship: ProfitabilityScenario produces FinancialMetric. Cardinality:
+    1..n.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:REL-020
+  status: active
+  attributes:
+    core_model: CalculationResult
+    note: Results are produced per scenario.
+    cardinality: 1..n

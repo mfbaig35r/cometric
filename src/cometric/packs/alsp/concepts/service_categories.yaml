@@ -1,0 +1,132 @@
+scheme: service_categories
+title: Legal-services service categories
+concepts:
+- id: CONTRACTS
+  label: Contracts
+  synonyms: []
+  definition: >-
+    Contract review, abstraction and contracting managed services, including high-volume
+    agreement processing.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0015, CLM-A-0018, CLM-A-0008]
+  caveats: []
+  source_ref: report:landscape
+  status: active
+  attributes: {}
+- id: EDISCOVERY
+  label: eDiscovery
+  synonyms: []
+  definition: >-
+    Electronic discovery processing, hosting, review and related managed services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0021, CLM-A-0022, CLM-A-0008]
+  caveats: []
+  source_ref: report:landscape
+  status: active
+  attributes: {}
+- id: DOCUMENT_REVIEW
+  label: Document review
+  synonyms: []
+  definition: >-
+    Review and coding of documents, such as responsive-document review, often priced
+    per document or as a fixed fee.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0021, CLM-A-0023]
+  caveats: []
+  source_ref: report:landscape
+  status: active
+  attributes: {}
+- id: LEGAL_OPERATIONS
+  label: Legal operations
+  synonyms: []
+  definition: >-
+    Ongoing legal-operations support and processing teams for legal departments.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0004, CLM-A-0017]
+  caveats: []
+  source_ref: report:landscape
+  status: active
+  attributes: {}
+- id: REGULATORY_CHANGE
+  label: Regulatory change
+  synonyms: []
+  definition: >-
+    Regulatory and business-change projects delivered as managed legal services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The report's only source for this category is a provider case study excluded from
+    the packs.
+  source_ref: report:landscape
+  status: active
+  attributes: {}
+- id: IMPLEMENTATION
+  label: Implementation
+  synonyms: []
+  definition: >-
+    Technology implementation and migration work, such as CLM, ELM and workflow deployments,
+    often followed by recurring support.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats:
+  - >-
+    Supporting provider disclosures for implementation pricing are cited in the report
+    but not in its evidence register.
+  source_ref: report:landscape
+  status: active
+  attributes: {}
+- id: FLEXIBLE_RESOURCING
+  label: Flexible resourcing
+  synonyms: []
+  definition: >-
+    Supply of flexible legal talent, secondment and staff augmentation, priced by
+    time or reserved capacity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0009, CLM-A-0010, CLM-A-0045]
+  caveats: []
+  source_ref: report:landscape
+  status: active
+  attributes: {}

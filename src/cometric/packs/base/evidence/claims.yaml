@@ -1,0 +1,484 @@
+claims:
+- id: CLM-B-0001
+  statement: >-
+    An actual commercial arrangement is better represented as a composition of billing
+    basis, rate structure, commitment, risk allocation, adjustment mechanisms and
+    delivery obligations than as a single pricing model.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:executive-synthesis
+- id: CLM-B-0002
+  statement: >-
+    Billing bases are not mutually exclusive: managed services and capacity reservations
+    combine recurring, output, capacity and usage elements in one arrangement.
+  classification: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  sources: [E020, E023]
+  caveats: []
+  source_ref: report:billing-bases
+- id: CLM-B-0003
+  statement: >-
+    Many apparently innovative commercial structures, including multi-year subscriptions,
+    committed consumption, output pricing, service credits, shared savings and capacity
+    reservation, adapt older outsourcing and professional-services mechanisms.
+  classification: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  sources: [E020, E021, E023]
+  caveats: []
+  source_ref: report:executive-synthesis
+- id: CLM-B-0004
+  statement: >-
+    Commercial structure selection is a multi-objective decision problem with rarely
+    one uniquely optimal structure absent assumptions about volume, cost behavior,
+    preferences, risk tolerance, capacity and renewal economics.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:executive-synthesis
+- id: CLM-B-0005
+  statement: >-
+    At least one large advisory firm describes its managed services as multi-year
+    as-a-service subscriptions with predictable cost and outcome-oriented service
+    levels.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E020]
+  caveats: []
+  source_ref: report:PM-010
+- id: CLM-B-0006
+  statement: >-
+    Outcome-based outsourcing guidance describes linking provider compensation to
+    operational results, cost-saving targets and productivity glide paths.
+  classification: B_CORROBORATED
+  prevalence: DOCUMENTED_SPECIALIZED
+  sources: [E021]
+  caveats: []
+  source_ref: report:PM-024
+- id: CLM-B-0007
+  statement: >-
+    Managed-services contracting guidance for generative AI identifies shared cost
+    savings, incentives, data ownership, AI alliances, SLAs and value tracking as
+    commercial-contract considerations.
+  classification: A_DIRECT
+  prevalence: EMERGING
+  sources: [E022]
+  caveats: []
+  source_ref: report:ai-economics
+- id: CLM-B-0008
+  statement: >-
+    Cloud marketplace documentation describes committed-use pricing that combines
+    a minimum commitment with usage and overage charges.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E023]
+  caveats: []
+  source_ref: report:MECH-001
+- id: CLM-B-0009
+  statement: >-
+    A large cloud provider's savings plans exchange a spend commitment for discounted
+    rates, with usage above the commitment charged at on-demand rates.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E024]
+  caveats: []
+  source_ref: report:MECH-001
+- id: CLM-B-0010
+  statement: >-
+    A large cloud provider's savings plans commit the customer to hourly spend regardless
+    of actual usage.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E025]
+  caveats: []
+  source_ref: report:MECH-002
+- id: CLM-B-0011
+  statement: >-
+    IFRS 15 requires identifying the contract and its performance obligations, determining
+    and allocating the transaction price, and recognizing revenue when or as obligations
+    are satisfied.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E026]
+  caveats: []
+  source_ref: report:FM-002
+- id: CLM-B-0012
+  statement: >-
+    ASC Topic 606 establishes the analogous US GAAP revenue-recognition framework.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E027]
+  caveats: []
+  source_ref: report:FM-002
+- id: CLM-B-0013
+  statement: >-
+    Revenue recognition under IFRS 15 and ASC Topic 606 is based on performance obligations
+    and transfer of promised services, not invoice timing or receipt of cash.
+  classification: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  sources: [E026, E027]
+  caveats: []
+  source_ref: report:RULE-013
+- id: CLM-B-0014
+  statement: >-
+    One professional-services software vendor defines project gross margin as revenue
+    less labor and direct or reimbursable expenses where overhead is not allocated.
+  classification: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  sources: [E038]
+  caveats: []
+  source_ref: report:FM-016
+- id: CLM-B-0015
+  statement: >-
+    The UK financial conduct regulator states that firms remain responsible for managing
+    third-party and outsourcing risk, and its July 2026 update emphasizes data security,
+    risk management and lifecycle governance.
+  classification: A_DIRECT
+  prevalence: UNVERIFIED
+  sources: [E032]
+  caveats: []
+  source_ref: report:outsourcing-constraints
+- id: CLM-B-0016
+  statement: >-
+    The UK financial conduct regulator finalized material third-party reporting rules
+    in March 2026 that take effect on March 18, 2027.
+  classification: A_DIRECT
+  prevalence: UNVERIFIED
+  sources: [E033]
+  caveats: []
+  source_ref: report:RULE-016
+- id: CLM-B-0017
+  statement: >-
+    The March 2026 update to SS2/21 sets expectations on audit and access rights for
+    material outsourcing arrangements from March 18, 2027.
+  classification: A_DIRECT
+  prevalence: UNVERIFIED
+  sources: [E034]
+  caveats: []
+  source_ref: report:RULE-016
+- id: CLM-B-0018
+  statement: >-
+    UK prudential outsourcing expectations address exit obligations for material outsourcing
+    arrangements.
+  classification: A_DIRECT
+  prevalence: UNVERIFIED
+  sources: [E034]
+  caveats: []
+  source_ref: report:CL-P15
+- id: CLM-B-0019
+  statement: >-
+    UK data-protection guidance on AI contracts calls for documented controller and
+    processor roles, due diligence, accuracy KPIs or SLAs, subprocessor controls,
+    security measures, audit rights and end-of-contract data handling.
+  classification: A_DIRECT
+  prevalence: UNVERIFIED
+  sources: [E035]
+  caveats: []
+  source_ref: report:RULE-011
+- id: CLM-B-0020
+  statement: >-
+    UK financial-services AI good-practice material stresses third-party oversight,
+    visibility into model changes, fallback arrangements, exit options and avoidance
+    of untested vendor assurances.
+  classification: A_DIRECT
+  prevalence: UNVERIFIED
+  sources: [E036]
+  caveats: []
+  source_ref: report:outsourcing-constraints
+- id: CLM-B-0021
+  statement: >-
+    Fully loaded profitability and incremental contribution answer different questions:
+    a renewal unattractive after overhead allocation may still have positive contribution,
+    and a contributing contract may be unsustainable if the portfolio never covers
+    shared costs.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:cost-allocation
+- id: CLM-B-0022
+  statement: >-
+    Cost categories should not automatically share one allocation method; dedicated
+    idle capacity and pooled portfolio capacity are treated differently.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:cost-allocation
+- id: CLM-B-0023
+  statement: >-
+    Markup is (price - cost) / cost and margin is (price - cost) / price; conflating
+    them is a material pricing error, and a 25% margin implies a 33.33% markup.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:FM-021
+- id: CLM-B-0024
+  statement: >-
+    The minimum sustainable price under a target contribution margin is a decision
+    formula, not a benchmark; the target margin and risk premium must come from internal
+    governance.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:price-floor
+- id: CLM-B-0025
+  statement: >-
+    A unit price derived at one forecast volume can become uneconomic at a lower realized
+    volume because fixed cost is spread across fewer units.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:price-floor
+- id: CLM-B-0026
+  statement: >-
+    Capacity-constrained cost should distinguish normal capacity from demand above
+    it, so high volume is not assumed to be served indefinitely at the same marginal
+    cost.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:capacity-economics
+- id: CLM-B-0027
+  statement: >-
+    Monte Carlo simulation is an analytical extension that should not be mistaken
+    for a prediction unless its distributions are empirically calibrated.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:demand-uncertainty
+- id: CLM-B-0028
+  statement: >-
+    Margin-at-Risk can be defined as target contribution less a chosen quantile of
+    contribution; it is a proposed management measure unless an organization defines
+    it formally.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:demand-uncertainty
+- id: CLM-B-0029
+  statement: >-
+    Client Value-at-Risk, a downside measure of realized value relative to committed
+    spend, lacks sufficient public evidence to be treated as a validated metric.
+  classification: D_PROPOSED
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:demand-uncertainty
+- id: CLM-B-0030
+  statement: >-
+    AI-enabled services should be modeled as a production system with engineering,
+    implementation, platform, infrastructure, inference, validation, exception, QA,
+    monitoring, security, revalidation and migration costs, not as a zero-cost labor
+    replacement.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:ai-economics
+- id: CLM-B-0031
+  statement: >-
+    There is no credible evidence of a universal automation-savings sharing percentage.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:automation-structures
+- id: CLM-B-0032
+  statement: >-
+    Pricing an automation-redesigned service by the remaining human hours prices the
+    input that became scarce rather than the service delivered and could fail to recover
+    technology investment.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:automation-structures
+- id: CLM-B-0033
+  statement: >-
+    Provider-retained automation benefit creates the strongest incentive to invest
+    but may invite competitive repricing.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:automation-benefit
+- id: CLM-B-0034
+  statement: >-
+    Client-retained automation benefit accelerates adoption but can make provider
+    investment unattractive.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:automation-benefit
+- id: CLM-B-0035
+  statement: >-
+    Shared automation benefit can align incentives but increases measurement complexity.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:automation-benefit
+- id: CLM-B-0036
+  statement: >-
+    Productivity glide paths that pass efficiencies through on a contractual schedule
+    have direct precedent in broader outsourcing and managed services.
+  classification: B_CORROBORATED
+  prevalence: DOCUMENTED_SPECIALIZED
+  sources: [E021, E022]
+  caveats: []
+  source_ref: report:automation-benefit
+- id: CLM-B-0037
+  statement: >-
+    Bundling technology and service suits a client wanting one business outcome where
+    the provider controls the production stack; unbundling suits volatile consumption,
+    transparency needs, portable licenses or material third-party model costs.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+- id: CLM-B-0038
+  statement: >-
+    Not all client value components are readily monetizable: avoided cost needs a
+    credible counterfactual, risk reduction is probabilistic, availability may never
+    be used, and quality needs normalized defect definitions.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:client-value
+- id: CLM-B-0039
+  statement: >-
+    Commercial-health indicators are management indicators, not validated industry
+    thresholds.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:commercial-health
+- id: CLM-B-0040
+  statement: >-
+    The hypothesis that persistently unused commitments elevate renewal risk is commercially
+    plausible but not established by located public empirical research.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:CHI-010
+- id: CLM-B-0041
+  statement: >-
+    Outcome pricing is less transferable where provider controllability is weak, as
+    when results depend on external parties, client decisions, market events or legal
+    judgment.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:adjacent-mechanisms
+- id: CLM-B-0042
+  statement: >-
+    A service credit is not automatically liquidated damages, and liquidated damages
+    are not automatically a penalty; legal characterization depends on the contract
+    and governing law.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:service-credits
+- id: CLM-B-0043
+  statement: >-
+    Tiered pricing, not-to-exceed, minimum commitment, subscription, managed service,
+    technology-enabled service, SLA credits, performance bonuses, complexity weighting
+    and portfolio pricing are better represented as modifiers or configurations than
+    as independent pricing models.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:normalization
+- id: CLM-B-0044
+  statement: >-
+    Public provider disclosures establish that specific structures exist but do not
+    establish their prevalence.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:adversarial-qa
+- id: CLM-B-0045
+  statement: >-
+    No single margin target can sensibly govern structures with different volume,
+    capacity, execution and automation economics.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0046
+  statement: >-
+    Minimum commitments protect low-volume revenue but can degrade client value realization.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0047
+  statement: Pure unit pricing exposes provider fixed-cost recovery to volume.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0048
+  statement: >-
+    Dedicated FTE pricing stabilizes provider economics but transfers utilization
+    risk to the client.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0049
+  statement: Fixed project fees transfer execution and overrun risk to the provider.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0050
+  statement: >-
+    Automation-heavy output models can create nonlinear margin expansion as fixed
+    engineering and platform investment is leveraged over growing volume.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0051
+  statement: >-
+    Complexity weighting reduces adverse selection but increases measurement and governance
+    burden.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:casebook-conclusions
+- id: CLM-B-0052
+  statement: >-
+    Prompts and tokens may be poor proxies for client value when consumption pricing
+    is applied to AI-enabled services.
+  classification: C_INFERENCE
+  prevalence: UNVERIFIED
+  sources: []
+  caveats: []
+  source_ref: report:MECH-009

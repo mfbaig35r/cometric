@@ -1,0 +1,821 @@
+scheme: pricing_models
+title: Pricing model catalog
+concepts:
+- id: PM-001
+  label: Hourly time and materials
+  synonyms: [time and materials, T&M, hourly]
+  definition: >-
+    Fees equal recorded, approved hours multiplied by hourly rates; the client buys
+    professional effort.
+  kind: null
+  bases: [TIME]
+  methods: [TIME]
+  broader: []
+  related: [PM-002, PM-003, PM-020]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-001
+  status: active
+  attributes:
+    formula: F = Sum_r(h_r * r_r)
+    applications: >-
+      Advisory, project work, uncertain scope. Invoice triggered by recorded approved
+      time.
+    provider_client_economics: >-
+      Low provider scope risk; client carries duration and productivity risk. Revenue
+      variable; cost visibility moderate.
+    source_basis: [BB-TIME]
+- id: PM-002
+  label: Blended hourly rate
+  synonyms: [blended rate]
+  definition: >-
+    A single averaged hourly rate applied to all hours worked by a multi-level team.
+  kind: null
+  bases: [TIME]
+  methods: [TIME]
+  broader: [PM-001]
+  related: [PM-001, CL-D04]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-002
+  status: active
+  attributes:
+    formula: F = H * r_b
+    applications: Multi-level teams where one averaged rate reduces rate-card complexity.
+    provider_client_economics: >-
+      Simplifies budgeting; creates a provider incentive to optimize seniority mix
+      and a risk of adverse mix if senior input exceeds assumptions.
+    source_basis: [BB-TIME]
+- id: PM-003
+  label: Role or seniority rate card
+  synonyms: [rate card, role-based rates]
+  definition: >-
+    Time-based pricing in which hourly rates are indexed to role, seniority or skill.
+  kind: null
+  bases: [TIME]
+  methods: [TIME]
+  broader: [PM-001]
+  related: [PM-001, CL-D04]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-003
+  status: active
+  attributes:
+    formula: null
+    applications: Consulting, technology implementation, legal operations.
+    provider_client_economics: Transparent labor pricing but exposes the client to
+      hours and mix.
+    source_basis: [BB-TIME]
+- id: PM-004
+  label: Dedicated FTE or resource unit
+  synonyms: [FTE pricing, dedicated resource]
+  definition: >-
+    The client pays per dedicated full-time-equivalent resource per period, purchasing
+    dedicated resource capacity.
+  kind: null
+  bases: [RESOURCE]
+  methods: [DEDICATED_RESOURCE]
+  broader: []
+  related: [PM-009, CL-D01, CL-R03]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0048]
+  caveats: []
+  source_ref: report:PM-004
+  status: active
+  attributes:
+    formula: F = N_FTE * R_FTE
+    applications: Ongoing legal operations, contract teams, processing teams.
+    provider_client_economics: >-
+      Predictable revenue and cost; low utilization becomes a client-value issue;
+      high demand can create overtime or capacity pressure.
+    source_basis: [BB-RESOURCE]
+- id: PM-005
+  label: Staff augmentation or secondment
+  synonyms: [secondment, staff augmentation]
+  definition: >-
+    The provider supplies resources who work under client direction, priced per resource
+    period or by time.
+  kind: null
+  bases: [RESOURCE, TIME]
+  methods: [DEDICATED_RESOURCE, TIME]
+  broader: []
+  related: [PM-004, PM-001]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-005
+  status: active
+  attributes:
+    formula: null
+    applications: Temporary gaps, specialist work, workload spikes.
+    provider_client_economics: Client controls the work; provider assumes less output
+      risk.
+    source_basis: [BB-RESOURCE, BB-TIME]
+- id: PM-006
+  label: Fixed-fee project
+  synonyms: [fixed fee, fixed price project]
+  definition: >-
+    A single fixed fee for a defined scope, regardless of the effort required.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_PROJECT]
+  broader: []
+  related: [CL-D10, CL-D11, PM-017]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0049]
+  caveats: []
+  source_ref: report:PM-006
+  status: active
+  attributes:
+    formula: F = F_0 for defined scope
+    applications: CLM implementation, remediation, migration, reviews.
+    provider_client_economics: >-
+      Provider assumes effort and cost-overrun risk; client gains budget certainty.
+      Requires scope and change control.
+    source_basis: [BB-FIXED]
+- id: PM-007
+  label: Fixed-fee managed service
+  synonyms: [fixed managed service]
+  definition: >-
+    A recurring fixed fee for an ongoing defined service for which the provider is
+    accountable for output and service levels.
+  kind: modifier
+  bases: [FIXED]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: [CL-P01, CL-V07, CL-V08, PM-028]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0005, CLM-B-0043]
+  caveats: []
+  source_ref: report:PM-007
+  status: active
+  attributes:
+    formula: null
+    applications: >-
+      Ongoing defined service with the provider accountable for output and SLA.
+    provider_client_economics: >-
+      Revenue highly predictable; volume and cost risk may sit with the provider unless
+      bounded.
+    source_basis: [BB-FIXED, BB-RECURRING]
+    normalization: >-
+      Managed service describes accountability and delivery architecture, not necessarily
+      the billing basis.
+- id: PM-008
+  label: Monthly or annual retainer
+  synonyms: [retainer]
+  definition: A periodic fixed fee for access to expertise or defined ongoing support.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: [CL-R04]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-008
+  status: active
+  attributes:
+    formula: null
+    applications: Access to expertise or defined ongoing support.
+    provider_client_economics: >-
+      Predictable spend and revenue; underutilization can raise value concerns.
+    source_basis: [BB-RECURRING]
+- id: PM-009
+  label: Capacity reservation
+  synonyms: [reserved capacity]
+  definition: >-
+    The client pays for reserved availability or throughput, whether or not it is
+    used.
+  kind: null
+  bases: [CAPACITY]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: [CL-R03, PM-004, MECH-002]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0010]
+  caveats: []
+  source_ref: report:PM-009
+  status: active
+  attributes:
+    formula: Fee = ReservedCapacity * CapacityRate
+    applications: Reserved lawyers, reviewers, processing slots, service desk throughput.
+    provider_client_economics: >-
+      Client pays for availability; provider must preserve capacity whether used or
+      not.
+    source_basis: [BB-CAPACITY]
+- id: PM-010
+  label: Subscription service
+  synonyms: [subscription]
+  definition: >-
+    A recurring charge for ongoing access to a platform and service bundle, sometimes
+    with a capacity entitlement.
+  kind: modifier
+  bases: [FIXED, CAPACITY]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: [PM-031, MECH-010]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0005, CLM-B-0043]
+  caveats: []
+  source_ref: report:PM-010
+  status: active
+  attributes:
+    formula: null
+    applications: Ongoing platform plus service bundle.
+    provider_client_economics: >-
+      Predictable spend, access and governance; entitlement definition is critical.
+    source_basis: [BB-RECURRING, BB-CAPACITY]
+    normalization: >-
+      Subscription describes cadence and entitlement more than the underlying metering
+      basis.
+- id: PM-011
+  label: Per-transaction or per-unit
+  synonyms: [unit pricing, per-unit]
+  definition: The fee equals the number of completed units multiplied by a unit price.
+  kind: null
+  bases: [OUTPUT]
+  methods: [UNIT_OUTPUT]
+  broader: []
+  related: [PM-012, PM-015]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0047]
+  caveats: []
+  source_ref: report:PM-011
+  status: active
+  attributes:
+    formula: F = Q * p
+    applications: Contract reviews, subpoenas, document review, RFPs, matters.
+    provider_client_economics: >-
+      Aligns price to activity; provider assumes productivity risk. Requires a unit
+      definition.
+    source_basis: [BB-OUTPUT]
+- id: PM-012
+  label: Per-document, per-contract or per-matter
+  synonyms: [per-document, per-contract, per-matter]
+  definition: >-
+    Output pricing using a specialized unit such as a document, a contract or a matter.
+  kind: null
+  bases: [OUTPUT]
+  methods: [UNIT_OUTPUT]
+  broader: [PM-011]
+  related: [PM-015]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-012
+  status: active
+  attributes:
+    formula: null
+    applications: Document review, contract abstraction, contracting managed services.
+    provider_client_economics: Highly measurable but vulnerable to complexity heterogeneity.
+    source_basis: [BB-OUTPUT]
+- id: PM-013
+  label: Unit consumption
+  synonyms: [consumption pricing, metered pricing]
+  definition: Charges scale with metered consumption of a technology or service.
+  kind: null
+  bases: [USAGE, OUTPUT]
+  methods: [UNIT_OUTPUT]
+  broader: []
+  related: [PM-030, MECH-009]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-013
+  status: active
+  attributes:
+    formula: Fee = Sum_i(Usage_i * MeterRate_i)
+    applications: Processing, hosting, transactions, workflow runs.
+    provider_client_economics: >-
+      Spend scales with use; less protection for the client budget if demand spikes.
+    source_basis: [BB-USAGE, BB-OUTPUT]
+- id: PM-014
+  label: Tiered volume pricing
+  synonyms: [tiered pricing, volume tiers]
+  definition: A unit or usage rate that changes as volume crosses defined thresholds.
+  kind: modifier
+  bases: [OUTPUT, USAGE]
+  methods: [UNIT_OUTPUT]
+  broader: []
+  related: [CL-V03, CL-V04, PM-011]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0043]
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:PM-014
+  status: active
+  attributes:
+    formula: null
+    applications: High-volume repeatable services.
+    provider_client_economics: >-
+      Lower marginal rate at scale; incentivizes consolidation and commitment; can
+      create threshold gaming.
+    source_basis: [BB-OUTPUT, BB-USAGE]
+    normalization: Tiered pricing modifies a unit or usage rate.
+- id: PM-015
+  label: Complexity-weighted unit pricing
+  synonyms: [weighted units, complexity bands]
+  definition: >-
+    Raw units are converted to weighted units by complexity band before a unit price
+    is applied.
+  kind: modifier
+  bases: [OUTPUT]
+  methods: [WEIGHTED_UNIT_OUTPUT]
+  broader: []
+  related: [PM-011, PM-012]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0043, CLM-B-0051]
+  caveats:
+  - >-
+    Commercially sensible and consistent with unit-cost approaches; not proven universal.
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:PM-015
+  status: active
+  attributes:
+    formula: null
+    applications: Contracts, matters or tickets varying materially in effort or risk.
+    provider_client_economics: >-
+      Better cost-to-price alignment but requires defensible classification and audit
+      controls.
+    source_basis: [BB-OUTPUT]
+    normalization: Complexity weighting modifies the unit definition or rate.
+- id: PM-016
+  label: Milestone fee
+  synonyms: [milestone payment]
+  definition: Payments fall due on completion or acceptance of defined milestones.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_PROJECT]
+  broader: []
+  related: [PM-017, PM-018, PM-029]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-016
+  status: active
+  attributes:
+    formula: Fee = Sum_j(MilestonePayment_j)
+    applications: Technology deployments, migrations, transformation.
+    provider_client_economics: Links payment to progress; acceptance criteria become
+      key.
+    source_basis: [BB-MILESTONE]
+- id: PM-017
+  label: Phase-based fee
+  synonyms: [phase-by-phase pricing, phased fee]
+  definition: >-
+    Separately priced phases, allowing scope to be contained and the work repriced
+    at phase checkpoints.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_PROJECT]
+  broader: []
+  related: [PM-016, PM-006]
+  evidence_class: B_CORROBORATED
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: []
+  caveats: []
+  source_ref: report:PM-017
+  status: active
+  attributes:
+    formula: null
+    applications: Discovery, design, build, migration, run.
+    provider_client_economics: Contains scope risk within phases; supports repricing
+      at phase checkpoints.
+    source_basis: [BB-MILESTONE, BB-FIXED]
+- id: PM-018
+  label: Deliverable-based fee
+  synonyms: [deliverable pricing]
+  definition: Fees tied to defined deliverables and their acceptance.
+  kind: null
+  bases: [FIXED, OUTPUT]
+  methods: [FIXED_PROJECT, UNIT_OUTPUT]
+  broader: []
+  related: [PM-016]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-018
+  status: active
+  attributes:
+    formula: null
+    applications: Playbooks, datasets, migrated repository, reports.
+    provider_client_economics: Strong output alignment; acceptance ambiguity can create
+      disputes.
+    source_basis: [BB-MILESTONE, BB-OUTPUT]
+- id: PM-019
+  label: Cost-plus
+  synonyms: [cost plus markup, cost plus fee]
+  definition: The fee equals eligible provider cost plus a markup or a fixed fee.
+  kind: null
+  bases: [COST]
+  methods: [COST_PLUS]
+  broader: []
+  related: [CL-P09, CL-D09]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0003]
+  caveats: []
+  source_ref: report:PM-019
+  status: active
+  attributes:
+    formula: F = C * (1 + m) or F = C + Fee
+    applications: Highly uncertain transformation or pass-through work.
+    provider_client_economics: >-
+      Client bears cost risk; provider receives protected economics; weak efficiency
+      incentive unless supplemented.
+    source_basis: [BB-COST]
+- id: PM-020
+  label: Capped time and materials
+  synonyms: [capped T&M, capped hourly]
+  definition: Time-based fees subject to a contractual maximum.
+  kind: null
+  bases: [TIME]
+  methods: [TIME]
+  broader: [PM-001]
+  related: [PM-001, PM-021]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-020
+  status: active
+  attributes:
+    formula: null
+    applications: Uncertain work where the client requires a maximum exposure.
+    provider_client_economics: >-
+      Provider bears incremental downside above the cap unless scope changes; client
+      enjoys an upper bound.
+    source_basis: [BB-TIME]
+- id: PM-021
+  label: Not-to-exceed
+  synonyms: [NTE, fee ceiling]
+  definition: A contractual maximum applied to an underlying time, output or cost
+    fee.
+  kind: modifier
+  bases: [TIME, OUTPUT, COST]
+  methods: []
+  broader: []
+  related: [PM-020]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0043]
+  caveats: []
+  source_ref: report:PM-021
+  status: active
+  attributes:
+    formula: null
+    applications: Projects and matters.
+    provider_client_economics: >-
+      Economically similar to capped time and materials; not a separate foundational
+      basis.
+    source_basis: []
+    normalization: >-
+      Not-to-exceed modifies an underlying time, cost or unit fee; it is a modifier,
+      not an independent basis.
+- id: PM-022
+  label: Portfolio or bundled fixed fee
+  synonyms: [portfolio pricing, bundled fixed fee]
+  definition: >-
+    A fixed fee covering a portfolio of matters, contracts or transactions rather
+    than each one individually.
+  kind: modifier
+  bases: [FIXED]
+  methods: [FIXED_RECURRING, FIXED_PROJECT]
+  broader: []
+  related: [PM-006]
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: [CLM-B-0043]
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:PM-022
+  status: active
+  attributes:
+    formula: null
+    applications: Repetitive matters, litigation portfolios, contract portfolios.
+    provider_client_economics: >-
+      Diversifies matter-level variance if the portfolio is sufficiently broad; concentration
+      risk remains.
+    source_basis: [BB-FIXED]
+    normalization: Portfolio pricing changes scope aggregation and risk pooling.
+- id: PM-023
+  label: Hybrid fixed plus variable
+  synonyms: [base plus overage, base plus variable]
+  definition: >-
+    A recurring fixed charge for readiness or an included allowance, plus a metered
+    charge for consumption beyond it.
+  kind: null
+  bases: [FIXED, OUTPUT, USAGE]
+  methods: [FIXED_RECURRING, ALLOWANCE_OVERAGE]
+  broader: []
+  related: [CL-R10, CL-V01, CL-V02, MECH-008]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0008]
+  caveats: []
+  source_ref: report:PM-023
+  status: active
+  attributes:
+    formula: null
+    applications: Managed services with base capacity or governance and overage.
+    provider_client_economics: >-
+      Separates fixed readiness cost from variable consumption; often strong alignment
+      for uncertain demand.
+    source_basis: [BB-RECURRING, BB-FIXED, BB-OUTPUT, BB-USAGE]
+- id: PM-024
+  label: Value or outcome pricing
+  synonyms: [outcome-based pricing, value pricing]
+  definition: The fee is linked by formula to a defined result, saving or recovery.
+  kind: null
+  bases: [OUTCOME]
+  methods: [OUTCOME_ADJUSTMENT]
+  broader: []
+  related: [PM-026, MECH-005]
+  evidence_class: B_CORROBORATED
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: [CLM-B-0006, CLM-B-0041]
+  caveats: []
+  source_ref: report:PM-024
+  status: active
+  attributes:
+    formula: Formula linked to outcome
+    applications: Work where an objective business result can be measured.
+    provider_client_economics: >-
+      Can align incentives but requires a measurable outcome, causation and a baseline;
+      creates revenue volatility.
+    source_basis: [BB-OUTCOME]
+- id: PM-025
+  label: Performance incentive or bonus
+  synonyms: [performance fee, incentive fee]
+  definition: >-
+    An incentive added to a base model that adjusts consideration around measured
+    performance.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P02, PM-033]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0006]
+  caveats: []
+  source_ref: report:PM-025
+  status: active
+  attributes:
+    formula: null
+    applications: SLA improvement, turnaround, quality, savings milestones.
+    provider_client_economics: >-
+      Adds upside or downside around a base fee. Performance metric and controllability
+      are essential.
+    source_basis: []
+- id: PM-026
+  label: Gain-share or verified savings
+  synonyms: [gain-share, savings share]
+  definition: >-
+    The provider earns a share of verified savings measured against an auditable baseline.
+  kind: null
+  bases: [OUTCOME]
+  methods: [OUTCOME_ADJUSTMENT]
+  broader: []
+  related: [CL-P07, MECH-007]
+  evidence_class: B_CORROBORATED
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: [CLM-B-0006]
+  caveats: []
+  source_ref: report:PM-026
+  status: active
+  attributes:
+    formula: null
+    applications: >-
+      Spend reduction, process savings, cost avoidance where the baseline is auditable.
+    provider_client_economics: >-
+      Strong incentive alignment but baseline and attribution disputes can be severe.
+    source_basis: [BB-OUTCOME]
+- id: PM-027
+  label: Success or contingent fee
+  synonyms: [contingent fee, success fee]
+  definition: >-
+    All or part of the fee depends on achieving a defined result, such as a recovery.
+  kind: null
+  bases: [OUTCOME]
+  methods: [OUTCOME_ADJUSTMENT]
+  broader: []
+  related: [PM-024, PM-032]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats:
+  - >-
+    Legal restrictions depend on jurisdiction, provider type and matter type; legal
+    review is required before use.
+  source_ref: report:PM-027
+  status: active
+  attributes:
+    formula: null
+    applications: Recoveries, litigation or a measurable result, where lawful.
+    provider_client_economics: >-
+      Provider bears outcome risk for potential upside; legal restrictions depend
+      on jurisdiction and provider.
+    source_basis: [BB-OUTCOME]
+- id: PM-028
+  label: Technology-enabled managed service
+  synonyms: [tech-enabled managed service]
+  definition: >-
+    A service that bundles labor, platform, process and risk transfer, usually as
+    a recurring charge with output or usage elements.
+  kind: modifier
+  bases: [FIXED, OUTPUT, USAGE]
+  methods: [FIXED_RECURRING, UNIT_OUTPUT]
+  broader: []
+  related: [PM-007]
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0043]
+  caveats: []
+  source_ref: report:PM-028
+  status: active
+  attributes:
+    formula: null
+    applications: Contracting, eDiscovery, operations, compliance.
+    provider_client_economics: >-
+      Bundles labor, platform, process and risk transfer; economically a configuration
+      rather than a unique billing basis.
+    source_basis: [BB-RECURRING, BB-OUTPUT, BB-USAGE]
+    normalization: >-
+      Managed service describes accountability and delivery architecture, not necessarily
+      the billing basis; technology-enabled service describes delivery composition.
+- id: PM-029
+  label: Implementation plus recurring support or platform
+  synonyms: [build plus run]
+  definition: >-
+    A milestone or fixed implementation fee plus recurring support or platform charges.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_PROJECT, FIXED_RECURRING]
+  broader: []
+  related: [PM-016, CL-R09]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats: []
+  source_ref: report:PM-029
+  status: active
+  attributes:
+    formula: null
+    applications: CLM, ELM and workflow deployments and ongoing operation.
+    provider_client_economics: Supports recovery of setup investment separately from
+      run economics.
+    source_basis: [BB-MILESTONE, BB-FIXED, BB-RECURRING]
+- id: PM-030
+  label: AI or automation consumption
+  synonyms: [AI consumption pricing, per-prompt pricing]
+  definition: >-
+    Charges per metered AI or automation unit, such as prompts, documents, pages,
+    tokens or agent actions.
+  kind: null
+  bases: [USAGE]
+  methods: [UNIT_OUTPUT]
+  broader: []
+  related: [PM-013, MECH-009]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0052]
+  caveats:
+  - >-
+    The report classifies prevalence as emerging for legal services; base prevalence
+    reflects adjacent cloud and SaaS use of consumption pricing.
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:PM-030
+  status: active
+  attributes:
+    formula: null
+    applications: Prompts, documents, pages, tokens, agent actions, processing.
+    provider_client_economics: Aligns variable technology costs but can reduce budget
+      predictability.
+    source_basis: [BB-USAGE]
+- id: PM-031
+  label: Service-credit subscription or prepaid credits
+  synonyms: [prepaid credits, credit subscription]
+  definition: >-
+    A recurring purchase of fungible credits that can be exchanged across a catalog
+    of services.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: [CL-R05, CL-VL03, MECH-003]
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: []
+  caveats: []
+  source_ref: report:PM-031
+  status: active
+  attributes:
+    formula: null
+    applications: Multi-service managed review or support catalogs.
+    provider_client_economics: >-
+      Preserves commitment while allowing workload substitution; valuation of heterogeneous
+      services is key.
+    source_basis: [BB-RECURRING]
+- id: PM-032
+  label: Reverse contingency
+  synonyms: [reverse contingent fee]
+  definition: >-
+    An outcome fee measured against an avoided-loss baseline, typically in defense
+    work.
+  kind: null
+  bases: [OUTCOME]
+  methods: [OUTCOME_ADJUSTMENT]
+  broader: []
+  related: [PM-027]
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: []
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:PM-032
+  status: active
+  attributes:
+    formula: null
+    applications: Defense and avoided-loss economics.
+    provider_client_economics: >-
+      Requires a credible avoided-loss baseline; may create high outcome volatility.
+    source_basis: [BB-OUTCOME]
+- id: PM-033
+  label: Performance holdback
+  synonyms: [holdback, fee at risk]
+  definition: >-
+    Part of the base fee is held at risk and paid only if defined performance conditions
+    are met.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-025, CL-P02]
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: []
+  caveats: []
+  source_ref: report:PM-033
+  status: active
+  attributes:
+    formula: Base fee minus at-risk percentage
+    applications: >-
+      Matters or managed services where part of the fee depends on performance.
+    provider_client_economics: >-
+      Creates measurable downside without making the total fee wholly contingent.
+    source_basis: []
+- id: PM-034
+  label: Committed consumption or take-or-pay usage
+  synonyms: [committed use, take-or-pay usage]
+  definition: >-
+    A usage-based service with a minimum spend commitment, typically exchanged for
+    a discount, with overage beyond it.
+  kind: null
+  bases: [USAGE]
+  methods: [UNIT_OUTPUT]
+  broader: []
+  related: [CL-R01, CL-R02, MECH-001]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0008, CLM-B-0009]
+  caveats: []
+  source_ref: report:PM-034
+  status: active
+  attributes:
+    formula: null
+    applications: Technology-heavy managed service with minimum spend and overage.
+    provider_client_economics: >-
+      Discount in exchange for a revenue floor; creates under-consumption risk for
+      the client.
+    source_basis: [BB-USAGE]

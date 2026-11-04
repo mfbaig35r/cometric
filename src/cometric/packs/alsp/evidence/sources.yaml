@@ -1,0 +1,546 @@
+sources:
+- id: E001
+  title: Alternative legal services providers 2025 market report
+  url: https://www.thomsonreuters.com/en/institute/reports/alsp-report-2025
+  publication_date: January 2025
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: MARKET_ESTIMATE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: false
+  notes:
+  - Register class A/B. Survey and market estimate covering ALSP market size, services and adoption; not
+    a pricing benchmark.
+  verification:
+    verdict: PARTIAL
+    retrieved_date: '2026-11-03'
+    note: Landing page confirms the market-estimate context; service-mix detail sits behind a registration
+      form and was not checked.
+- id: E002
+  title: Alternative legal services providers 2025 report press release
+  url: https://www.thomsonreuters.com/en/press-releases/2025/january/alternative-legal-services-providers-2025-report-shows-segment-comprises-28-billion-of-the-legal-market
+  publication_date: '2025-01-28'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PRESS_RELEASE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A. Publisher summary of the $28.5 billion market estimate.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E003
+  title: Corporate law department management benchmarking report 2025
+  url: https://www.acc.com/sites/default/files/2025-06/ACC_2025_Law_Department_Management_Benchmarking_Report.pdf
+  publication_date: '2025'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: SURVEY
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class B. Corporate legal-department survey on external providers and fee structures; not
+    ALSP-only.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E004
+  title: State of the corporate law department report 2025
+  url: https://www.acc.com/sites/default/files/2025-06/2025-State-of-the-Corporate-Law-Department-Report.pdf
+  publication_date: '2025'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: SURVEY
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class B. Hourly, value-based and retainer mix and client priorities in a law-firm spending
+    context.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E005
+  title: Legal operations state of the industry report 2025
+  url: https://cloc.org/newsdesk/2025-state-of-the-industry-report/
+  publication_date: '2025-02-12'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: SURVEY
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class B. Legal operations, AI and ALSP adoption among participating organizations only.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E006
+  title: Flexible legal talent pricing FAQ
+  url: https://www.axiomlaw.com/faq
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - legal_services
+    provider_types:
+    - FLEXIBLE_TALENT
+    date_range: null
+  verified: true
+  notes:
+  - Register class A, provider-specific. Hourly, daily, weekly and monthly, reserved flat-fee and variable
+    models. Current at research cutoff; no original publication date.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E007
+  title: Flexible legal talent reserved versus ad hoc capacity page
+  url: https://www.axiomlaw.com/talent-finder
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - legal_services
+    provider_types:
+    - FLEXIBLE_TALENT
+    date_range: null
+  verified: true
+  notes:
+  - Register class A, provider-specific. Reserved versus ad hoc capacity. Current at research cutoff.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E008
+  title: AI-enabled legal talent pilot insights paper
+  url: https://www.axiomlaw.com/hubfs/Content_Marketing/Bylined%20PDFS%20%28Media%29/GenAI%20in%20Action%20-%20Insights%20from%20Axiom%E2%80%99s%20Pilot_2.13.pdf
+  publication_date: '2025'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - legal_services
+    provider_types:
+    - FLEXIBLE_TALENT
+    date_range: null
+  verified: false
+  notes:
+  - Register class A, provider-specific and historically current. Separate $250 per month technology fee.
+  verification:
+    verdict: PARTIAL
+    retrieved_date: '2026-11-03'
+    note: Confirms a separate monthly technology fee of $250; the page does not state that the fee is
+      per user.
+- id: E009
+  title: Managed legal services versus alternative legal resourcing guide
+  url: https://elevate.law/expertise/which-to-use-managed-legal-services-versus-alternative-legal-resourcing/
+  publication_date: '2024'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A provider disclosure. Fixed, volume-based and output-based managed-service pricing.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E010
+  title: Subpoena processing tiered flat-fee case study
+  url: https://elevate.law/case-studies/cost-effective-solution-streamlines-subpoena-process/
+  publication_date: c. 2021
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: CASE_STUDY
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A case study; one client. Approximate publication date.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E011
+  title: Legal document processing managed-services pricing models overview
+  url: https://www.integreon.com/legal-document-processing-managed-services-pricing-models/
+  publication_date: '2025'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A provider disclosure. Dedicated versus pooled or consumption pricing.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E012
+  title: Procurement guide to selecting outsourced contracts services
+  url: https://www.integreon.com/a-procurement-teams-guide-to-selecting-outsourced-contracts-services-support/
+  publication_date: '2026-08-11'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A provider guidance. Per-contract, hourly, subscription or FTE-equivalent and hybrid
+    models; change orders.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E013
+  title: Managed document review multi-service credit subscription page
+  url: https://www.integreon.com/what-we-do/legal-and-compliance-solutions/document-review-services/
+  publication_date: October 2026
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A, specialized provider example. Exchangeable multi-service credit subscription.
+  original_url: https://www.integreon.com/what-we-do/legal-and-compliance-solutions/law-firm-managed-document-review-x5722/
+  verification:
+    verdict: MOVED
+    retrieved_date: '2026-11-03'
+    note: The exchangeable multi-service credit claim was found on a different page of the same site;
+      URL updated.
+- id: E014
+  title: Antitrust practice-area per-document and per-custodian pricing page
+  url: https://www.consilio.com/practice-area/antitrust-pricing
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A. Per-document and per-custodian fixed pricing. Current page; no original publication
+    date.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: Confirms all-inclusive fixed per-document and per-custodian pricing; the page title refers to
+      the practice area, not to fee structure.
+- id: E015
+  title: Managed eDiscovery services subscription announcement
+  url: https://www.epiqglobal.com/en-gb/resource-center/news/caplin-drysdale-managed-services-deal-with-epiq
+  publication_date: '2016'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PRESS_RELEASE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A historical evidence; still useful structurally. Fixed monthly managed-services subscription.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: Supports the fixed monthly subscription point only.
+- id: E016
+  title: Fixed-fee responsive-document review offering page
+  url: https://unitedlex.com/litigation-and-investigations/litigation-rapid-review/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: false
+  notes:
+  - Register class A. Fixed fee for responsive-document coding. Current page; no original publication
+    date.
+  verification:
+    verdict: PARTIAL
+    retrieved_date: '2026-11-03'
+    note: Confirms fixed-fee review; a guaranteed fixed fee is not described (the page offers a quality
+      guarantee instead).
+- id: E018
+  title: Handbook for value-based billing engagements
+  url: https://www.acc.com/sites/default/files/2019-04/Handbook-for-Value-Based-Billing-Engagements.pdf
+  publication_date: c. 2015
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: CASE_STUDY
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - 'Register class A for documented alternative-fee architecture: fixed fees, collars, success fees and
+    holdbacks. Corporate legal-department association guidance; historical but conceptually applicable.
+    Approximate publication date.'
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E019
+  title: Value challenge alternative-fee materials
+  url: https://www.acc.com/sites/default/files/resources/upload/Guide%20to%20Value%20Based%20Fees%20June%202019_1.pdf
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: CASE_STUDY
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - 'Register class A for documented examples: caps, savings sharing, retainers and phase checkpoints.
+    Corporate legal-department association materials; historical, no reliable date.'
+  original_url: https://www.acc.com/valuechallenge
+  verification:
+    verdict: MOVED
+    retrieved_date: '2026-11-03'
+    note: Original landing page refused access; caps, retainers and savings sharing confirmed in a 2019
+      value-based fees guide from the same publisher; phase-by-phase repricing wording not found.
+- id: E028
+  title: Model Rule 1.5 Fees (US model rules of professional conduct)
+  url: https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/rule_1_5_fees/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: MODEL_RULE
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - legal_services
+    provider_types:
+    - REGULATED_LAW_FIRM
+    date_range: null
+  verified: false
+  notes:
+  - Register class A model-rule authority on fee reasonableness and contingent fees; state adoption varies.
+  verification:
+    verdict: UNREACHABLE
+    retrieved_date: '2026-11-03'
+    note: Publisher site refused automated access on 2026-11-03; verify manually before marking verified.
+- id: E029
+  title: Model Rule 5.4 Professional independence of a lawyer (US model rules of professional conduct)
+  url: https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/rule_5_4_professional_independence_of_a_lawyer/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: MODEL_RULE
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - legal_services
+    provider_types:
+    - REGULATED_LAW_FIRM
+    date_range: null
+  verified: false
+  notes:
+  - Register class A model-rule authority on fee sharing and nonlawyer independence; state adoption varies.
+  verification:
+    verdict: UNREACHABLE
+    retrieved_date: '2026-11-03'
+    note: Publisher site refused automated access on 2026-11-03; verify manually before marking verified.
+- id: E030
+  title: Code of conduct for solicitors (England and Wales)
+  url: https://www.sra.org.uk/solicitors/standards-regulations/code-conduct-solicitors/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: REGULATORY_GUIDANCE
+  applicability:
+    jurisdictions:
+    - UK-EW
+    sectors:
+    - legal_services
+    provider_types:
+    - REGULATED_LAW_FIRM
+    - LICENSED_BODY
+    date_range: null
+  verified: true
+  notes:
+  - Register class A, England and Wales. Fee-sharing disclosure and client information.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E031
+  title: Legal Services Act 2007
+  url: https://www.legislation.gov.uk/ukpga/2007/29/contents
+  publication_date: '2007'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: STATUTE
+  applicability:
+    jurisdictions:
+    - UK-EW
+    sectors:
+    - legal_services
+    provider_types:
+    - LICENSED_BODY
+    date_range: null
+  verified: true
+  notes:
+  - Register class A, England and Wales. Licensed bodies (alternative business structures).
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E037
+  title: AI eDiscovery predictable-cost framework announcement
+  url: https://unitedlex.com/news/repario-launches-savi-a-framework-for-ai-that-delivers-early-intelligence-and-gives-legal-teams-confidence-in-the-results/
+  publication_date: '2026-10-27'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PRESS_RELEASE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types:
+    - MANAGED_SERVICES_PROVIDER
+    date_range: null
+  verified: true
+  notes:
+  - Register class A, provider-specific; emerging. Predictable-cost AI eDiscovery contrasted with per-prompt
+    and per-gigabyte pricing.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E039
+  title: Law-firm KPI benchmark definitions
+  url: https://www.clio.com/resources/legal-trends/benchmarks/
+  publication_date: '2026'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: VENDOR_DOCUMENTATION
+  applicability:
+    jurisdictions: []
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: false
+  notes:
+  - Register class B; law-firm rather than ALSP context. Utilization, realization and collection terminology.
+  verification:
+    verdict: UNREACHABLE
+    retrieved_date: '2026-11-03'
+    note: Publisher site refused automated access on 2026-11-03; verify manually before marking verified.
+- id: E040
+  title: State of the US legal market 2026 report
+  url: https://www.thomsonreuters.com/en/institute/reports/state-of-the-us-legal-market-2026
+  publication_date: January 2026
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: MARKET_ESTIMATE
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - legal_services
+    provider_types: []
+    date_range: null
+  verified: false
+  notes:
+  - Register class B. ALSP integration and market evolution.
+  verification:
+    verdict: PARTIAL
+    retrieved_date: '2026-11-03'
+    note: Full report requires registration; the landing page supports the hourly-billing point but not
+      the integration point.

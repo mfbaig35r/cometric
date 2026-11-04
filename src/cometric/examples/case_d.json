@@ -1,0 +1,253 @@
+{
+  "case": "D",
+  "title": "Fixed-fee migration project",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-D",
+    "name": "Fixed-fee CLM migration",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "project",
+        "kind": "COUNT",
+        "counting_rule": "The migration project accepted as complete",
+        "acceptance_rule": "Accepted on client sign-off"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "project"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "project",
+            "service_id": "svc",
+            "calculation_method": "FIXED_PROJECT",
+            "billing_basis": "FIXED",
+            "charge_cadence": "EVENT",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "project_fee": "900000",
+            "payment_schedule": [
+              {
+                "month": "2027-01",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-02",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-03",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-04",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-05",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-06",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-07",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-08",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-09",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-10",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-11",
+                "amount": "75000"
+              },
+              {
+                "month": "2027-12",
+                "amount": "75000"
+              }
+            ]
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": []
+      }
+    ],
+    "delivery_plan": {
+      "breach_mode": null,
+      "capacity": [],
+      "roles": [],
+      "demand_hours_source": null,
+      "cost_components": [
+        {
+          "id": "delivery",
+          "category": "DEDICATED_LABOR",
+          "behavior": "VARIABLE",
+          "origin": "ILLUSTRATIVE",
+          "driver": "delivery_hours",
+          "rate": "80"
+        },
+        {
+          "id": "licenses",
+          "category": "THIRD_PARTY",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "100000",
+          "period": "TERM"
+        },
+        {
+          "id": "engagement_cost",
+          "category": "ENGAGEMENT_OVERHEAD",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "50000",
+          "period": "TERM"
+        }
+      ]
+    },
+    "risk_allocations": [
+      {
+        "risk_type": "EFFORT",
+        "declared_bearer": "PROVIDER",
+        "driver": "delivery_hours"
+      }
+    ],
+    "client_value_unit": "delivery_hours"
+  },
+  "scenarios": [
+    {
+      "id": "efficient",
+      "assumptions": [
+        {
+          "name": "delivery_hours",
+          "value": "4000",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "delivery_hours",
+          "value": "6000",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "overrun",
+      "assumptions": [
+        {
+          "name": "delivery_hours",
+          "value": "8500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "as_published": {
+      "id": "as_published",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    },
+    "reference": {
+      "id": "reference",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    }
+  },
+  "expected": {
+    "as_published": {
+      "efficient": {
+        "contractual_fee": "900000",
+        "direct_delivery_cost": "420000",
+        "contribution_profit": "430000"
+      },
+      "base": {
+        "contractual_fee": "900000",
+        "direct_delivery_cost": "580000",
+        "contribution_profit": "270000"
+      },
+      "overrun": {
+        "contractual_fee": "900000",
+        "direct_delivery_cost": "780000",
+        "contribution_profit": "70000"
+      }
+    },
+    "break_even": {
+      "driver": "delivery_hours",
+      "exact_prefix": "9375",
+      "whole": "9375"
+    }
+  }
+}

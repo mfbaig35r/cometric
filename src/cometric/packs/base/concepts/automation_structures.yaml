@@ -1,0 +1,207 @@
+scheme: automation_structures
+title: Structures for automation-reduced effort
+concepts:
+- id: AUTO-01
+  label: Time plus technology fee
+  synonyms: []
+  definition: >-
+    A defensible structure for pricing a service whose human effort has been sharply
+    reduced by automation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-001]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0032, CLM-B-0031]
+  caveats: []
+  source_ref: report:automation-structures
+  status: active
+  attributes:
+    provider_perspective: Easy transition from legacy billing; technology cost recoverable.
+    client_perspective: Transparent inputs.
+    principal_risk: >-
+      Client may expect full labor savings; provider monetizes less productivity upside.
+    benefit_allocation_note: Benefit largely passes to the client through reduced
+      hours.
+    row: 1
+- id: AUTO-02
+  label: Fixed fee for defined output
+  synonyms: []
+  definition: >-
+    A defensible structure for pricing a service whose human effort has been sharply
+    reduced by automation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-006, PM-007]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0032, CLM-B-0031]
+  caveats: []
+  source_ref: report:automation-structures
+  status: active
+  attributes:
+    provider_perspective: Provider captures productivity improvements.
+    client_perspective: Budget certainty and incentive for efficiency.
+    principal_risk: Provider bears error, volume and scope risk.
+    benefit_allocation_note: >-
+      Benefit is provider-retained until competition or contract terms pass savings
+      through.
+    row: 2
+- id: AUTO-03
+  label: Per-contract or per-unit fee
+  synonyms: []
+  definition: >-
+    A defensible structure for pricing a service whose human effort has been sharply
+    reduced by automation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-011, PM-012]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0032, CLM-B-0031]
+  caveats: []
+  source_ref: report:automation-structures
+  status: active
+  attributes:
+    provider_perspective: Scales with demand; AI efficiency improves contribution.
+    client_perspective: Clear linkage to consumption.
+    principal_risk: Complexity variation and falling market prices.
+    benefit_allocation_note: Benefit is provider-retained at a given unit price.
+    row: 3
+- id: AUTO-04
+  label: Base platform or capacity plus unit fee
+  synonyms: []
+  definition: >-
+    A defensible structure for pricing a service whose human effort has been sharply
+    reduced by automation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-023, PM-029]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0032, CLM-B-0031]
+  caveats: []
+  source_ref: report:automation-structures
+  status: active
+  attributes:
+    provider_perspective: Recovers fixed engineering and readiness costs plus variable
+      processing.
+    client_perspective: Separates fixed capability from use.
+    principal_risk: Requires defensible base and unit definitions.
+    benefit_allocation_note: Allocation depends on how base and unit rates are set.
+    row: 4
+- id: AUTO-05
+  label: Shared-savings or outcome fee
+  synonyms: []
+  definition: >-
+    A defensible structure for pricing a service whose human effort has been sharply
+    reduced by automation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-026, PM-024]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0032, CLM-B-0031]
+  caveats:
+  - Requires outcome pricing support in the core (post-v1).
+  source_ref: report:automation-structures
+  status: active
+  attributes:
+    provider_perspective: Can monetize demonstrable transformation value.
+    client_perspective: Client pays from realized benefit.
+    principal_risk: Baseline and attribution disputes.
+    benefit_allocation_note: Benefit is shared by formula.
+    row: 5
+- id: AUTOBEN-01
+  label: Provider-retained automation benefit
+  synonyms: []
+  definition: >-
+    Provider-retained automation benefit creates the strongest incentive to invest
+    but may invite competitive repricing.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [DIM-09]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0033, CLM-B-0031]
+  caveats:
+  - >-
+    There is no credible evidence of a universal automation-savings sharing percentage.
+  source_ref: report:automation-benefit
+  status: active
+  attributes:
+    dimension_value: PROVIDER_RETAINED
+- id: AUTOBEN-02
+  label: Client-retained automation benefit
+  synonyms: []
+  definition: >-
+    Client-retained benefit accelerates adoption but can make provider investment
+    unattractive.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [DIM-09]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0034, CLM-B-0031]
+  caveats:
+  - >-
+    There is no credible evidence of a universal automation-savings sharing percentage.
+  source_ref: report:automation-benefit
+  status: active
+  attributes:
+    dimension_value: CLIENT_RETAINED
+- id: AUTOBEN-03
+  label: Shared automation benefit
+  synonyms: []
+  definition: >-
+    Shared benefit can align incentives but increases measurement complexity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [DIM-09]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0035, CLM-B-0031]
+  caveats:
+  - >-
+    There is no credible evidence of a universal automation-savings sharing percentage.
+  source_ref: report:automation-benefit
+  status: active
+  attributes:
+    dimension_value: SHARED
+- id: AUTOBEN-04
+  label: Productivity glide path
+  synonyms: []
+  definition: >-
+    Productivity glide paths create a contractual schedule for passing efficiencies
+    through over time and have direct precedent in broader outsourcing.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [DIM-09]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0036, CLM-B-0031]
+  caveats:
+  - >-
+    There is no credible evidence of a universal automation-savings sharing percentage.
+  source_ref: report:automation-benefit
+  status: active
+  attributes:
+    dimension_value: GLIDE_PATH

@@ -1,0 +1,19 @@
+scheme: mechanisms
+overlays:
+- id: MECH-003
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0020]
+  caveats:
+  - A multi-service credit subscription is documented in the ALSP sector.
+- id: MECH-007
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0025]
+  caveats:
+  - Savings sharing is documented in legal alternative-fee materials.
+- id: MECH-009
+  prevalence: EMERGING
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0032]
+  caveats: []

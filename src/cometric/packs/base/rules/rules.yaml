@@ -1,0 +1,521 @@
+rules:
+- id: COMPAT-001
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].commitments[*].kind', equals: RESERVED_CAPACITY}
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: CAPACITY}
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: ALLOWANCE_OVERAGE}
+  emit:
+    code: COMPAT_CAPACITY_PLUS_OVERAGE
+    severity: INFO
+    message: >-
+      Capacity reservation combined with usage overage is a structurally valid combination.
+    claims: [CLM-B-0008, CLM-B-0009]
+  explanation: >-
+    The base payment buys readiness and excess consumption can be separately metered;
+    cloud commitment models demonstrate analogous economics.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-002
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: FIXED_RECURRING}
+    - {path: 'arrangement_versions[*].adjustments[*].type', equals: SLA_CREDIT}
+  emit:
+    code: COMPAT_FIXED_MANAGED_PLUS_SLA_CREDITS
+    severity: INFO
+    message: >-
+      A fixed-fee managed service with SLA credits is a structurally valid combination.
+    claims: []
+  explanation: The base fee and the performance remedy address different dimensions.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-003
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: FIXED_RECURRING}
+    - {path: 'arrangement_versions[*].adjustments[*].type', equals: BONUS}
+  emit:
+    code: COMPAT_FIXED_MANAGED_PLUS_BONUS
+    severity: INFO
+    message: >-
+      A fixed-fee managed service with a performance bonus is structurally valid if
+      the bonus metric is measurable.
+    claims: []
+  explanation: >-
+    Fixed core economics are combined with an upside incentive; the metric must be
+    measurable.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-004
+  kind: compatibility
+  assessment: CONDITIONALLY_PREFERRED
+  evaluable: true
+  when:
+    any:
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: WEIGHTED_UNIT_OUTPUT}
+    - {path: descriptors.rate_structure, equals: COMPLEXITY_WEIGHTED}
+  emit:
+    code: COMPAT_UNIT_PLUS_COMPLEXITY
+    severity: INFO
+    message: >-
+      Complexity-adjusted unit pricing is conditionally preferred where unit cost
+      variance is material and objectively classifiable.
+    claims: [CLM-B-0051]
+  explanation: >-
+    Appropriate where unit cost variance is material and objectively classifiable.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-005
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID_BUT_LIABILITY_SHIFTING
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].commitments[*].kind', in: [MINIMUM_SPEND, MINIMUM_VOLUME]}
+    - {path: 'arrangement_versions[*].entitlements[*].rollover.policy', in: [NEXT_PERIOD,
+        TERM]}
+  emit:
+    code: COMPAT_COMMITMENT_PLUS_ROLLOVER
+    severity: WARNING
+    message: >-
+      A minimum commitment with rollover defers the delivery obligation; review future
+      capacity concentration.
+    claims: []
+  explanation: >-
+    Rollover improves fairness but defers the delivery obligation and can cause future
+    capacity concentration.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-006
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].commitments[*].kind', equals: PREPAID_CREDIT}
+    - {path: descriptors.scope, equals: CATALOG}
+  emit:
+    code: COMPAT_COMMITMENT_PLUS_TRANSFERABLE_CREDITS
+    severity: INFO
+    message: >-
+      A commitment with credits transferable across a service catalog is a structurally
+      valid combination.
+    claims: []
+  explanation: >-
+    Demonstrated by at least one provider's multi-service credit subscription.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-007
+  kind: compatibility
+  assessment: ECONOMICALLY_CONFLICTING
+  evaluable: false
+  when: null
+  emit:
+    code: COMPAT_GAIN_SHARE_VS_BUDGET_CERTAINTY
+    severity: WARNING
+    message: >-
+      Gain-share conflicts with strict budget predictability unless the outcome-dependent
+      amount is capped.
+    claims: [CLM-B-0006]
+  explanation: Outcome-dependent consideration creates variability unless capped.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-008
+  kind: compatibility
+  assessment: STRUCTURALLY_WEAK
+  evaluable: false
+  when: null
+  emit:
+    code: COMPAT_OUTCOME_FEE_UNMEASURABLE_RESULT
+    severity: WARNING
+    message: >-
+      An outcome fee tied to an unmeasurable business result is structurally weak.
+    claims: [CLM-B-0041]
+  explanation: >-
+    Baseline, attribution and controllability problems make enforcement and economics
+    uncertain.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-009
+  kind: compatibility
+  assessment: ECONOMICALLY_UNATTRACTIVE_TO_PROVIDER
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].components[*].calculation_method', in: [FIXED_RECURRING,
+        FIXED_PROJECT]}
+    - not: {path: 'arrangement_versions[*].components[*].calculation_method', equals: ALLOWANCE_OVERAGE}
+    - not: {path: 'arrangement_versions[*].adjustments[*].type', equals: COLLAR}
+    - {path: descriptors.scope, equals: VARIABLE}
+  emit:
+    code: COMPAT_UNLIMITED_FIXED_UNBOUNDED_DEMAND
+    severity: WARNING
+    message: >-
+      A fixed fee over variable, unbounded demand creates an uncapped provider obligation;
+      review volume limits.
+    claims: [CLM-B-0049]
+  explanation: >-
+    Creates a theoretically uncapped marginal obligation without corresponding revenue.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-010
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: DEDICATED_RESOURCE}
+    - {path: 'arrangement_versions[*].entitlements[*].rollover.policy', equals: NONE}
+  emit:
+    code: COMPAT_DEDICATED_PLUS_USE_IT_OR_LOSE_IT
+    severity: INFO
+    message: >-
+      Dedicated resources with use-it-or-lose-it entitlement are structurally valid
+      but carry value-perception risk at low usage.
+    claims: [CLM-B-0048]
+  explanation: >-
+    The client purchases resource availability, but low usage generates value-perception
+    risk.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-011
+  kind: compatibility
+  assessment: CONDITIONALLY_VALID
+  evaluable: true
+  when:
+    all:
+    - {path: delivery_plan.topology, equals: POOLED}
+    - {path: 'arrangement_versions[*].commitments[*].kind', equals: RESERVED_CAPACITY}
+  emit:
+    code: COMPAT_POOLED_PLUS_HARD_CAPACITY_GUARANTEE
+    severity: WARNING
+    message: >-
+      A hard capacity guarantee on pooled delivery requires portfolio capacity reserves;
+      review capacity planning.
+    claims: []
+  explanation: >-
+    Requires portfolio capacity reserves; cannot be assumed from pooling alone.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-012
+  kind: compatibility
+  assessment: STRUCTURALLY_VALID_BUT_INCENTIVE_SENSITIVE
+  evaluable: true
+  when:
+    all:
+    - {path: descriptors.automation_benefit, exists: true}
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: TIME}
+  emit:
+    code: COMPAT_AUTOMATION_PLUS_HOURLY
+    severity: WARNING
+    message: >-
+      Hourly billing of an automated service is incentive-sensitive; review whether
+      rates or value architecture should change.
+    claims: [CLM-B-0032]
+  explanation: >-
+    Efficiency lowers billable hours unless rates or value architecture change.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-013
+  kind: compatibility
+  assessment: STRUCTURALLY_ATTRACTIVE
+  evaluable: true
+  when:
+    all:
+    - {path: descriptors.automation_benefit, exists: true}
+    - {path: 'arrangement_versions[*].components[*].calculation_method', in: [FIXED_RECURRING,
+        FIXED_PROJECT, UNIT_OUTPUT, WEIGHTED_UNIT_OUTPUT]}
+  emit:
+    code: COMPAT_AUTOMATION_PLUS_FIXED_OR_OUTPUT
+    severity: INFO
+    message: >-
+      Automation priced on a fixed or output basis is structurally attractive to the
+      provider.
+    claims: [CLM-B-0033]
+  explanation: >-
+    The provider can retain productivity upside until competition or contract terms
+    pass savings through.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-014
+  kind: compatibility
+  assessment: NOT_ECONOMICALLY_DEFENSIBLE
+  evaluable: false
+  when: null
+  emit:
+    code: COMPAT_SHARED_SAVINGS_NO_BASELINE
+    severity: WARNING
+    message: >-
+      Shared savings without an agreed baseline cannot be verified; review baseline
+      terms.
+    claims: []
+  explanation: Savings cannot be verified without a counterfactual or baseline.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-015
+  kind: compatibility
+  assessment: NOT_VALID_FOR_RIGOROUS_MODELING
+  evaluable: false
+  when: null
+  emit:
+    code: COMPAT_INCENTIVE_UNDEFINED_OBLIGATION
+    severity: WARNING
+    message: >-
+      A performance incentive without a defined performance obligation cannot be modeled
+      rigorously.
+    claims: []
+  explanation: >-
+    Incentive calculation requires a metric, target, measurement period and attribution.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: COMPAT-016
+  kind: compatibility
+  assessment: POTENTIALLY_DISPROPORTIONATE
+  evaluable: false
+  when: null
+  emit:
+    code: COMPAT_SLA_CREDITS_UNLIMITED_LIABILITY
+    severity: WARNING
+    message: >-
+      SLA credits alongside unlimited liability may be disproportionate; contract
+      review is required.
+    claims: [CLM-B-0042]
+  explanation: >-
+    The contract must address the interaction between exclusive remedies, credits
+    and damages; enforceability depends on governing law.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: RULE-001
+  kind: reasoning
+  evaluable: true
+  when:
+    any:
+    - {path: 'arrangement_versions[*].commitments[*].kind', equals: RESERVED_CAPACITY}
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: DEDICATED_RESOURCE}
+    - {path: 'arrangement_versions[*].components[*].billing_basis', equals: CAPACITY}
+  emit:
+    code: RULE_RESERVED_COST_PERSISTS
+    severity: INFO
+    message: >-
+      Guaranteed capacity is present; reserved delivery cost may persist even if consumption
+      is zero.
+    claims: [CLM-B-0048]
+  explanation: >-
+    Where capacity is guaranteed, reserved delivery cost may persist even if consumption
+    falls to zero.
+  evidence_class: B_CORROBORATED
+  source_ref: report:RULE-001
+- id: RULE-002
+  kind: reasoning
+  evaluable: false
+  when: null
+  emit:
+    code: RULE_COMPLEXITY_NORMALIZATION
+    severity: WARNING
+    message: >-
+      Unit cost appears to vary by complexity; unadjusted unit pricing can create
+      adverse-selection or margin risk.
+    claims: [CLM-B-0051]
+  explanation: >-
+    Where unit cost materially differs by complexity, unadjusted unit pricing can
+    create adverse-selection and margin risk; consider complexity normalization.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-002
+- id: RULE-003
+  kind: reasoning
+  evaluable: true
+  when: {path: 'arrangement_versions[*].adjustments[*].type', in: [BONUS, HOLDBACK]}
+  emit:
+    code: RULE_INCENTIVE_PREREQUISITES
+    severity: WARNING
+    message: >-
+      A performance incentive is present; its metric, target, measurement window and
+      attribution method must be defined before it can be calculated.
+    claims: []
+  explanation: >-
+    A metric, target, measurement window and attribution method must exist before
+    deterministic calculation of a performance incentive.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-003
+- id: RULE-004
+  kind: reasoning
+  evaluable: true
+  when:
+    any:
+    - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+  emit:
+    code: RULE_SHARED_SAVINGS_PREREQUISITES
+    severity: WARNING
+    message: >-
+      Outcome-linked consideration is present; a baseline and attribution method are
+      prerequisites.
+    claims: [CLM-B-0006]
+  explanation: >-
+    Shared savings and other outcome-linked fees require a baseline and attribution
+    method.
+  evidence_class: B_CORROBORATED
+  source_ref: report:RULE-004
+- id: RULE-005
+  kind: reasoning
+  evaluable: true
+  when:
+    all:
+    - {path: 'arrangement_versions[*].components[*].calculation_method', in: [FIXED_RECURRING,
+        FIXED_PROJECT]}
+    - not: {path: 'arrangement_versions[*].components[*].calculation_method', equals: ALLOWANCE_OVERAGE}
+    - not: {path: 'arrangement_versions[*].adjustments[*].type', equals: COLLAR}
+    - not: {path: descriptors.scope, equals: FIXED}
+  emit:
+    code: RULE_FIXED_FEE_UNBOUNDED_DEMAND
+    severity: WARNING
+    message: >-
+      A fixed fee has no overage or collar and no declared fixed scope; review whether
+      demand is bounded.
+    claims: [CLM-B-0049]
+  explanation: >-
+    Fixed fee with unbounded demand gives the provider potentially unbounded cost
+    exposure; a cap, collar, overage or change mechanism should be considered.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-005
+- id: RULE-006
+  kind: reasoning
+  evaluable: true
+  when: {path: 'arrangement_versions[*].commitments[*].kind', in: [MINIMUM_SPEND,
+      MINIMUM_VOLUME, PREPAID_CREDIT]}
+  emit:
+    code: RULE_COMMITMENT_UNUSED_ENTITLEMENT
+    severity: INFO
+    message: >-
+      A minimum commitment is present; if entitlement goes unused, provider revenue
+      may hold while client unit value deteriorates.
+    claims: [CLM-B-0046]
+  explanation: >-
+    With a minimum commitment and unused entitlement, provider revenue may remain
+    intact while the client's realized unit value deteriorates.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-006
+- id: RULE-007
+  kind: reasoning
+  evaluable: true
+  when: {path: 'arrangement_versions[*].entitlements[*].rollover.policy', in: [NEXT_PERIOD,
+      TERM]}
+  emit:
+    code: RULE_ROLLOVER_FUTURE_OBLIGATION
+    severity: WARNING
+    message: >-
+      Rollover is permitted; unused entitlement becomes a future delivery obligation
+      and capacity exposure.
+    claims: []
+  explanation: >-
+    Rolled-over entitlement creates a future delivery obligation and capacity exposure.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-007
+- id: RULE-008
+  kind: reasoning
+  evaluable: true
+  when:
+    any:
+    - {path: delivery_plan.topology, equals: DEDICATED}
+    - {path: 'arrangement_versions[*].components[*].calculation_method', equals: DEDICATED_RESOURCE}
+  emit:
+    code: RULE_DEDICATED_COST_STICKY
+    severity: INFO
+    message: >-
+      Dedicated resources are present; low demand does not necessarily reduce direct
+      cost proportionally.
+    claims: [CLM-B-0048]
+  explanation: >-
+    With dedicated resources, low demand does not necessarily reduce direct cost proportionally.
+  evidence_class: B_CORROBORATED
+  source_ref: report:RULE-008
+- id: RULE-009
+  kind: reasoning
+  evaluable: true
+  when: {path: delivery_plan.topology, equals: POOLED}
+  emit:
+    code: RULE_POOLED_REDEPLOYMENT
+    severity: INFO
+    message: >-
+      Pooled delivery is declared; under low client demand the provider may redeploy
+      resources, so incremental cost can fall further than under a dedicated model.
+    claims: []
+  explanation: >-
+    With pooled resources and low client demand, the provider may redeploy resources,
+    so incremental cost can fall more than under a dedicated model.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-009
+- id: RULE-010
+  kind: reasoning
+  evaluable: true
+  when: {path: descriptors.automation_benefit, exists: true}
+  emit:
+    code: RULE_HOURS_NOT_VALUE_PROXY
+    severity: INFO
+    message: >-
+      Automation is declared; labor hours alone are not a sufficient cost or value
+      proxy.
+    claims: [CLM-B-0030, CLM-B-0032]
+  explanation: >-
+    Where AI reduces human hours, labor hours alone cease to be a sufficient cost
+    or value proxy.
+  evidence_class: B_CORROBORATED
+  source_ref: report:RULE-010
+- id: RULE-013
+  kind: reasoning
+  evaluable: false
+  when: null
+  emit:
+    code: RULE_ADVANCE_BILLING_NOT_REVENUE
+    severity: INFO
+    message: >-
+      Revenue billed in advance does not automatically equal recognized revenue.
+    claims: [CLM-B-0013]
+  explanation: >-
+    Billed cash or a receivable does not automatically equal recognized revenue under
+    IFRS 15 or ASC Topic 606.
+  evidence_class: A_DIRECT
+  source_ref: report:RULE-013
+- id: RULE-014
+  kind: reasoning
+  evaluable: false
+  when: null
+  emit:
+    code: RULE_OVERFLOW_MUST_BE_MODELED
+    severity: WARNING
+    message: >-
+      Demand may exceed normal capacity; overflow cost or SLA degradation must be
+      modeled.
+    claims: [CLM-B-0026]
+  explanation: >-
+    When demand exceeds normal capacity, overflow cost or SLA degradation must be
+    modeled.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-014
+- id: RULE-015
+  kind: reasoning
+  evaluable: false
+  when: null
+  emit:
+    code: RULE_SAVINGS_CLAIM_TOTAL_COST
+    severity: WARNING
+    message: >-
+      A savings claim should include transition, technology, governance and QA costs
+      before total economics are compared.
+    claims: []
+  explanation: >-
+    When a provider claims savings, transition, technology, governance and QA costs
+    should be included before comparing total economics.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-015

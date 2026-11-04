@@ -1,0 +1,15 @@
+scheme: metrics
+overlays:
+- id: FM-027
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: []
+  caveats:
+  - >-
+    Billable utilization is a legal-sector convention; not useful as the sole metric
+    in output pricing.
+- id: FM-028
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0033]
+  caveats: []

@@ -1,0 +1,146 @@
+scheme: layers
+title: Ontology boundary layers
+concepts:
+- id: LAYER-01
+  label: Declarative commercial knowledge
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: definitions, model types, levers, compatibility
+    patterns, legal caveats.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Definitions, model types, levers, compatibility patterns, legal caveats.
+    must_not_contain: Client-specific figures.
+    order: 1
+- id: LAYER-02
+  label: Contract and engagement facts
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: fees, limits, SLAs, scope, dates, resources,
+    actual terms.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Fees, limits, SLAs, scope, dates, resources, actual terms.
+    must_not_contain: Generic market claims.
+    order: 2
+- id: LAYER-03
+  label: Financial variables
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: volumes, cost rates, FTEs, technology usage.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Volumes, cost rates, FTEs, technology usage.
+    must_not_contain: Advisory conclusions.
+    order: 3
+- id: LAYER-04
+  label: Deterministic calculations
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: revenue, cost, margin, break-even, utilization.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Revenue, cost, margin, break-even, utilization.
+    must_not_contain: Subjective recommendations.
+    order: 4
+- id: LAYER-05
+  label: Scenario and risk layer
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: assumptions, probability distributions, sensitivities.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Assumptions, probability distributions, sensitivities.
+    must_not_contain: Facts presented as certain.
+    order: 5
+- id: LAYER-06
+  label: Advisory reasoning
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: candidate models, tradeoffs, warnings.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Candidate models, tradeoffs, warnings.
+    must_not_contain: Unqualified 'optimal' answers.
+    order: 6
+- id: LAYER-07
+  label: Human governance
+  synonyms: []
+  definition: >-
+    Ontology boundary layer. Contains: approval, risk acceptance, exceptions, legal
+    sign-off.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:ontology-boundaries
+  status: active
+  attributes:
+    contains: Approval, risk acceptance, exceptions, legal sign-off.
+    must_not_contain: Automated override of policy.
+    order: 7

@@ -1,0 +1,494 @@
+scheme: cost_categories
+title: Cost categories and allocation guidance
+concepts:
+- id: COST-01
+  label: Dedicated team
+  synonyms: []
+  definition: 'Cost category. Preferred analytical treatment: direct engagement cost.'
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022, CLM-B-0048]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Direct engagement cost
+    common_distortion: Treating idle dedicated labor as corporate overhead
+    reference_layer: DIRECT_DELIVERY
+    row: 1
+- id: COST-02
+  label: Pooled delivery
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: activity- or capacity-based allocation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Activity- or capacity-based allocation
+    common_distortion: Allocating equally across clients regardless of consumption
+    reference_layer: DIRECT_DELIVERY
+    row: 2
+- id: COST-03
+  label: Idle pooled capacity
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: portfolio capacity cost unless
+    caused by a specific commitment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Portfolio capacity cost unless caused by a specific commitment
+    common_distortion: Charging all idle time to whichever client happened to have
+      low volume
+    reference_layer: PORTFOLIO_SHARED
+    row: 3
+- id: COST-04
+  label: Delivery management
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: direct if client-specific; shared
+    otherwise.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Direct if client-specific; shared otherwise
+    common_distortion: Omitting nonbillable supervision
+    reference_layer: DIRECT_DELIVERY
+    row: 4
+- id: COST-05
+  label: Reusable platform development
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: separate reusable-product investment
+    pool.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Separate reusable-product investment pool
+    common_distortion: Charging the entire platform build to the first client
+    reference_layer: PORTFOLIO_SHARED
+    row: 5
+- id: COST-06
+  label: Client customization
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: client-specific transition or investment
+    cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Client-specific transition or investment cost
+    common_distortion: Treating bespoke work as reusable IP
+    reference_layer: ENGAGEMENT_AVOIDABLE
+    row: 6
+- id: COST-07
+  label: AI inference
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: variable or step-variable technology
+    cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022, CLM-B-0030]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Variable or step-variable technology cost
+    common_distortion: Treating it as free because human hours fell
+    reference_layer: DIRECT_DELIVERY
+    row: 7
+- id: COST-08
+  label: QA and rework
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: direct if caused by the engagement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Direct if caused by the engagement
+    common_distortion: Hiding defect remediation inside generic overhead
+    reference_layer: DIRECT_DELIVERY
+    row: 8
+- id: COST-09
+  label: Sales and business development
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: usually period or overhead cost
+    for full profitability.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Usually period or overhead cost for full profitability
+    common_distortion: Including it in contribution margin without definition
+    reference_layer: CORPORATE_OVERHEAD
+    row: 9
+- id: COST-10
+  label: Corporate overhead
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: allocated only for fully loaded
+    profitability.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022, CLM-B-0021]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Allocated only for fully loaded profitability
+    common_distortion: Using fully allocated cost as a short-run pricing floor
+    reference_layer: CORPORATE_OVERHEAD
+    row: 10
+- id: COST-11
+  label: Subcontractors
+  synonyms: []
+  definition: >-
+    Cost category. Preferred analytical treatment: direct variable or step cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0022]
+  caveats:
+  - >-
+    Internal allocation policy is required; reference_layer follows the reference
+    cost policy, used only when a caller names it.
+  source_ref: report:cost-allocation
+  status: active
+  attributes:
+    preferred_treatment: Direct variable or step cost
+    common_distortion: Ignoring vendor minimums and commitments
+    reference_layer: DIRECT_DELIVERY
+    row: 11
+- id: AICOST-01
+  label: Engineering amortization
+  synonyms: []
+  definition: >-
+    Amortized engineering investment in the automation or AI production system.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: FIXED
+    component_of: AIServiceCost
+- id: AICOST-02
+  label: Client implementation
+  synonyms: []
+  definition: Client-specific implementation of the AI-enabled service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: FIXED
+    component_of: AIServiceCost
+- id: AICOST-03
+  label: Reusable platform allocation
+  synonyms: []
+  definition: Allocated share of a reusable platform used across clients.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-04
+  label: Infrastructure
+  synonyms: []
+  definition: Hosting and infrastructure supporting the AI-enabled service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats:
+  - Fixed or step-variable classification required.
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-05
+  label: Inference
+  synonyms: []
+  definition: Model, API or processing cost caused by workload.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [COST-07]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats:
+  - >-
+    The report describes inference as variable or step-variable technology cost.
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: VARIABLE
+    component_of: AIServiceCost
+- id: AICOST-06
+  label: Human validation
+  synonyms: []
+  definition: Human review and validation of automated output.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-07
+  label: Exception handling
+  synonyms: []
+  definition: Handling of items the automated process cannot complete.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-08
+  label: Quality assurance
+  synonyms: []
+  definition: Quality assurance over automated and human output.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: VARIABLE
+    component_of: AIServiceCost
+- id: AICOST-09
+  label: Monitoring
+  synonyms: []
+  definition: Ongoing monitoring of model and service behavior.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-10
+  label: Security and compliance
+  synonyms: []
+  definition: Security and compliance controls for the AI-enabled service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-11
+  label: Revalidation
+  synonyms: []
+  definition: Revalidation of the AI system after model, data or process change.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost
+- id: AICOST-12
+  label: Migration reserve
+  synonyms: []
+  definition: Reserve for migrating to different models or tools.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:ai-service-cost
+  status: active
+  attributes:
+    behavior: null
+    component_of: AIServiceCost

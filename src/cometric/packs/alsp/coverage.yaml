@@ -1,0 +1,17 @@
+areas:
+- area: Pricing-model prevalence among ALSPs
+  strength: MODERATE
+  readiness: Encode cautiously with provenance
+  source_ref: report:evidence-coverage
+- area: Client retention
+  strength: WEAK_MODERATE
+  readiness: Indicators only; do not encode causal thresholds
+  source_ref: report:evidence-coverage
+- area: US and UK regulatory constraints
+  strength: STRONG at high level
+  readiness: Encode jurisdiction and provider-type qualifiers
+  source_ref: report:evidence-coverage
+- area: ALSP margin benchmarks
+  strength: WEAK
+  readiness: Do not formalize without internal evidence
+  source_ref: report:evidence-coverage

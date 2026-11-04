@@ -1,0 +1,239 @@
+scheme: billing_bases
+title: Normalized foundational billing bases
+concepts:
+- id: BB-TIME
+  label: Time
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: professional effort. Fundamental
+    calculation: Fee = Time * Rate.
+  kind: null
+  bases: [TIME]
+  methods: [TIME]
+  broader: []
+  related: [PM-001, PM-002, PM-003, PM-020]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: TIME
+    cadence_note: any cadence
+    economic_object: Professional effort
+    calculation: Fee = Time * Rate
+    row: 1
+- id: BB-RESOURCE
+  label: Resource
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: named or qualified people or
+    fte capacity. Fundamental calculation: Fee = Resources * ResourceRate * Period.
+  kind: null
+  bases: [RESOURCE]
+  methods: [DEDICATED_RESOURCE]
+  broader: []
+  related: [PM-004, PM-005]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: RESOURCE
+    cadence_note: any cadence
+    economic_object: Named or qualified people or FTE capacity
+    calculation: Fee = Resources * ResourceRate * Period
+    row: 2
+- id: BB-CAPACITY
+  label: Capacity
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: availability or throughput reservation.
+    Fundamental calculation: Fee = ReservedCapacity * CapacityRate.
+  kind: null
+  bases: [CAPACITY]
+  methods: []
+  broader: []
+  related: [PM-009, PM-010]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: CAPACITY
+    cadence_note: any cadence
+    economic_object: Availability or throughput reservation
+    calculation: Fee = ReservedCapacity * CapacityRate
+    row: 3
+- id: BB-OUTPUT
+  label: Output or transaction
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: completed units. Fundamental
+    calculation: Fee = Sum(Units_i * UnitRate_i).
+  kind: null
+  bases: [OUTPUT]
+  methods: [UNIT_OUTPUT, WEIGHTED_UNIT_OUTPUT]
+  broader: []
+  related: [PM-011, PM-012, PM-015]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: OUTPUT
+    cadence_note: any cadence
+    economic_object: Completed units
+    calculation: Fee = Sum(Units_i * UnitRate_i)
+    row: 4
+- id: BB-USAGE
+  label: Usage
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: metered technology or service
+    consumption. Fundamental calculation: Fee = Sum(Usage_i * MeterRate_i).
+  kind: null
+  bases: [USAGE]
+  methods: []
+  broader: []
+  related: [PM-013, PM-030, PM-034]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: USAGE
+    cadence_note: any cadence
+    economic_object: Metered technology or service consumption
+    calculation: Fee = Sum(Usage_i * MeterRate_i)
+    row: 5
+- id: BB-FIXED
+  label: Fixed entitlement
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: defined scope or obligation
+    regardless of effort. Fundamental calculation: Contractually fixed fee.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_RECURRING, FIXED_PROJECT]
+  broader: []
+  related: [PM-006, PM-022]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: FIXED
+    cadence_note: any cadence
+    economic_object: Defined scope or obligation regardless of effort
+    calculation: Contractually fixed fee
+    row: 6
+- id: BB-RECURRING
+  label: Recurring entitlement
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: ongoing service or access over
+    time. Fundamental calculation: Periodic fixed charge.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: [PM-007, PM-008, PM-010]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats:
+  - >-
+    Executable representation is FIXED with a periodic charge cadence (MONTHLY, QUARTERLY
+    or ANNUAL).
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: FIXED
+    cadence_note: periodic cadence
+    economic_object: Ongoing service or access over time
+    calculation: Periodic fixed charge
+    row: 7
+- id: BB-MILESTONE
+  label: Milestone or deliverable
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: completion or acceptance event.
+    Fundamental calculation: Fee = Sum(MilestonePayment_j).
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_PROJECT]
+  broader: []
+  related: [PM-016, PM-017, PM-018]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats:
+  - >-
+    Executable representation is FIXED (or OUTPUT for a deliverable with a counting
+    rule) with EVENT cadence and a declared trigger.
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: FIXED
+    cadence_note: event cadence
+    economic_object: Completion or acceptance event
+    calculation: Fee = Sum(MilestonePayment_j)
+    row: 8
+- id: BB-COST
+  label: Cost
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: provider-incurred eligible cost.
+    Fundamental calculation: Fee = EligibleCost + Markup.
+  kind: null
+  bases: [COST]
+  methods: [COST_PLUS]
+  broader: []
+  related: [PM-019]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: COST
+    cadence_note: any cadence
+    economic_object: Provider-incurred eligible cost
+    calculation: Fee = EligibleCost + Markup
+    row: 9
+- id: BB-OUTCOME
+  label: Outcome or value
+  synonyms: []
+  definition: >-
+    Billing basis whose economic object purchased is: defined result, savings or recovery.
+    Fundamental calculation: Formula linked to outcome.
+  kind: null
+  bases: [OUTCOME]
+  methods: [OUTCOME_ADJUSTMENT]
+  broader: []
+  related: [PM-024, PM-026, PM-027]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0002]
+  caveats: []
+  source_ref: report:billing-bases
+  status: active
+  attributes:
+    core_basis: OUTCOME
+    cadence_note: any cadence
+    economic_object: Defined result, savings or recovery
+    calculation: Formula linked to outcome
+    row: 10

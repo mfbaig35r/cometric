@@ -1,0 +1,298 @@
+{
+  "case": "F",
+  "title": "Base plus complexity-weighted volume",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-F",
+    "name": "Recurring base plus complexity-weighted volume",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "item",
+        "kind": "COUNT",
+        "counting_rule": "One completed item of work, classified into a complexity band",
+        "acceptance_rule": "Accepted on client sign-off"
+      },
+      {
+        "code": "weighted_item",
+        "kind": "WEIGHTED",
+        "counting_rule": "Raw items multiplied by band weight"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "item"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "base",
+            "service_id": "svc",
+            "calculation_method": "FIXED_RECURRING",
+            "billing_basis": "FIXED",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "fixed_amount": "25000"
+          },
+          {
+            "id": "weighted",
+            "service_id": "svc",
+            "calculation_method": "WEIGHTED_UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.items",
+            "unit": "weighted_item",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "wu_rate",
+            "weight_table_id": "complexity"
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": [
+          {
+            "id": "wu_rate",
+            "currency": "USD",
+            "unit": "weighted_item",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "70"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "breach_mode": null,
+      "capacity": [],
+      "roles": [],
+      "demand_hours_source": null,
+      "cost_components": [
+        {
+          "id": "fixed_direct",
+          "category": "DEDICATED_LABOR",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "270000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "variable",
+          "category": "POOLED_LABOR",
+          "behavior": "VARIABLE",
+          "origin": "ILLUSTRATIVE",
+          "driver": "weighted:items:complexity",
+          "rate": "35"
+        },
+        {
+          "id": "transition",
+          "category": "TRANSITION",
+          "behavior": "ONE_TIME",
+          "origin": "ILLUSTRATIVE",
+          "amount": "40000",
+          "amortize_months": 12
+        }
+      ]
+    },
+    "risk_allocations": [],
+    "weight_tables": [
+      {
+        "id": "complexity",
+        "raw_unit": "item",
+        "weighted_unit": "weighted_item",
+        "classification_authority": "JOINT",
+        "bands": [
+          {
+            "code": "standard",
+            "weight": "1.0"
+          },
+          {
+            "code": "medium",
+            "weight": "1.8"
+          },
+          {
+            "code": "complex",
+            "weight": "3.0"
+          }
+        ]
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "assumptions": [
+        {
+          "name": "items.standard",
+          "value": "3500",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "items.medium",
+          "value": "1000",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "items.complex",
+          "value": "500",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "items.standard",
+          "value": "6000",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "items.medium",
+          "value": "2500",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "items.complex",
+          "value": "1500",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "assumptions": [
+        {
+          "name": "items.standard",
+          "value": "8000",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "items.medium",
+          "value": "4800",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "items.complex",
+          "value": "3200",
+          "unit": "item",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "as_published": {
+      "id": "as_published",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    },
+    "reference": {
+      "id": "reference",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    }
+  },
+  "expected": {
+    "as_published": {
+      "low": {
+        "contractual_fee": "776000",
+        "direct_delivery_cost": "508000",
+        "contribution_profit": "228000"
+      },
+      "base": {
+        "contractual_fee": "1350000",
+        "direct_delivery_cost": "795000",
+        "contribution_profit": "515000"
+      },
+      "high": {
+        "contractual_fee": "2136800",
+        "direct_delivery_cost": "1188400",
+        "contribution_profit": "908400"
+      }
+    },
+    "weighted_units": {
+      "low": "6800",
+      "base": "15000",
+      "high": "26240"
+    }
+  }
+}

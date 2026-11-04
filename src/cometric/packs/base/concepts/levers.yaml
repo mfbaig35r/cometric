@@ -1,0 +1,1449 @@
+scheme: levers
+title: Commercial lever catalog
+concepts:
+- id: CL-R01
+  label: Minimum spend commitment
+  synonyms: []
+  definition: Client guarantees periodic spend.
+  kind: modifier
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-034, CL-R02, MECH-001]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0008, CLM-B-0010, CLM-B-0046]
+  caveats: []
+  source_ref: report:CL-R01
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Client guarantees periodic spend.
+    economic_effect: >-
+      Revenue floor; client underutilization or value risk. Works with unit, usage
+      or catalog pricing.
+    normalization: Minimum commitment modifies revenue and volume exposure.
+- id: CL-R02
+  label: Take-or-pay
+  synonyms: []
+  definition: Payment is due for the committed entitlement whether used or not.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R01, PM-034]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: [Evidence is from adjacent sectors.]
+  source_ref: report:CL-R02
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Payment is due for the committed entitlement whether used or not.
+    economic_effect: Strong provider protection; highest client under-consumption
+      exposure.
+- id: CL-R03
+  label: Reserved capacity
+  synonyms: []
+  definition: Provider holds defined capacity for the client.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-009, MECH-002]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0010]
+  caveats: []
+  source_ref: report:CL-R03
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Provider holds defined capacity for the client.
+    economic_effect: >-
+      Converts idle-capacity risk partly to the client; capacity must genuinely be
+      available.
+- id: CL-R04
+  label: Retainer drawdown
+  synonyms: []
+  definition: A periodic fee is consumed against services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-008]
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-R04
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: A periodic fee is consumed against services.
+    economic_effect: Gives predictable revenue with usage visibility.
+- id: CL-R05
+  label: Prepaid credits
+  synonyms: []
+  definition: Client buys service credits in advance.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-031, CL-VL03]
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: []
+  caveats: []
+  source_ref: report:CL-R05
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Client buys service credits in advance.
+    economic_effect: Cash-flow advantage; requires credit valuation and expiry rules.
+- id: CL-R06
+  label: Rollover
+  synonyms: []
+  definition: Unused entitlement moves forward to a later period.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R07]
+  evidence_class: C_INFERENCE
+  prevalence: ESTABLISHED_COMMON
+  claims: []
+  caveats:
+  - >-
+    Classified C as a design for the legal-services sector; the report notes rollover
+    is common in adjacent subscriptions.
+  source_ref: report:CL-R06
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Unused entitlement moves forward to a later period.
+    economic_effect: >-
+      Improves fairness but creates future delivery liability and capacity bunching.
+- id: CL-R07
+  label: Use-it-or-lose-it
+  synonyms: []
+  definition: Unused entitlement expires at the end of its period.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R06]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-R07
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Unused entitlement expires at the end of its period.
+    economic_effect: Protects provider economics; increases client perceived-waste
+      risk.
+- id: CL-R08
+  label: Multi-year commitment
+  synonyms: []
+  definition: >-
+    A longer term is given in exchange for price or investment consideration.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [MECH-010, CL-P14]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0005]
+  caveats: []
+  source_ref: report:CL-R08
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: >-
+      A longer term is given in exchange for price or investment consideration.
+    economic_effect: >-
+      Supports transition and automation recovery; increases termination and forecast
+      risk.
+- id: CL-R09
+  label: Setup or onboarding fee
+  synonyms: []
+  definition: Recovers transition cost separately from the run-rate fee.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-029]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-R09
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Recovers transition cost separately from the run-rate fee.
+    economic_effect: Prevents the run-rate fee from absorbing one-time economics.
+- id: CL-R10
+  label: Base fee plus variable charge
+  synonyms: []
+  definition: A fixed readiness fee plus an activity fee.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-023, CL-V01, CL-V02]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0008]
+  caveats: []
+  source_ref: report:CL-R10
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: A fixed readiness fee plus an activity fee.
+    economic_effect: Balances predictable revenue with demand sharing.
+- id: CL-R11
+  label: Minimum invoice
+  synonyms: []
+  definition: An administrative or revenue floor per billing period.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-R11
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: An administrative or revenue floor per billing period.
+    economic_effect: >-
+      Useful for low-volume support; can produce poor client unit economics at tiny
+      volumes.
+- id: CL-R12
+  label: Exclusivity or preferred-provider commitment
+  synonyms: []
+  definition: Consolidates addressable volume with one provider.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-R12
+  status: active
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: Consolidates addressable volume with one provider.
+    economic_effect: >-
+      Supports better utilization and pricing; reduces client supplier flexibility.
+- id: CL-V01
+  label: Included allowance
+  synonyms: []
+  definition: The base fee includes a defined volume.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V02, PM-023]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V01
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: The base fee includes a defined volume.
+    economic_effect: Creates a clear entitlement and overage boundary.
+- id: CL-V02
+  label: Overage
+  synonyms: []
+  definition: An extra fee applies above the included volume.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V01, PM-023, MECH-008]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0008]
+  caveats: []
+  source_ref: report:CL-V02
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: An extra fee applies above the included volume.
+    economic_effect: Protects the provider from high-volume downside.
+- id: CL-V03
+  label: Tiered rate
+  synonyms: []
+  definition: A marginal or all-units rate changes by volume.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-014, CL-V04]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-V03
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: A marginal or all-units rate changes by volume.
+    economic_effect: Rewards scale; threshold design matters.
+- id: CL-V04
+  label: Volume discount
+  synonyms: []
+  definition: A lower unit rate for higher volume or commitment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V03, PM-014]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V04
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: A lower unit rate for higher volume or commitment.
+    economic_effect: Trades price for scale and forecast certainty.
+- id: CL-V05
+  label: Volume rebate
+  synonyms: []
+  definition: A retrospective credit after a volume target is reached.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V04]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - Evidence is from adjacent sourcing practice.
+  source_ref: report:CL-V05
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: A retrospective credit after a volume target is reached.
+    economic_effect: Encourages consolidation while retaining headline rates.
+- id: CL-V06
+  label: Minimum utilization
+  synonyms: []
+  definition: A required consumption level.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R02]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V06
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: A required consumption level.
+    economic_effect: Reduces stranded capacity; can resemble take-or-pay.
+- id: CL-V07
+  label: Consumption cap
+  synonyms: []
+  definition: An upper volume boundary.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-007]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V07
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: An upper volume boundary.
+    economic_effect: Protects fixed-fee economics and delivery quality.
+- id: CL-V08
+  label: Volume corridor or collar
+  synonyms: []
+  definition: A defined volume band with repricing outside it.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P08, CL-V09]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V08
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: A defined volume band with repricing outside it.
+    economic_effect: Shares volume risk around the forecast.
+- id: CL-V09
+  label: True-up
+  synonyms: []
+  definition: Periodic reconciliation of estimated versus actual consumption.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V08]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V09
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: Periodic reconciliation of estimated versus actual consumption.
+    economic_effect: Corrects under- or over-consumption.
+- id: CL-V10
+  label: Seasonal profile
+  synonyms: []
+  definition: Commitments vary by period.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V11]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V10
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: Commitments vary by period.
+    economic_effect: Better reflects predictable seasonality and staffing.
+- id: CL-V11
+  label: Forecast commitment
+  synonyms: []
+  definition: Client supplies a forecast with a tolerance.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V10]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V11
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: Client supplies a forecast with a tolerance.
+    economic_effect: Improves resource planning; remedies required for material error.
+- id: CL-V12
+  label: Extraordinary-demand provision
+  synonyms: []
+  definition: Special rules apply to demand spikes.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P04]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-V12
+  status: active
+  attributes:
+    category: VOLUME
+    purpose: Special rules apply to demand spikes.
+    economic_effect: Protects service levels and cost economics during exceptional
+      load.
+- id: CL-D01
+  label: Dedicated team
+  synonyms: []
+  definition: Resources reserved to one client.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-004, CL-D02]
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0048]
+  caveats: []
+  source_ref: report:CL-D01
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Resources reserved to one client.
+    economic_effect: High continuity; higher fixed cost and idle risk.
+- id: CL-D02
+  label: Pooled team
+  synonyms: []
+  definition: Shared resources serve multiple clients.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D01]
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D02
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Shared resources serve multiple clients.
+    economic_effect: Better provider utilization; less dedicated availability.
+- id: CL-D03
+  label: Onshore, nearshore and offshore mix
+  synonyms: []
+  definition: Geographic labor arbitrage and coverage.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-D03
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Geographic labor arbitrage and coverage.
+    economic_effect: >-
+      Changes cost, regulatory, language, continuity and latency characteristics.
+- id: CL-D04
+  label: Seniority and skill mix
+  synonyms: []
+  definition: Optimizes role composition.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-002, PM-003]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D04
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Optimizes role composition.
+    economic_effect: Major direct-cost lever; the wrong mix can damage quality.
+- id: CL-D05
+  label: Flex staffing
+  synonyms: []
+  definition: Scales the resource pool with demand.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D02]
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-D05
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Scales the resource pool with demand.
+    economic_effect: Reduces idle cost but may reduce continuity.
+- id: CL-D06
+  label: Automation substitution
+  synonyms: []
+  definition: Replaces manual steps with automation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D07]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0030]
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-D06
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Replaces manual steps with automation.
+    economic_effect: Can improve unit economics; introduces engineering and technology
+      risk.
+- id: CL-D07
+  label: AI-assisted delivery
+  synonyms: []
+  definition: AI combined with a human workflow.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D06, CL-D08]
+  evidence_class: A_DIRECT
+  prevalence: EMERGING
+  claims: [CLM-B-0030]
+  caveats: []
+  source_ref: report:CL-D07
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: AI combined with a human workflow.
+    economic_effect: Lowers some labor inputs; creates model, QA and governance costs.
+- id: CL-D08
+  label: Human-in-the-loop requirement
+  synonyms: []
+  definition: Mandatory human review or approval of automated output.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D07]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D08
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Mandatory human review or approval of automated output.
+    economic_effect: Reduces automation risk; constrains marginal-cost reduction.
+- id: CL-D09
+  label: Third-party pass-through
+  synonyms: []
+  definition: Client reimburses licenses or vendor charges.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-019]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D09
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Client reimburses licenses or vendor charges.
+    economic_effect: Transfers external price risk to the client.
+- id: CL-D10
+  label: Scope assumptions and exclusions
+  synonyms: []
+  definition: Defines the pricing perimeter.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D11, PM-006]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D10
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Defines the pricing perimeter.
+    economic_effect: Prevents hidden scope transfer.
+- id: CL-D11
+  label: Change order
+  synonyms: []
+  definition: Reprices a material scope change.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D10, PM-006]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D11
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Reprices a material scope change.
+    economic_effect: Essential to fixed-price protection; can create friction if overused.
+- id: CL-D12
+  label: Rework allocation
+  synonyms: []
+  definition: Specifies who bears remediation cost.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P03]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-D12
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Specifies who bears remediation cost.
+    economic_effect: >-
+      Incentive and quality lever; client-caused changes should be distinguished from
+      provider defects.
+- id: CL-D13
+  label: Subcontractor right
+  synonyms: []
+  definition: Permits external delivery components.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0019]
+  caveats: []
+  source_ref: report:CL-D13
+  status: active
+  attributes:
+    category: DELIVERY
+    purpose: Permits external delivery components.
+    economic_effect: Adds scaling flexibility but increases supervision and data risk.
+- id: CL-P01
+  label: SLA service credit
+  synonyms: []
+  definition: A fee reduction for a service miss.
+  kind: modifier
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P02, PM-007]
+  evidence_class: B_CORROBORATED
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-B-0042, CLM-B-0043]
+  caveats:
+  - >-
+    A service credit is not automatically liquidated damages or a penalty; characterization
+    depends on the contract and governing law.
+  source_ref: report:CL-P01
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: A fee reduction for a service miss.
+    economic_effect: Transfers defined performance risk; may operate as a contractual
+      remedy.
+    normalization: SLA credits modify consideration based on performance.
+- id: CL-P02
+  label: Performance bonus
+  synonyms: []
+  definition: An additional fee for exceeding a target.
+  kind: modifier
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-025, CL-P01]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0043]
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-P02
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: An additional fee for exceeding a target.
+    economic_effect: Creates an upside incentive.
+    normalization: Performance bonuses modify consideration based on performance.
+- id: CL-P03
+  label: Quality threshold
+  synonyms: []
+  definition: A minimum accuracy or defect standard.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D12]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0019]
+  caveats: []
+  source_ref: report:CL-P03
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: A minimum accuracy or defect standard.
+    economic_effect: Makes quality measurable; requires methodology and sampling rules.
+- id: CL-P04
+  label: Turnaround SLA
+  synonyms: []
+  definition: A maximum response or completion time.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V12]
+  evidence_class: A_DIRECT
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-P04
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: A maximum response or completion time.
+    economic_effect: Creates a capacity requirement and spike risk.
+- id: CL-P05
+  label: Productivity glide path
+  synonyms: []
+  definition: A required annual cost or productivity improvement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [MECH-006, AUTOBEN-04]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0036, CLM-B-0006]
+  caveats: []
+  source_ref: report:CL-P05
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: A required annual cost or productivity improvement.
+    economic_effect: Transfers part of the automation benefit to the client over time.
+- id: CL-P06
+  label: Continuous-improvement duty
+  synonyms: []
+  definition: The provider must identify improvements.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P05]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-P06
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: The provider must identify improvements.
+    economic_effect: Promotes transformation but needs governance and measurable obligations.
+- id: CL-P07
+  label: Shared savings
+  synonyms: []
+  definition: A share of verified savings against a baseline.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-026, MECH-007]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006]
+  caveats: []
+  source_ref: report:CL-P07
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: A share of verified savings against a baseline.
+    economic_effect: Aligns incentives; high baseline and attribution risk.
+- id: CL-P08
+  label: Risk corridor
+  synonyms: []
+  definition: Gain and loss sharing within a defined band.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V08, CL-P09]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P08
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Gain and loss sharing within a defined band.
+    economic_effect: Prevents extreme risk transfer to either party.
+- id: CL-P09
+  label: Cost-overrun sharing
+  synonyms: []
+  definition: Excess cost is split by an agreed ratio.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P08, PM-019]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P09
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Excess cost is split by an agreed ratio.
+    economic_effect: Intermediate between fixed price and cost-plus.
+- id: CL-P10
+  label: Change-in-law
+  synonyms: []
+  definition: Reopens scope or price if law changes.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P11]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P10
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Reopens scope or price if law changes.
+    economic_effect: Particularly important in regulated managed services.
+- id: CL-P11
+  label: Price reopener
+  synonyms: []
+  definition: Repricing when a defined trigger occurs.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P10]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P11
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Repricing when a defined trigger occurs.
+    economic_effect: Manages structural changes in volume, cost or scope.
+- id: CL-P12
+  label: Indexation
+  synonyms: []
+  definition: Price adjusts with a wage or inflation index.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P12
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Price adjusts with a wage or inflation index.
+    economic_effect: Protects multi-year unit economics; weakens absolute client certainty.
+- id: CL-P13
+  label: Liability cap
+  synonyms: []
+  definition: Limits legal exposure.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P01]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P13
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Limits legal exposure.
+    economic_effect: Affects the risk premium and acceptable price.
+- id: CL-P14
+  label: Termination right or fee
+  synonyms: []
+  definition: Allocates early-exit economics.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P15, CL-R08]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-P14
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: Allocates early-exit economics.
+    economic_effect: >-
+      Critical where the provider has unrecovered transition or dedicated-capacity
+      cost.
+- id: CL-P15
+  label: Transition assistance or exit support
+  synonyms: []
+  definition: The provider supports transfer of the service.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P14]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0018]
+  caveats: []
+  source_ref: report:CL-P15
+  status: active
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: The provider supports transfer of the service.
+    economic_effect: Creates a post-termination capacity obligation and cost.
+- id: CL-VL01
+  label: Commitment-utilization reporting
+  synonyms: []
+  definition: Shows consumed versus committed entitlement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CHI-001]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: [Proposed management control.]
+  source_ref: report:CL-VL01
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Shows consumed versus committed entitlement.
+    economic_effect: Makes underutilization visible early.
+- id: CL-VL02
+  label: Value-realization reporting
+  synonyms: []
+  definition: Reports cost avoidance, throughput, quality and cycle time.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CHI-009]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0038]
+  caveats:
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:CL-VL02
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Reports cost avoidance, throughput, quality and cycle time.
+    economic_effect: Reduces narrow focus on units alone; attribution limitations.
+- id: CL-VL03
+  label: Transferable credits
+  synonyms: []
+  definition: Shifts unused entitlement across service types.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R05, PM-031]
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL03
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Shifts unused entitlement across service types.
+    economic_effect: Reduces perceived waste; creates a heterogeneous delivery obligation.
+- id: CL-VL04
+  label: Flexible service catalog
+  synonyms: []
+  definition: Commitment is usable across approved services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL03]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL04
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Commitment is usable across approved services.
+    economic_effect: Improves utility; complicates unit conversion and capacity planning.
+- id: CL-VL05
+  label: Periodic service rebalance
+  synonyms: []
+  definition: Reallocates capacity or volume among workflows.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL04]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL05
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Reallocates capacity or volume among workflows.
+    economic_effect: Addresses structural changes without full renegotiation.
+- id: CL-VL06
+  label: Annual value review
+  synonyms: []
+  definition: A formal review of economics and outcomes.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL02]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL06
+  status: active
+  attributes:
+    category: VALUE
+    purpose: A formal review of economics and outcomes.
+    economic_effect: >-
+      Useful renewal mechanism; evidence mainly professional-services practice.
+- id: CL-VL07
+  label: Benchmarking or market testing
+  synonyms: []
+  definition: Compares rates and service against alternatives.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL07
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Compares rates and service against alternatives.
+    economic_effect: Supports client assurance; can cause repricing pressure.
+- id: CL-VL08
+  label: Renewal incentive
+  synonyms: []
+  definition: A price or credit benefit conditional on renewal or term.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R08]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL08
+  status: active
+  attributes:
+    category: VALUE
+    purpose: A price or credit benefit conditional on renewal or term.
+    economic_effect: Trades future certainty for a concession.
+- id: CL-VL09
+  label: Adjacent-service expansion
+  synonyms: []
+  definition: Redeploys unused commitment into related workflows.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL04]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: report:CL-VL09
+  status: active
+  attributes:
+    category: VALUE
+    purpose: Redeploys unused commitment into related workflows.
+    economic_effect: Can protect perceived value but risks uncontrolled scope creep.
+- id: CL-CAND-01
+  label: Fee holiday
+  synonyms: []
+  definition: >-
+    A period during which some or all recurring fees are waived or deferred by agreement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: REVENUE_COMMITMENT
+    purpose: >-
+      A period during which some or all recurring fees are waived or deferred by agreement.
+    economic_effect: null
+- id: CL-CAND-02
+  label: Transformation fund
+  synonyms: []
+  definition: >-
+    An agreed amount set aside to finance improvement or transformation work for the
+    client.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P06]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: VALUE
+    purpose: >-
+      An agreed amount set aside to finance improvement or transformation work for
+      the client.
+    economic_effect: null
+- id: CL-CAND-03
+  label: Benchmarking right
+  synonyms: []
+  definition: >-
+    A contractual right to compare the provider's prices or service levels with market
+    alternatives and seek adjustment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL07]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: VALUE
+    purpose: >-
+      A contractual right to compare the provider's prices or service levels with
+      market alternatives and seek adjustment.
+    economic_effect: null
+- id: CL-CAND-04
+  label: Most-favored pricing
+  synonyms: []
+  definition: >-
+    A commitment that the client's prices will be no less favorable than those offered
+    to comparable customers.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: VALUE
+    purpose: >-
+      A commitment that the client's prices will be no less favorable than those offered
+      to comparable customers.
+    economic_effect: null
+- id: CL-CAND-05
+  label: Volume portability
+  synonyms: []
+  definition: >-
+    The ability to move committed volume between services, entities or locations without
+    losing commitment credit.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL03, CL-VL04]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: VOLUME
+    purpose: >-
+      The ability to move committed volume between services, entities or locations
+      without losing commitment credit.
+    economic_effect: null
+- id: CL-CAND-06
+  label: Currency protection
+  synonyms: []
+  definition: >-
+    A mechanism that allocates exchange-rate risk where fees and costs are denominated
+    in different currencies.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P12]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: >-
+      A mechanism that allocates exchange-rate risk where fees and costs are denominated
+      in different currencies.
+    economic_effect: null
+- id: CL-CAND-07
+  label: Gain and pain sharing
+  synonyms: []
+  definition: >-
+    Sharing of cost underruns and overruns against an agreed target between client
+    and provider.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P08, CL-P09]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: >-
+      Sharing of cost underruns and overruns against an agreed target between client
+      and provider.
+    economic_effect: null
+- id: CL-CAND-08
+  label: Service-level earnback
+  synonyms: []
+  definition: >-
+    A right for the provider to recover service credits by subsequently meeting or
+    exceeding service levels.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P01]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: PERFORMANCE_RISK
+    purpose: >-
+      A right for the provider to recover service credits by subsequently meeting
+      or exceeding service levels.
+    economic_effect: null
+- id: CL-CAND-09
+  label: Country-specific pricing schedules
+  synonyms: []
+  definition: >-
+    Separate rate schedules that apply to delivery or service in different countries.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-D03]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    Named by the report as possibly missing from the lever taxonomy; to be confirmed
+    by contract sampling.
+  source_ref: report:research-gaps
+  status: candidate
+  attributes:
+    category: DELIVERY
+    purpose: >-
+      Separate rate schedules that apply to delivery or service in different countries.
+    economic_effect: null

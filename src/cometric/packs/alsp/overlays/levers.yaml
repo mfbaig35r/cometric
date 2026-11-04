@@ -1,0 +1,82 @@
+scheme: levers
+overlays:
+- id: CL-R02
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: B_CORROBORATED
+  claims: []
+  caveats:
+  - Specialized in the ALSP context; evidence is from adjacent sectors.
+- id: CL-R03
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0010]
+  caveats: []
+- id: CL-R04
+  prevalence: UNVERIFIED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0025]
+  caveats: []
+- id: CL-R05
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0020]
+  caveats: []
+- id: CL-R12
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0026]
+  caveats: []
+- id: CL-V08
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0024]
+  caveats:
+  - Collars are established alternative-fee tools in legal practice.
+- id: CL-D01
+  prevalence: UNVERIFIED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0017]
+  caveats: []
+- id: CL-D02
+  prevalence: UNVERIFIED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0017]
+  caveats: []
+- id: CL-D04
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0012]
+  caveats: []
+- id: CL-D07
+  prevalence: EMERGING
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0014, CLM-A-0042, CLM-A-0023]
+  caveats: []
+- id: CL-D10
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0019]
+  caveats: []
+- id: CL-D11
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0019, CLM-A-0015]
+  caveats: []
+- id: CL-P04
+  prevalence: UNVERIFIED
+  evidence_class: A_DIRECT
+  claims: []
+  caveats:
+  - ALSP case studies routinely disclose SLA delivery.
+  - >-
+    The legal-sector citation for this entry is not in the report's evidence register.
+- id: CL-P07
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0025]
+  caveats: []
+- id: CL-VL03
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0020]
+  caveats: []

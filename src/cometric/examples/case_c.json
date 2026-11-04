@@ -1,0 +1,233 @@
+{
+  "case": "C",
+  "title": "Dedicated team priced per FTE",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-C",
+    "name": "Dedicated legal-operations team priced per FTE",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "fte_month",
+        "kind": "FTE_MONTHS",
+        "counting_rule": "One dedicated FTE for one month",
+        "acceptance_rule": "Accepted on client sign-off"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "fte_month"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "team",
+            "service_id": "svc",
+            "calculation_method": "DEDICATED_RESOURCE",
+            "billing_basis": "RESOURCE",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "resources": [
+              {
+                "role": "analyst",
+                "fte": "8",
+                "rate_per_fte_month": "16000"
+              }
+            ]
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": []
+      }
+    ],
+    "delivery_plan": {
+      "breach_mode": null,
+      "capacity": [],
+      "roles": [
+        {
+          "role": "analyst",
+          "fte": "8",
+          "available_hours_per_fte_year": "1600"
+        }
+      ],
+      "demand_hours_source": "hours_used",
+      "cost_components": [
+        {
+          "id": "labor",
+          "category": "DEDICATED_LABOR",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "880000",
+          "period": "ANNUAL",
+          "avoidability": "UNAVOIDABLE"
+        },
+        {
+          "id": "delivery_mgmt",
+          "category": "DELIVERY_MANAGEMENT",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "120000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "platform_support",
+          "category": "PLATFORM_OPERATIONS",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "60000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "transition",
+          "category": "TRANSITION",
+          "behavior": "ONE_TIME",
+          "origin": "ILLUSTRATIVE",
+          "amount": "40000",
+          "amortize_months": 12
+        }
+      ]
+    },
+    "risk_allocations": [
+      {
+        "risk_type": "VOLUME",
+        "declared_bearer": "CLIENT",
+        "driver": "hours_used"
+      }
+    ],
+    "client_value_unit": "hours_used"
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "assumptions": [
+        {
+          "name": "hours_used",
+          "value": "7040",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "hours_used",
+          "value": "10240",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "assumptions": [
+        {
+          "name": "hours_used",
+          "value": "12160",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "as_published": {
+      "id": "as_published",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "ENGAGEMENT_AVOIDABLE",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    },
+    "reference": {
+      "id": "reference",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    }
+  },
+  "expected": {
+    "as_published": {
+      "low": {
+        "contractual_fee": "1536000",
+        "direct_delivery_cost": "1000000",
+        "gross_profit": "536000",
+        "contribution_profit": "436000"
+      },
+      "base": {
+        "contractual_fee": "1536000",
+        "direct_delivery_cost": "1000000",
+        "gross_profit": "536000",
+        "contribution_profit": "436000"
+      },
+      "high": {
+        "contractual_fee": "1536000",
+        "direct_delivery_cost": "1000000",
+        "gross_profit": "536000",
+        "contribution_profit": "436000"
+      }
+    },
+    "reference": {
+      "base": {
+        "gross_profit": "476000",
+        "contribution_profit": "436000"
+      }
+    },
+    "price_per_used_hour": {
+      "low": "218.18",
+      "base": "150.00",
+      "high": "126.32"
+    }
+  }
+}

@@ -1,0 +1,295 @@
+scheme: mechanisms
+title: Adjacent-industry mechanisms
+concepts:
+- id: MECH-001
+  label: Committed spend plus discounted usage plus on-demand overage
+  synonyms: []
+  definition: >-
+    Supplier gains revenue certainty; customer exchanges commitment for a lower rate.
+    Transferable with adaptation to repeatable consumption services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-034, CL-R01]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0008, CLM-B-0009]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: cloud infrastructure
+    economic_logic: >-
+      Supplier gains revenue certainty; customer exchanges commitment for a lower
+      rate.
+    transferability: DIRECT_WITH_ADAPTATION
+    transferability_note: Transferable with adaptation to repeatable consumption services.
+    row: 1
+- id: MECH-002
+  label: Reserved capacity
+  synonyms: []
+  definition: >-
+    Customer pays for resource availability. Directly transferable where the provider
+    genuinely reserves people or throughput.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-009, CL-R03]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0010]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: cloud and IT services
+    economic_logic: Customer pays for resource availability.
+    transferability: DIRECT
+    transferability_note: >-
+      Directly transferable where the provider genuinely reserves people or throughput.
+    row: 2
+- id: MECH-003
+  label: Usage credits
+  synonyms: []
+  definition: >-
+    Prepurchase of a fungible entitlement. Directly transferable, especially across
+    a service catalog.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-031, CL-R05]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  - >-
+    Supporting evidence is a legal-sector provider disclosure, linked in the legal-services
+    pack overlay.
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: cloud and SaaS
+    economic_logic: Prepurchase of a fungible entitlement.
+    transferability: DIRECT
+    transferability_note: Directly transferable, especially across a service catalog.
+    row: 3
+- id: MECH-004
+  label: Capacity subscription
+  synonyms: []
+  definition: >-
+    Transactions or resources are metered against a purchased entitlement. Transferable
+    with adaptation to document, matter or workflow units.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-010]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: SaaS platforms
+    economic_logic: Transactions or resources are metered against a purchased entitlement.
+    transferability: TRANSFERABLE_WITH_ADAPTATION
+    transferability_note: Transferable with adaptation to document, matter or workflow
+      units.
+    row: 4
+- id: MECH-005
+  label: Outcome-based managed service
+  synonyms: []
+  definition: >-
+    Provider compensation aligned with an operational result. Conditionally transferable
+    where outcomes are measurable and attributable.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-024]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006, CLM-B-0041]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: advisory and managed services
+    economic_logic: Provider compensation aligned with an operational result.
+    transferability: CONDITIONAL
+    transferability_note: >-
+      Conditionally transferable where outcomes are measurable and attributable.
+    row: 5
+- id: MECH-006
+  label: Productivity glide path
+  synonyms: []
+  definition: >-
+    Provider commits to recurring efficiency gains. Transferable with adaptation to
+    automation-heavy operations.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P05]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006, CLM-B-0036]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: business process outsourcing and managed services
+    economic_logic: Provider commits to recurring efficiency gains.
+    transferability: TRANSFERABLE_WITH_ADAPTATION
+    transferability_note: Transferable with adaptation to automation-heavy operations.
+    row: 6
+- id: MECH-007
+  label: Shared savings
+  synonyms: []
+  definition: >-
+    Supplier earns a percentage of verified improvement. Conditionally transferable;
+    baseline-intensive.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-026, CL-P07]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006, CLM-B-0041]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: >-
+      business process outsourcing, procurement and alternative fee arrangements
+    economic_logic: Supplier earns a percentage of verified improvement.
+    transferability: CONDITIONAL
+    transferability_note: Conditionally transferable; baseline-intensive.
+    row: 7
+- id: MECH-008
+  label: Base plus overage
+  synonyms: []
+  definition: >-
+    Fixed entitlement plus variable excess. Directly transferable to managed services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-023, CL-V02]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0008]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: cloud, telecom and SaaS
+    economic_logic: Fixed entitlement plus variable excess.
+    transferability: DIRECT
+    transferability_note: Directly transferable to managed services.
+    row: 8
+- id: MECH-009
+  label: Consumption pricing
+  synonyms: []
+  definition: >-
+    Price scales with resource use. Transferable with adaptation; prompts and tokens
+    may be poor proxies for client value.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-013, PM-030]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0052]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: SaaS, AI and cloud
+    economic_logic: Price scales with resource use.
+    transferability: TRANSFERABLE_WITH_ADAPTATION
+    transferability_note: >-
+      Transferable with adaptation; prompts and tokens may be poor proxies for client
+      value.
+    row: 9
+- id: MECH-010
+  label: Multi-year as-a-service subscription
+  synonyms: []
+  definition: >-
+    Supports transformation investment and a predictable run cost. Directly transferable;
+    already analogous to managed services.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-010, CL-R08]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0005]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: large advisory-firm managed services
+    economic_logic: Supports transformation investment and a predictable run cost.
+    transferability: DIRECT
+    transferability_note: Directly transferable; already analogous to managed services.
+    row: 10
+- id: MECH-011
+  label: Activity-to-outcome SLA shift
+  synonyms: []
+  definition: >-
+    Activity metrics are replaced by business-result measures. Conditionally transferable;
+    outcomes can be less controllable than IT operations.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P04]
+  evidence_class: B_CORROBORATED
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0041]
+  caveats:
+  - >-
+    The transferability class is the report's analytical assessment (C_INFERENCE).
+  - >-
+    The report's supporting citation for this statement is not in its evidence register;
+    add a registered source before relying on it.
+  source_ref: report:adjacent-mechanisms
+  status: active
+  attributes:
+    source_sector: IT managed services
+    economic_logic: Activity metrics are replaced by business-result measures.
+    transferability: CONDITIONAL
+    transferability_note: >-
+      Conditionally transferable; outcomes can be less controllable than IT operations.
+    row: 11

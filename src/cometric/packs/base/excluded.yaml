@@ -1,0 +1,42 @@
+excluded:
+- ref: E017
+  reason: Provider case study with no fee disclosure; no claim depends on it.
+- ref: report:internal-validation-checklist
+  reason: >-
+    Organization-specific validation items; each became user-supplied policy in the
+    spec (section 11).
+- ref: report:casebook
+  reason: >-
+    The six worked scenarios (Cases A to F) are illustrative and ship as engine regression
+    fixtures (spec Appendix C), not as pack knowledge.
+- ref: report:price-floor-formulas
+  reason: >-
+    The price-floor, unit-price and capacity-constrained cost formulas are core engine
+    operations (spec sections 5.3 and 5.6); their caveats are captured as claims CLM-B-0024
+    to CLM-B-0026.
+- ref: report:controlled-vocabularies
+  reason: >-
+    Captured as core enums (billing basis, risk bearer, delivery topology, evidence
+    class, prevalence) and as dimension value sets in base dimensions.
+- ref: report:client-value-equation
+  reason: >-
+    The client-value decomposition is not a pack scheme; its monetization limits are
+    captured as claim CLM-B-0038.
+- ref: report:final-domain-boundaries
+  reason: >-
+    The six closing domain layers restate the ontology boundary table captured as
+    LAYER-01 to LAYER-07.
+- ref: report:adversarial-qa
+  reason: >-
+    Methodological notes; their substance is captured as claims, caveats and evidence
+    classes.
+- ref: report:unregistered-citations
+  reason: >-
+    Statements whose only citation is not in the evidence register (for example a
+    US state's alternative business structure rules, a January 2026 solicitor-regulator
+    warning on no-win-no-fee claims, UK penalty-doctrine case law, and several provider
+    pages) carry no sourced claim; affected concepts carry a caveat instead.
+- ref: report:lever-count-58
+  reason: >-
+    The report states 58 levers after consolidation, but its table lists 61; all 61
+    are captured.

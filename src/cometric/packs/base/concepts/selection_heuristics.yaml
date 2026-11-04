@@ -1,0 +1,285 @@
+scheme: selection_heuristics
+title: Decision matrix heuristics
+concepts:
+- id: SEL-001
+  label: Highly uncertain scope
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: highly uncertain scope.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Highly uncertain scope
+    favored: [Time and materials, Capped time and materials, Phased fee, Cost-plus]
+    caution: [Unlimited fixed fee]
+    favored_refs: [PM-001, PM-020, PM-017, PM-019]
+    caution_refs: []
+    row: 1
+- id: SEL-002
+  label: Stable high-volume repetitive work
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: stable high-volume
+    repetitive work.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Stable high-volume repetitive work
+    favored: [Unit pricing, Fixed managed service, Subscription, Base plus variable]
+    caution:
+    - Pure hourly if automation is expected to increase materially
+    favored_refs: [PM-011, PM-007, PM-010, PM-023]
+    caution_refs: [PM-001]
+    row: 2
+- id: SEL-003
+  label: Dedicated ongoing team required
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: dedicated ongoing
+    team required.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Dedicated ongoing team required
+    favored: [FTE or capacity reservation, Fixed managed service]
+    caution:
+    - Pure per-unit pricing without a minimum if staffing cannot flex
+    favored_refs: [PM-004, PM-009, PM-007]
+    caution_refs: [PM-011]
+    row: 3
+- id: SEL-004
+  label: Highly variable demand with pooled capacity
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: highly variable demand
+    with pooled capacity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Highly variable demand with pooled capacity
+    favored: [Per-unit, Consumption, Base plus overage]
+    caution:
+    - Large take-or-pay commitment without rollover or flexibility
+    favored_refs: [PM-011, PM-013, PM-023]
+    caution_refs: [PM-034]
+    row: 4
+- id: SEL-005
+  label: Material setup or engineering investment
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: material setup or
+    engineering investment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Material setup or engineering investment
+    favored: [Implementation fee plus recurring, Multi-year commitment]
+    caution:
+    - Month-to-month fee with no termination recovery
+    favored_refs: [PM-029]
+    caution_refs: []
+    row: 5
+- id: SEL-006
+  label: Heterogeneous complexity
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: heterogeneous complexity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Heterogeneous complexity
+    favored: [Complexity-weighted units, Bands, Hourly for exceptions]
+    caution: [Single unadjusted unit price]
+    favored_refs: [PM-015, PM-001]
+    caution_refs: [PM-011]
+    row: 6
+- id: SEL-007
+  label: Strong client budget-certainty preference
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: strong client budget-certainty
+    preference.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Strong client budget-certainty preference
+    favored: [Fixed fee, Subscription, Capped hybrid]
+    caution: [Pure uncapped usage]
+    favored_refs: [PM-006, PM-010]
+    caution_refs: [PM-013]
+    row: 7
+- id: SEL-008
+  label: Strong client flexibility preference
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: strong client flexibility
+    preference.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Strong client flexibility preference
+    favored: [Usage, Pooled unit pricing, Low base plus overage]
+    caution:
+    - Dedicated FTE or high minimum commitment
+    favored_refs: [PM-013, PM-011, PM-023]
+    caution_refs: [PM-004]
+    row: 8
+- id: SEL-009
+  label: Measurable cost savings
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: measurable cost savings.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Measurable cost savings
+    favored: [Gain-share plus baseline and governance]
+    caution:
+    - Pure gain-share with disputed counterfactual
+    favored_refs: [PM-026]
+    caution_refs: [PM-026]
+    row: 9
+- id: SEL-010
+  label: AI lowers human time sharply
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: aI lowers human time
+    sharply.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: AI lowers human time sharply
+    favored: [Output, Fixed, Platform plus service, Outcome, Usage]
+    caution: [Hourly-only if value remains constant]
+    favored_refs: [PM-011, PM-006, PM-028, PM-024, PM-030]
+    caution_refs: [PM-001]
+    row: 10
+- id: SEL-011
+  label: Material regulatory continuity requirement
+  synonyms: []
+  definition: >-
+    Decision-matrix heuristic for engagements characterized by: material regulatory
+    continuity requirement.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Advisory heuristic; never used to rank or choose structures.
+  source_ref: report:decision-matrix
+  status: active
+  attributes:
+    characteristic: Material regulatory continuity requirement
+    favored:
+    - Reserved capacity
+    - Dedicated or hybrid delivery
+    - Robust exit provisions
+    caution:
+    - Extremely lean on-demand pool without continuity guarantees
+    favored_refs: [PM-009, PM-004]
+    caution_refs: []
+    row: 11

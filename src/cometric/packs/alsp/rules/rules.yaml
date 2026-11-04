@@ -1,0 +1,303 @@
+rules:
+- id: COMPAT-017
+  kind: compatibility
+  assessment: LEGALLY_CONDITIONAL_RESTRICTED
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+      - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+    - {path: 'parties[*].provider_type', equals: NONLAW_ALSP}
+  emit:
+    code: COMPAT_CONTINGENCY_NONLAWYER_PROVIDER
+    severity: APPROVAL_REQUIRED
+    message: >-
+      A contingency or outcome fee with a non-law-firm ALSP provider requires legal
+      review of professional-responsibility and provider-status rules.
+    claims: [CLM-A-0027, CLM-A-0028, CLM-A-0048]
+  explanation: >-
+    Professional-responsibility and provider-status rules control whether a contingency
+    fee is available to a nonlawyer provider delivering regulated legal representation.
+  evidence_class: C_INFERENCE
+  source_ref: report:compatibility-rules
+- id: RULE-011
+  kind: reasoning
+  evaluable: false
+  when: null
+  emit:
+    code: RULE_AI_PERSONAL_DATA
+    severity: WARNING
+    message: >-
+      An AI supplier processing personal data requires review of data roles, security
+      and subprocessors under applicable law.
+    claims: [CLM-B-0019]
+  explanation: >-
+    Where an AI supplier processes personal data, data-protection roles, security
+    and subprocessors must be evaluated under applicable law.
+  evidence_class: A_DIRECT
+  source_ref: report:RULE-011
+- id: RULE-012
+  kind: reasoning
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+      - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+    - {path: 'services[*].service_category', exists: true}
+  emit:
+    code: RULE_CONTINGENT_LEGAL_FEE
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Outcome-linked consideration on a legal service requires legal review of jurisdiction,
+      provider and matter restrictions.
+    claims: [CLM-A-0027, CLM-A-0029]
+  explanation: >-
+    Contingent legal fees are subject to jurisdiction, provider and matter restrictions
+    that require legal validation.
+  evidence_class: A_DIRECT
+  source_ref: report:RULE-012
+- id: RULE-016
+  kind: reasoning
+  evaluable: false
+  when: null
+  emit:
+    code: RULE_FUTURE_EFFECTIVE_REGULATION
+    severity: WARNING
+    message: >-
+      The commercial term may span a regulatory change date; future-effective obligations
+      require review in contract and cost assumptions.
+    claims: [CLM-B-0016, CLM-B-0017]
+  explanation: >-
+    Where a commercial term spans a regulatory change date, future-effective obligations
+    (for example UK material third-party reporting rules and the updated SS2/21 from
+    March 18, 2027) must be included in contract and cost assumptions.
+  evidence_class: C_INFERENCE
+  source_ref: report:RULE-016
+- id: ALSP-R-001
+  kind: constraint
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+      - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+    - {path: 'services[*].service_category', in: [CONTRACTS, EDISCOVERY, DOCUMENT_REVIEW,
+        LEGAL_OPERATIONS, REGULATORY_CHANGE, FLEXIBLE_RESOURCING]}
+  emit:
+    code: CONTINGENT_FEE_REGULATED_WORK
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Outcome-based consideration on legal work requires legal review for the provider
+      type and jurisdiction.
+    claims: [CLM-A-0027, CLM-A-0029, CLM-A-0048]
+  explanation: >-
+    US model rules regulate contingent fees and state adoption varies; in England
+    and Wales, conditional and damages-based agreements are subject to their own rules,
+    including the Damages-Based Agreements Regulations 2013.
+  evidence_class: A_DIRECT
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-002
+  kind: constraint
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+      - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+    - {path: 'parties[*].provider_type', equals: REGULATED_LAW_FIRM}
+  emit:
+    code: CONTINGENT_FEE_REGULATED_LAW_FIRM
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Contingent or outcome fees for a regulated law firm require legal review.
+    claims: [CLM-A-0027, CLM-A-0048]
+  explanation: >-
+    Regulated law firms are subject to state ethics rules (US) or regulator requirements
+    (England and Wales), including fee reasonableness and contingent-fee rules.
+  evidence_class: A_DIRECT
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-003
+  kind: constraint
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+      - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+    - {path: 'parties[*].provider_type', equals: NONLAW_ALSP}
+  emit:
+    code: OUTCOME_FEE_NONLAW_ALSP
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Outcome fees for a non-law-firm ALSP require legal review where they are tied
+      to legal representation.
+    claims: [CLM-A-0013, CLM-A-0047, CLM-A-0048]
+  explanation: >-
+    A non-law-firm ALSP must avoid unauthorized practice and its scope depends on
+    reserved or nonreserved activity; outcome fees tied to legal representation may
+    be constrained.
+  evidence_class: C_INFERENCE
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-004
+  kind: constraint
+  evaluable: true
+  when:
+    all:
+    - any:
+      - {path: 'arrangement_versions[*].components[*].billing_basis', equals: OUTCOME}
+      - {path: 'arrangement_versions[*].components[*].calculation_method', equals: OUTCOME_ADJUSTMENT}
+    - {path: 'parties[*].provider_type', equals: LICENSED_BODY}
+  emit:
+    code: OUTCOME_FEE_LICENSED_BODY
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Outcome fees for a licensed body require legal review because regulated legal
+      duties remain.
+    claims: [CLM-A-0030, CLM-A-0048]
+  explanation: >-
+    Licensed bodies have a broader ownership architecture, but regulated legal duties
+    remain; in the US such structures are available only in certain jurisdictions.
+  evidence_class: C_INFERENCE
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-005
+  kind: constraint
+  evaluable: true
+  when:
+    all:
+    - {path: 'parties[*].provider_type', equals: REGULATED_LAW_FIRM}
+    - {path: 'parties[*].provider_type', in: [NONLAW_ALSP, FLEXIBLE_TALENT, LEGAL_TECH_VENDOR,
+        MANAGED_SERVICES_PROVIDER]}
+  emit:
+    code: FEE_SHARING_NONLAW_PROVIDER
+    severity: APPROVAL_REQUIRED
+    message: >-
+      An arrangement combining a regulated law firm with a non-law-firm provider may
+      involve fee sharing and requires legal review.
+    claims: [CLM-A-0028, CLM-A-0029, CLM-A-0031, CLM-A-0048]
+  explanation: >-
+    US Model Rule 5.4 generally bars sharing legal fees with nonlawyers, with state
+    variation; solicitor rules in England and Wales require disclosure of fee-sharing
+    arrangements and referral interests.
+  evidence_class: A_DIRECT
+  source_ref: report:us-constraints
+- id: ALSP-R-006
+  kind: constraint
+  evaluable: true
+  when: {path: 'parties[*].role', equals: SUBCONTRACTOR}
+  emit:
+    code: SUBCONTRACTED_OR_CROSS_BORDER_DELIVERY
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Subcontracted delivery requires review of supervision, data handling and any
+      regulated or cross-border outsourcing obligations.
+    claims: [CLM-B-0019, CLM-A-0048]
+  explanation: >-
+    Subcontractor rights add supervision and data risk; regulated and cross-border
+    outsourcing structures require legal review before being treated as permissible.
+  evidence_class: C_INFERENCE
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-007
+  kind: constraint
+  evaluable: false
+  when: null
+  emit:
+    code: REGULATED_CLIENT_OUTSOURCING
+    severity: APPROVAL_REQUIRED
+    message: >-
+      Services to a financial-services client require review of outsourcing, operational-resilience,
+      audit, exit and third-party reporting obligations.
+    claims: [CLM-B-0015, CLM-B-0016, CLM-B-0017, CLM-B-0018]
+  explanation: >-
+    Financial-services clients remain responsible for third-party and outsourcing
+    risk; UK material third-party reporting rules and updated SS2/21 expectations
+    apply from March 18, 2027. The client's sector is not an engagement path, so this
+    rule is not machine-evaluable.
+  evidence_class: A_DIRECT
+  source_ref: report:outsourcing-constraints
+- id: ALSP-R-008
+  kind: constraint
+  evaluable: true
+  when:
+    any:
+    - {path: descriptors.automation_benefit, exists: true}
+    - {path: descriptors.technology_treatment, exists: true}
+  emit:
+    code: AI_PERSONAL_DATA_REVIEW
+    severity: WARNING
+    message: >-
+      Technology or automation is declared; if personal data is processed, data-protection
+      roles, subprocessors, security, audit rights and end-of-contract data handling
+      require review.
+    claims: [CLM-B-0019, CLM-B-0020]
+  explanation: >-
+    UK data-protection AI contracting guidance and financial-services AI good practice
+    create real cost drivers for AI-enabled services. The engagement has no personal-data
+    path, so the rule fires on declared technology use and its message is conditional.
+  evidence_class: A_DIRECT
+  source_ref: report:outsourcing-constraints
+- id: ALSP-R-009
+  kind: constraint
+  evaluable: true
+  when: {path: 'parties[*].provider_type', equals: FLEXIBLE_TALENT}
+  emit:
+    code: FLEXIBLE_TALENT_SUPERVISION
+    severity: WARNING
+    message: >-
+      A flexible-talent provider is declared; review allocation of lawyer supervision.
+    claims: [CLM-A-0013, CLM-A-0047]
+  explanation: >-
+    Flexible-talent providers often supply talent rather than law-firm representation;
+    resource pricing is straightforward but supervision allocation is critical.
+  evidence_class: C_INFERENCE
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-010
+  kind: constraint
+  evaluable: true
+  when: {path: 'parties[*].provider_type', equals: LEGAL_TECH_VENDOR}
+  emit:
+    code: LEGAL_TECH_DATA_REGULATION
+    severity: WARNING
+    message: >-
+      A legal-technology vendor is declared; review applicable data and AI regulation.
+    claims: [CLM-A-0047]
+  explanation: >-
+    Usage and subscription models are generally easier for technology vendors, but
+    data and AI regulation applies.
+  evidence_class: C_INFERENCE
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-011
+  kind: constraint
+  evaluable: true
+  when: {path: 'parties[*].provider_type', equals: MANAGED_SERVICES_PROVIDER}
+  emit:
+    code: MANAGED_SERVICES_ADVICE_SEPARATION
+    severity: WARNING
+    message: >-
+      A legal managed-services provider is declared; review whether the contract must
+      separate legal advice from processing and operations.
+    claims: [CLM-A-0047]
+  explanation: >-
+    Legal managed-services providers may combine regulated and nonregulated functions;
+    the provider entity and work type matter.
+  evidence_class: C_INFERENCE
+  source_ref: report:provider-type-matrix
+- id: ALSP-R-012
+  kind: constraint
+  evaluable: false
+  when: null
+  emit:
+    code: UK_DAMAGES_BASED_AGREEMENT
+    severity: APPROVAL_REQUIRED
+    message: >-
+      A damages-based or conditional fee agreement in England and Wales requires legal
+      review against statutory requirements.
+    claims: [CLM-A-0048]
+  explanation: >-
+    Damages-based agreements are governed by statutory requirements including the
+    Damages-Based Agreements Regulations 2013, and applicability depends on matter
+    type and agreement structure. Jurisdiction is not an engagement path, so this
+    rule is not machine-evaluable.
+  evidence_class: A_DIRECT
+  source_ref: report:uk-constraints

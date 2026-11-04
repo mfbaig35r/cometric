@@ -1,0 +1,226 @@
+scheme: negotiation_exchanges
+title: Commercial negotiation as exchange of risk
+concepts:
+- id: NEG-001
+  label: Lower unit price for minimum volume or spend
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'lower unit price' in exchange for
+    'minimum volume or spend'. Provider trades price for utilization certainty.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-V04, CL-R01]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Lower unit price
+    client_concession: Minimum volume or spend
+    rationale: Provider trades price for utilization certainty.
+    row: 1
+- id: NEG-002
+  label: Lower base fee for higher overage
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'lower base fee' in exchange for 'higher
+    overage'. Client gains a lower fixed commitment; provider recovers upside in high
+    demand.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R10, CL-V02]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Lower base fee
+    client_concession: Higher overage
+    rationale: >-
+      Client gains a lower fixed commitment; provider recovers upside in high demand.
+    row: 2
+- id: NEG-003
+  label: Lower implementation fee for longer term or termination recovery
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'lower implementation fee' in exchange
+    for 'longer term or termination recovery'. Provider amortizes investment.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R09, CL-R08, CL-P14]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Lower implementation fee
+    client_concession: Longer term or termination recovery
+    rationale: Provider amortizes investment.
+    row: 3
+- id: NEG-004
+  label: Stronger SLA for higher price or capacity commitment
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'stronger sla' in exchange for 'higher
+    price or capacity commitment'. A service guarantee requires buffer capacity.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P04, CL-R03]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Stronger SLA
+    client_concession: Higher price or capacity commitment
+    rationale: A service guarantee requires buffer capacity.
+    row: 4
+- id: NEG-005
+  label: Productivity guarantee for automation investment recovery
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'productivity guarantee' in exchange
+    for 'automation investment recovery'. Provider funds transformation in exchange
+    for a return mechanism.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P05]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Productivity guarantee
+    client_concession: Automation investment recovery
+    rationale: Provider funds transformation in exchange for a return mechanism.
+    row: 5
+- id: NEG-006
+  label: Greater rollover for narrower service-credit rights or longer term
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'greater rollover' in exchange for
+    'narrower service-credit rights or longer term'. Provider accepts a deferred obligation.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R06, CL-P01]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Greater rollover
+    client_concession: Narrower service-credit rights or longer term
+    rationale: Provider accepts a deferred obligation.
+    row: 6
+- id: NEG-007
+  label: More flexible catalog for lower volume discount
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'more flexible catalog' in exchange
+    for 'lower volume discount'. Flexibility reduces provider forecast certainty.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-VL04, CL-V04]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: More flexible catalog
+    client_concession: Lower volume discount
+    rationale: Flexibility reduces provider forecast certainty.
+    row: 7
+- id: NEG-008
+  label: Capacity guarantee for committed spend
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'capacity guarantee' in exchange for
+    'committed spend'. Provider is compensated for reserved resources.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R03, CL-R01]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Capacity guarantee
+    client_concession: Committed spend
+    rationale: Provider is compensated for reserved resources.
+    row: 8
+- id: NEG-009
+  label: Shared savings for baseline and audit rights
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'shared savings' in exchange for 'baseline
+    and audit rights'. Provider needs reliable attribution.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-P07]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Shared savings
+    client_concession: Baseline and audit rights
+    rationale: Provider needs reliable attribution.
+    row: 9
+- id: NEG-010
+  label: Fixed fee for stronger change control
+  synonyms: []
+  definition: >-
+    Negotiation exchange: the provider concedes 'fixed fee' in exchange for 'stronger
+    change control'. Provider accepts cost risk only inside a bounded scope.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-006, CL-D11]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats: []
+  source_ref: report:negotiation-exchanges
+  status: active
+  attributes:
+    provider_concession: Fixed fee
+    client_concession: Stronger change control
+    rationale: Provider accepts cost risk only inside a bounded scope.
+    row: 10

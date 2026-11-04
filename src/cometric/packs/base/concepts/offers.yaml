@@ -1,0 +1,88 @@
+scheme: offers
+title: Three defensible offers for one engagement
+concepts:
+- id: OFFER-A
+  label: Low commitment, high variable
+  synonyms: []
+  definition: >-
+    One of three defensible offers for the same recurring contract-review service.
+    Annual base fee of $400,000 (illustrative) plus higher unit charges.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-023, CL-R10]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Dollar amounts are illustrative figures from the report, not benchmarks.
+  - >-
+    None of the three offers is universally superior; selection depends on demand
+    distribution, availability needs, client budget preferences and provider redeployment
+    capability.
+  source_ref: report:three-offers
+  status: active
+  attributes:
+    structure: Annual base fee of $400,000 (illustrative) plus higher unit charges.
+    tradeoff: >-
+      Maximizes client flexibility but gives the provider less revenue certainty.
+    illustrative: true
+- id: OFFER-B
+  label: High commitment, lower marginal
+  synonyms: []
+  definition: >-
+    One of three defensible offers for the same recurring contract-review service.
+    Annual minimum of $800,000 (illustrative) including a substantial allowance, plus
+    reduced overage.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [CL-R01, CL-V01, CL-V02]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - Dollar amounts are illustrative figures from the report, not benchmarks.
+  - >-
+    None of the three offers is universally superior; selection depends on demand
+    distribution, availability needs, client budget preferences and provider redeployment
+    capability.
+  source_ref: report:three-offers
+  status: active
+  attributes:
+    structure: >-
+      Annual minimum of $800,000 (illustrative) including a substantial allowance,
+      plus reduced overage.
+    tradeoff: >-
+      Transfers under-consumption risk toward the client but supports lower marginal
+      pricing.
+    illustrative: true
+- id: OFFER-C
+  label: Dedicated capacity
+  synonyms: []
+  definition: >-
+    One of three defensible offers for the same recurring contract-review service.
+    Fixed annual FTE or capacity charge plus separately priced overflow.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [PM-004, PM-009, CL-R03]
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0004]
+  caveats:
+  - >-
+    None of the three offers is universally superior; selection depends on demand
+    distribution, availability needs, client budget preferences and provider redeployment
+    capability.
+  source_ref: report:three-offers
+  status: active
+  attributes:
+    structure: Fixed annual FTE or capacity charge plus separately priced overflow.
+    tradeoff: >-
+      Maximizes continuity and availability but exposes the client to value concerns
+      if capacity is unused.
+    illustrative: true

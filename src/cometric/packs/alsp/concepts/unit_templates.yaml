@@ -1,0 +1,132 @@
+scheme: unit_templates
+title: Legal-services unit templates
+concepts:
+- id: accepted_contract_review
+  label: Accepted contract review
+  synonyms: []
+  definition: One completed review of one eligible contract, counted when accepted.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0018]
+  caveats:
+  - 'Template only: the user must supply the counting and acceptance rules.'
+  source_ref: report:landscape
+  status: active
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: >-
+      What makes one contract review countable: which documents count as one contract
+      (amendments, schedules, duplicates), and which contracts are eligible?
+    acceptance_rule_prompt: >-
+      When is a contract review accepted: client sign-off, a deemed-acceptance period,
+      or another event, and what rejection rights apply?
+    complexity_note: >-
+      Contracts vary materially in effort; consider complexity bands with jointly
+      defined criteria and audit rights.
+- id: reviewed_document
+  label: Reviewed document
+  synonyms: []
+  definition: One document reviewed and coded under the agreed review protocol.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0021]
+  caveats:
+  - 'Template only: the user must supply the counting and acceptance rules.'
+  source_ref: report:landscape
+  status: active
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: >-
+      What counts as one document (families, attachments, near-duplicates), and are
+      documents removed by culling or automation counted?
+    acceptance_rule_prompt: >-
+      When is a reviewed document accepted: after first-level review, after quality
+      control, or after a client sampling check?
+    complexity_note: >-
+      Per-document pricing is highly measurable but vulnerable to complexity heterogeneity.
+- id: custodian
+  label: Custodian
+  synonyms: []
+  definition: One custodian whose data is collected, processed or reviewed.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: [CLM-A-0021]
+  caveats:
+  - 'Template only: the user must supply the counting and acceptance rules.'
+  source_ref: report:landscape
+  status: active
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: >-
+      Which custodians count, and how are data volume, sources and re-collection treated
+      for one custodian?
+    acceptance_rule_prompt: When is work for a custodian complete and accepted?
+    complexity_note: >-
+      Data volumes per custodian can vary widely; state any volume assumptions or
+      bands.
+- id: matter
+  label: Matter
+  synonyms: []
+  definition: One legal matter handled under the agreed scope.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: ESTABLISHED_COMMON
+  claims: [CLM-A-0017]
+  caveats:
+  - 'Template only: the user must supply the counting and acceptance rules.'
+  source_ref: report:landscape
+  status: active
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: >-
+      What opens and closes a matter, and how are related or consolidated matters
+      counted?
+    acceptance_rule_prompt: What event marks a matter as completed and accepted?
+    complexity_note: >-
+      Matters vary materially in effort and risk; portfolio or banded pricing may
+      be needed.
+- id: subpoena_response
+  label: Subpoena response
+  synonyms: []
+  definition: One completed response to one subpoena or similar request.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: A_DIRECT
+  prevalence: DOCUMENTED_SPECIALIZED
+  claims: [CLM-A-0016]
+  caveats:
+  - 'Template only: the user must supply the counting and acceptance rules.'
+  source_ref: report:landscape
+  status: active
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: >-
+      What counts as one subpoena response, and how are multi-part or repeat requests
+      counted?
+    acceptance_rule_prompt: >-
+      When is a response accepted: on dispatch, on client approval, or on confirmation
+      of receipt?
+    complexity_note: >-
+      Responses vary in complexity; tiered flat fees are one documented approach.

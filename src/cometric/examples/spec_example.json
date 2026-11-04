@@ -1,0 +1,134 @@
+{
+  "case": "spec_8_2",
+  "title": "Specification section 8.2 example",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "EX-MANAGED-001",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "accepted_contract_review",
+        "kind": "COUNT",
+        "counting_rule": "One completed review of one eligible contract",
+        "acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection",
+        "exclusions": [
+          "Contracts over 100 pages",
+          "Non-English contracts"
+        ]
+      }
+    ],
+    "services": [
+      {
+        "id": "contract_review",
+        "unit_definition_id": "accepted_contract_review"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "effective_to": null,
+        "supersedes_id": null,
+        "adjustment_order": "DEFAULT",
+        "components": [
+          {
+            "id": "base",
+            "service_id": "contract_review",
+            "calculation_method": "FIXED_RECURRING",
+            "billing_basis": "FIXED",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "fixed_amount": "100000.00",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": []
+          },
+          {
+            "id": "overage",
+            "service_id": "contract_review",
+            "calculation_method": "ALLOWANCE_OVERAGE",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "entitlement_id": "base_allowance",
+            "rate_schedule_id": "overage_rate",
+            "quantity_source": "scenario.accepted_units",
+            "unit": "accepted_contract_review",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [
+              "base_allowance"
+            ]
+          }
+        ],
+        "entitlements": [
+          {
+            "id": "base_allowance",
+            "granted_by": "base",
+            "unit": "accepted_contract_review",
+            "included_quantity": "1000",
+            "accumulation_period": "MONTH",
+            "overage_recognition": "PER_SEGMENT",
+            "rollover": {
+              "policy": "NONE"
+            }
+          }
+        ],
+        "rate_schedules": [
+          {
+            "id": "overage_rate",
+            "currency": "USD",
+            "unit": "accepted_contract_review",
+            "tier_method": "MARGINAL",
+            "tier_scope": "EXCESS_ONLY",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "120.00"
+              }
+            ]
+          }
+        ],
+        "commitments": []
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "base_case",
+      "horizon": {
+        "from": "2027-01-01",
+        "to": "2027-01-31"
+      },
+      "assumptions": [
+        {
+          "name": "accepted_units",
+          "unit": "accepted_contract_review",
+          "value": "1200",
+          "time_period": "2027-01",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "2027-01": {
+      "contractual_fee": "124000"
+    }
+  }
+}

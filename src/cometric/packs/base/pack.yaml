@@ -1,0 +1,10 @@
+id: base
+version: 0.1.0
+title: Base commercial knowledge
+description: >-
+  Domain-neutral commercial-arrangement knowledge: billing bases, pricing models,
+  levers, dimensions, metrics, cost categories, compatibility and reasoning rules,
+  and cross-sector evidence.
+license: Apache-2.0
+core_version: '>=0.1,<0.2'
+extends: null

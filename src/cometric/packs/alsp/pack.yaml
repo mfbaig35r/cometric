@@ -1,0 +1,9 @@
+id: alsp
+version: 0.1.0
+title: Alternative legal services
+description: >-
+  Legal-services sector pack: service categories, unit templates, provider types,
+  regulatory constraint rules, legal-sector prevalence overlays and evidence.
+license: Apache-2.0
+core_version: '>=0.1,<0.2'
+extends: base

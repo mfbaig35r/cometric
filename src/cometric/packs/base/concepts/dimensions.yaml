@@ -1,0 +1,404 @@
+scheme: dimensions
+title: Multidimensional commercial model
+concepts:
+- id: DIM-01
+  label: Billing basis
+  synonyms: []
+  definition: >-
+    Commercial dimension 'billing basis', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats:
+  - >-
+    The core executes eight bases; MILESTONE maps to FIXED (or OUTPUT) with EVENT
+    cadence.
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: billing_basis
+    values:
+    - TIME
+    - RESOURCE
+    - CAPACITY
+    - OUTPUT
+    - USAGE
+    - FIXED
+    - MILESTONE
+    - COST
+    - OUTCOME
+    independence: Primary
+    derived: false
+    row: 1
+- id: DIM-02
+  label: Revenue cadence
+  synonyms: []
+  definition: >-
+    Commercial dimension 'revenue cadence', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: revenue_cadence
+    values: [ONE_TIME, MONTHLY, QUARTERLY, ANNUAL, MILESTONE, USAGE_TRIGGERED]
+    independence: Largely independent
+    derived: false
+    row: 2
+- id: DIM-03
+  label: Commitment
+  synonyms: []
+  definition: >-
+    Commercial dimension 'commitment', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: commitment
+    values:
+    - NONE
+    - MINIMUM_SPEND
+    - MINIMUM_VOLUME
+    - RESERVED_CAPACITY
+    - PREPAID_CREDIT
+    independence: Independent but economically coupled to billing basis
+    derived: false
+    row: 3
+- id: DIM-04
+  label: Rate structure
+  synonyms: []
+  definition: >-
+    Commercial dimension 'rate structure', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: rate_structure
+    values: [FLAT, ROLE_BASED, BLENDED, TIERED, INDEXED, COMPLEXITY_WEIGHTED]
+    independence: Conditional modifier
+    derived: false
+    row: 4
+- id: DIM-05
+  label: Scope
+  synonyms: []
+  definition: >-
+    Commercial dimension 'scope', treated as a separate axis of an arrangement rather
+    than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: scope
+    values: [FIXED, VARIABLE, CATALOG, PORTFOLIO, COMPLEXITY_BANDED]
+    independence: Independent
+    derived: false
+    row: 5
+- id: DIM-06
+  label: Volume risk
+  synonyms: []
+  definition: >-
+    Commercial dimension 'volume risk', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type. Its value is derived from scenario
+    results rather than declared.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: volume_risk
+    values: [CLIENT, PROVIDER, SHARED, THIRD_PARTY]
+    independence: Derived from commitment, cap and overage architecture
+    derived: true
+    row: 6
+- id: DIM-07
+  label: Cost risk
+  synonyms: []
+  definition: >-
+    Commercial dimension 'cost risk', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type. Its value is derived from scenario
+    results rather than declared.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: cost_risk
+    values: [CLIENT, PROVIDER, SHARED, THIRD_PARTY]
+    independence: Derived from fee and cost pass-through structure
+    derived: true
+    row: 7
+- id: DIM-08
+  label: Performance risk
+  synonyms: []
+  definition: >-
+    Commercial dimension 'performance risk', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type. Its value is derived from scenario
+    results rather than declared.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: performance_risk
+    values: [CLIENT, PROVIDER, SHARED, THIRD_PARTY]
+    independence: Derived from SLA and incentive structure
+    derived: true
+    row: 8
+- id: DIM-09
+  label: Automation benefit
+  synonyms: []
+  definition: >-
+    Commercial dimension 'automation benefit', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats:
+  - >-
+    REINVESTED comes from the report's controlled vocabulary rather than the dimension
+    table.
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: automation_benefit
+    values: [PROVIDER_RETAINED, CLIENT_RETAINED, SHARED, GLIDE_PATH, REINVESTED]
+    independence: Independent commercial choice
+    derived: false
+    row: 9
+- id: DIM-10
+  label: Delivery model
+  synonyms: []
+  definition: >-
+    Commercial dimension 'delivery model', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: delivery_model
+    values: [DEDICATED, POOLED, HYBRID]
+    independence: Independent but strongly affects capacity economics
+    derived: false
+    row: 10
+- id: DIM-11
+  label: Duration
+  synonyms: []
+  definition: >-
+    Commercial dimension 'duration', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: duration
+    values: [PROJECT, MONTH_TO_MONTH, ANNUAL, MULTI_YEAR]
+    independence: Independent
+    derived: false
+    row: 11
+- id: DIM-12
+  label: Adjustment
+  synonyms: []
+  definition: >-
+    Commercial dimension 'adjustment', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats:
+  - >-
+    ROLLOVER comes from the report's controlled vocabulary rather than the dimension
+    table.
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: adjustment
+    values:
+    - TRUE_UP
+    - OVERAGE
+    - COLLAR
+    - CHANGE_ORDER
+    - INDEXATION
+    - REOPENER
+    - ROLLOVER
+    independence: Conditional
+    derived: false
+    row: 12
+- id: DIM-13
+  label: Service level
+  synonyms: []
+  definition: >-
+    Commercial dimension 'service level', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: service_level
+    values: [STANDARD, PREMIUM, DIFFERENTIATED, OUTCOME_GUARANTEED]
+    independence: Conditional
+    derived: false
+    row: 13
+- id: DIM-14
+  label: Technology treatment
+  synonyms: []
+  definition: >-
+    Commercial dimension 'technology treatment', treated as a separate axis of an
+    arrangement rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: technology_treatment
+    values: [BUNDLED, SEPARATE_LICENSE, PASS_THROUGH, METERED]
+    independence: Independent
+    derived: false
+    row: 14
+- id: DIM-15
+  label: Transition recovery
+  synonyms: []
+  definition: >-
+    Commercial dimension 'transition recovery', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: transition_recovery
+    values: [UPFRONT, AMORTIZED, WAIVED, CONDITIONAL_ON_TERM]
+    independence: Independent
+    derived: false
+    row: 15
+- id: DIM-16
+  label: Exit treatment
+  synonyms: []
+  definition: >-
+    Commercial dimension 'exit treatment', treated as a separate axis of an arrangement
+    rather than a mutually exclusive model type.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0001]
+  caveats: []
+  source_ref: report:dimensions
+  status: active
+  attributes:
+    key: exit_treatment
+    values: [NO_FEE, TERMINATION_CHARGE, TRANSITION_FEE, AMORTIZATION_RECOVERY]
+    independence: Conditional
+    derived: false
+    row: 16

@@ -1,0 +1,186 @@
+scheme: pricing_models
+overlays:
+- id: PM-001
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0009, CLM-A-0035]
+  caveats: []
+- id: PM-002
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: []
+  caveats:
+  - >-
+    The legal-sector citation for this entry is not in the report's evidence register.
+- id: PM-003
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0012]
+  caveats: []
+- id: PM-004
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0017, CLM-A-0010]
+  caveats: []
+- id: PM-005
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0045]
+  caveats: []
+- id: PM-006
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0043]
+  caveats: []
+- id: PM-007
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0044, CLM-A-0015]
+  caveats: []
+- id: PM-008
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0025]
+  caveats: []
+- id: PM-009
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0010]
+  caveats: []
+- id: PM-010
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0022]
+  caveats: []
+- id: PM-011
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0021, CLM-A-0017, CLM-A-0015]
+  caveats: []
+- id: PM-012
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0021, CLM-A-0018]
+  caveats: []
+- id: PM-013
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0017]
+  caveats: []
+- id: PM-014
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0016]
+  caveats: []
+- id: PM-015
+  prevalence: UNVERIFIED
+  evidence_class: C_INFERENCE
+  claims: []
+  caveats:
+  - >-
+    Commercially sensible and consistent with unit-cost approaches by work type; not
+    proven universal in ALSPs.
+  - >-
+    The legal-sector citation for this entry is not in the report's evidence register.
+- id: PM-016
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: B_CORROBORATED
+  claims: []
+  caveats:
+  - >-
+    Established in consulting and implementation; specialized in public ALSP disclosures.
+- id: PM-017
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0025]
+  caveats: []
+- id: PM-019
+  prevalence: UNVERIFIED
+  evidence_class: B_CORROBORATED
+  claims: []
+  caveats:
+  - >-
+    Established in professional services and contracting; less visible in public ALSP
+    marketing.
+- id: PM-020
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0025, CLM-A-0024]
+  caveats: []
+- id: PM-022
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: []
+  caveats:
+  - >-
+    The legal-sector citation for this entry is not in the report's evidence register.
+- id: PM-023
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0017]
+  caveats: []
+- id: PM-024
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0024]
+  caveats: []
+- id: PM-025
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0024]
+  caveats: []
+- id: PM-026
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0025]
+  caveats: []
+- id: PM-027
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0027, CLM-A-0029]
+  caveats:
+  - >-
+    Established in legal practice but specialized for the ALSP context; legal restrictions
+    depend on jurisdiction and provider.
+- id: PM-028
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0023, CLM-A-0044, CLM-A-0042]
+  caveats: []
+- id: PM-029
+  prevalence: ESTABLISHED_COMMON
+  evidence_class: B_CORROBORATED
+  claims: []
+  caveats:
+  - >-
+    The legal-sector citation for this entry is not in the report's evidence register.
+- id: PM-030
+  prevalence: EMERGING
+  evidence_class: B_CORROBORATED
+  claims: [CLM-A-0032, CLM-A-0046]
+  caveats:
+  - Emerging for legal services specifically.
+- id: PM-031
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0020]
+  caveats: []
+- id: PM-032
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: []
+  caveats:
+  - Documented but specialized in legal alternative-fee practice.
+  - >-
+    The legal-sector citation for this entry is not in the report's evidence register.
+- id: PM-033
+  prevalence: DOCUMENTED_SPECIALIZED
+  evidence_class: A_DIRECT
+  claims: [CLM-A-0024]
+  caveats: []
+- id: PM-034
+  prevalence: EMERGING
+  evidence_class: B_CORROBORATED
+  claims: []
+  caveats:
+  - Established adjacent-sector mechanism; emerging ALSP analogue.

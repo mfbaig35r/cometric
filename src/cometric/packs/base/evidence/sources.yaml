@@ -1,0 +1,292 @@
+sources:
+- id: E020
+  title: Managed services multi-year subscription offering page
+  url: https://kpmg.com/us/en/capabilities-services/advisory-services/kpmg-managed-services.html
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - professional_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A adjacent-sector provider disclosure. Multi-year subscriptions, predictable cost,
+    outcome SLAs. Current at research cutoff.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E021
+  title: Outcome-based business process outsourcing article
+  url: https://www.ey.com/en_ch/insights/consulting/how-outcome-based-outsourcing-can-make-bpo-deals-a-win-win-situation
+  publication_date: '2024'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - business_process_outsourcing
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A/B adjacent. Outcome economics, savings targets, glide paths.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E022
+  title: Technology managed-services contract vetting guidance
+  url: https://www.deloitte.com/us/en/services/consulting/services/how-to-vet-your-technology-managed-services-contract.html
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: PROVIDER_DISCLOSURE
+  applicability:
+    jurisdictions: []
+    sectors:
+    - technology_managed_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A adjacent. GenAI savings, incentives, SLA and value terms. Current page.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E023
+  title: Cloud marketplace pricing-model selection documentation
+  url: https://docs.cloud.google.com/marketplace/docs/partners/offers/select-pricing-model
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: VENDOR_DOCUMENTATION
+  applicability:
+    jurisdictions: []
+    sectors:
+    - cloud_infrastructure
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A adjacent. Minimum commitment plus usage and overage. Current page.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E024
+  title: Cloud savings plans FAQ
+  url: https://aws.amazon.com/savingsplans/faqs/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: VENDOR_DOCUMENTATION
+  applicability:
+    jurisdictions: []
+    sectors:
+    - cloud_infrastructure
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A adjacent. Commitment for discount plus on-demand excess. Current page.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E025
+  title: Cloud savings plans pricing offer page
+  url: https://azure.microsoft.com/en-us/pricing/offers/savings-plans/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: VENDOR_DOCUMENTATION
+  applicability:
+    jurisdictions: []
+    sectors:
+    - cloud_infrastructure
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A adjacent. Committed hourly spend regardless of usage. Current page.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E026
+  title: IFRS 15 Revenue from Contracts with Customers
+  url: https://www.ifrs.org/issued-standards/list-of-standards/ifrs-15-revenue-from-contracts-with-customers/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: STANDARD
+  applicability:
+    jurisdictions:
+    - INTL
+    sectors:
+    - accounting
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A authoritative accounting standard; current standard.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E027
+  title: ASC Topic 606 revenue recognition summary
+  url: https://storage.fasb.org/ASU%202014-09_Section%20A.pdf
+  publication_date: '2014'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: STANDARD
+  applicability:
+    jurisdictions:
+    - US
+    sectors:
+    - accounting
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A authoritative accounting standard; issued 2014, current.
+  original_url: https://fasb.org/projects/recently-completed-projects/revenue-recognition-summary
+  verification:
+    verdict: MOVED
+    retrieved_date: '2026-11-03'
+    note: Summary page refused access; the claim was verified against the published text of the standard.
+- id: E032
+  title: Outsourcing and operational resilience guidance (UK financial conduct regulator)
+  url: https://www.fca.org.uk/firms/outsourcing-and-operational-resilience
+  publication_date: '2026-07-14'
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: REGULATORY_GUIDANCE
+  applicability:
+    jurisdictions:
+    - UK
+    sectors:
+    - financial_services
+    provider_types: []
+    date_range: null
+  verified: false
+  notes:
+  - Register class A UK regulatory. Financial-services outsourcing; updated July 14, 2026.
+  verification:
+    verdict: PARTIAL
+    retrieved_date: '2026-11-03'
+    note: The July 2026 update concerns critical third parties; the data-security and lifecycle-governance
+      emphasis was not found.
+- id: E033
+  title: Reporting material third-party arrangements rules (UK financial conduct regulator)
+  url: https://www.fca.org.uk/firms/outsourcing-and-operational-resilience/reporting-material-third-party-arrangements
+  publication_date: March 2026
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: REGULATORY_GUIDANCE
+  applicability:
+    jurisdictions:
+    - UK
+    sectors:
+    - financial_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - 'Register class A, future-effective: rules effective March 18, 2027.'
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E034
+  title: SS2/21 Outsourcing and third-party risk management (updated)
+  url: https://www.bankofengland.co.uk/prudential-regulation/publication/2021/march/outsourcing-and-third-party-risk-management-ss
+  publication_date: March 2026
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: REGULATORY_GUIDANCE
+  applicability:
+    jurisdictions:
+    - UK
+    sectors:
+    - financial_services
+    provider_types: []
+    date_range: null
+  verified: false
+  notes:
+  - Register class A. Outsourcing, audit and exit obligations; version effective March 18, 2027.
+  verification:
+    verdict: PARTIAL
+    retrieved_date: '2026-11-03'
+    note: Confirms publication on 18 March 2026 and effect from 18 March 2027; audit and access-rights
+      detail was not on the landing page.
+- id: E035
+  title: AI contracts and third parties audit toolkit (UK data protection regulator)
+  url: https://ico.org.uk/for-organisations/advice-and-services/audits/data-protection-audit-framework/toolkits/artificial-intelligence/contracts-and-third-parties/
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: REGULATORY_GUIDANCE
+  applicability:
+    jurisdictions:
+    - UK
+    sectors: []
+    provider_types: []
+    date_range: null
+  verified: false
+  notes:
+  - Register class A UK regulatory guidance. AI supplier contracts and data governance. Current at research
+    cutoff.
+  verification:
+    verdict: UNREACHABLE
+    retrieved_date: '2026-11-03'
+    note: Publisher site refused automated access on 2026-11-03; verify manually before marking verified.
+- id: E036
+  title: AI good and poor practice in financial services (UK financial conduct regulator)
+  url: https://www.fca.org.uk/publications/good-poor-practice/ai-financial-services
+  publication_date: October 2026
+  date_unknown: false
+  retrieved_date: '2026-11-03'
+  source_type: REGULATORY_GUIDANCE
+  applicability:
+    jurisdictions:
+    - UK
+    sectors:
+    - financial_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A current UK financial-services guidance on AI vendor oversight.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null
+- id: E038
+  title: Professional-services project financial column definitions
+  url: https://api.deltek.com/Product/DeltekPS/1.1/rept_Project_Summary_Columns_Tab1.html
+  publication_date: null
+  date_unknown: true
+  retrieved_date: '2026-11-03'
+  source_type: VENDOR_DOCUMENTATION
+  applicability:
+    jurisdictions: []
+    sectors:
+    - professional_services
+    provider_types: []
+    date_range: null
+  verified: true
+  notes:
+  - Register class A for one software vendor's definition; not universal. Current documentation.
+  verification:
+    verdict: VERIFIED
+    retrieved_date: '2026-11-03'
+    note: null

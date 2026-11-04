@@ -1,0 +1,33 @@
+areas:
+- area: Foundational pricing bases
+  strength: STRONG
+  readiness: Ready
+  source_ref: report:evidence-coverage
+- area: Commercial modifiers and levers
+  strength: MODERATE_STRONG
+  readiness: Ready as concepts; prevalence often unknown
+  source_ref: report:evidence-coverage
+- area: Revenue and accounting definitions
+  strength: STRONG
+  readiness: Ready
+  source_ref: report:evidence-coverage
+- area: Cost-allocation logic
+  strength: MODERATE
+  readiness: Definitions ready; internal policy required
+  source_ref: report:evidence-coverage
+- area: Demand and capacity economics
+  strength: STRONG analytically, MODERATE empirically
+  readiness: Ready for deterministic simulation
+  source_ref: report:evidence-coverage
+- area: AI production economics
+  strength: MODERATE, EMERGING
+  readiness: Encode cost categories, not fixed coefficients
+  source_ref: report:evidence-coverage
+- area: Adjacent-sector mechanisms
+  strength: STRONG
+  readiness: Encode transferability class
+  source_ref: report:evidence-coverage
+- area: Outcome and gain-share baselines
+  strength: MODERATE
+  readiness: Encode prerequisites
+  source_ref: report:evidence-coverage

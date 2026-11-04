@@ -1,0 +1,105 @@
+scheme: fee_components
+title: AI pricing architecture components
+concepts:
+- id: AIFEE-01
+  label: Platform access fee
+  synonyms: []
+  definition: Charge for access to the platform or technology capability.
+  kind: null
+  bases: [FIXED]
+  methods: [FIXED_RECURRING]
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0037]
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+  status: active
+  attributes:
+    component_of: TotalFee
+- id: AIFEE-02
+  label: Service consumption fee
+  synonyms: []
+  definition: Charge that scales with service consumption.
+  kind: null
+  bases: [OUTPUT, USAGE]
+  methods: [UNIT_OUTPUT]
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0037]
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+  status: active
+  attributes:
+    component_of: TotalFee
+- id: AIFEE-03
+  label: Human oversight fee
+  synonyms: []
+  definition: Charge for human review and oversight of automated output.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0037]
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+  status: active
+  attributes:
+    component_of: TotalFee
+- id: AIFEE-04
+  label: Capacity premium
+  synonyms: []
+  definition: Charge for reserved availability or throughput.
+  kind: null
+  bases: [CAPACITY]
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0037]
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+  status: active
+  attributes:
+    component_of: TotalFee
+- id: AIFEE-05
+  label: Risk transfer premium
+  synonyms: []
+  definition: Charge for risk the provider accepts on the client's behalf.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0037]
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+  status: active
+  attributes:
+    component_of: TotalFee
+- id: AIFEE-06
+  label: Outcome adjustment
+  synonyms: []
+  definition: Adjustment of consideration based on a measured outcome.
+  kind: null
+  bases: [OUTCOME]
+  methods: [OUTCOME_ADJUSTMENT]
+  broader: []
+  related: []
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0037]
+  caveats: []
+  source_ref: report:ai-pricing-architecture
+  status: active
+  attributes:
+    component_of: TotalFee

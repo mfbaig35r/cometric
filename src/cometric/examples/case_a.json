@@ -1,0 +1,293 @@
+{
+  "case": "A",
+  "title": "Annual managed-services commitment with included volume and overage",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-A",
+    "name": "Annual managed-services commitment",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "unit_definitions": [
+      {
+        "code": "unit",
+        "kind": "COUNT",
+        "counting_rule": "One completed and accepted unit of the managed service",
+        "acceptance_rule": "Accepted on client sign-off"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "unit"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "base",
+            "service_id": "svc",
+            "calculation_method": "FIXED_RECURRING",
+            "billing_basis": "FIXED",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "fixed_amount": "100000"
+          },
+          {
+            "id": "overage",
+            "service_id": "svc",
+            "calculation_method": "ALLOWANCE_OVERAGE",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "MONTHLY",
+            "currency": "USD",
+            "quantity_source": "scenario.units",
+            "unit": "unit",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [
+              "allowance"
+            ],
+            "entitlement_id": "allowance",
+            "rate_schedule_id": "overage_rate"
+          }
+        ],
+        "entitlements": [
+          {
+            "id": "allowance",
+            "granted_by": "base",
+            "unit": "unit",
+            "included_quantity": "12000",
+            "accumulation_period": "YEAR",
+            "overage_recognition": "CUMULATIVE",
+            "rollover": {
+              "policy": "NONE"
+            }
+          }
+        ],
+        "rate_schedules": [
+          {
+            "id": "overage_rate",
+            "currency": "USD",
+            "unit": "unit",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "120"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "breach_mode": "OVERFLOW_COST",
+      "capacity": [
+        {
+          "id": "annual_capacity",
+          "quantity": "units",
+          "amount": "14000",
+          "accumulation_period": "YEAR",
+          "overflow_cost_rate": "40",
+          "overflow_replaces": [
+            "variable"
+          ]
+        }
+      ],
+      "roles": [],
+      "demand_hours_source": null,
+      "cost_components": [
+        {
+          "id": "labor",
+          "category": "DEDICATED_LABOR",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "540000",
+          "period": "ANNUAL",
+          "avoidability": "UNAVOIDABLE"
+        },
+        {
+          "id": "platform",
+          "category": "PLATFORM_OPERATIONS",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "120000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "variable",
+          "category": "POOLED_LABOR",
+          "behavior": "VARIABLE",
+          "origin": "ILLUSTRATIVE",
+          "driver": "units",
+          "rate": "18"
+        },
+        {
+          "id": "governance",
+          "category": "ENGAGEMENT_OVERHEAD",
+          "behavior": "FIXED",
+          "origin": "ILLUSTRATIVE",
+          "amount": "60000",
+          "period": "ANNUAL"
+        },
+        {
+          "id": "transition",
+          "category": "TRANSITION",
+          "behavior": "ONE_TIME",
+          "origin": "ILLUSTRATIVE",
+          "amount": "80000",
+          "amortize_months": 12
+        }
+      ]
+    },
+    "risk_allocations": [
+      {
+        "risk_type": "VOLUME",
+        "declared_bearer": "SHARED",
+        "driver": "units"
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "assumptions": [
+        {
+          "name": "units",
+          "value": "6000",
+          "unit": "unit",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "units",
+          "value": "10000",
+          "unit": "unit",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "assumptions": [
+        {
+          "name": "units",
+          "value": "14000",
+          "unit": "unit",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "as_published": {
+      "id": "as_published",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    },
+    "reference": {
+      "id": "reference",
+      "version": "1",
+      "owner": "casebook",
+      "mapping": {
+        "DEDICATED_LABOR": "DIRECT_DELIVERY",
+        "POOLED_LABOR": "DIRECT_DELIVERY",
+        "DELIVERY_MANAGEMENT": "DIRECT_DELIVERY",
+        "QA_REWORK": "DIRECT_DELIVERY",
+        "AI_INFERENCE": "DIRECT_DELIVERY",
+        "PLATFORM_OPERATIONS": "DIRECT_DELIVERY",
+        "THIRD_PARTY": "DIRECT_DELIVERY",
+        "CLIENT_IMPLEMENTATION": "ENGAGEMENT_AVOIDABLE",
+        "TRANSITION": "ENGAGEMENT_AVOIDABLE",
+        "ENGAGEMENT_OVERHEAD": "ENGAGEMENT_AVOIDABLE",
+        "REUSABLE_ENGINEERING": "PORTFOLIO_SHARED",
+        "IDLE_POOLED_CAPACITY": "PORTFOLIO_SHARED",
+        "CORPORATE_OVERHEAD": "CORPORATE_OVERHEAD"
+      },
+      "transition_view": "AMORTIZED"
+    }
+  },
+  "expected": {
+    "as_published": {
+      "low": {
+        "contractual_fee": "1200000",
+        "direct_delivery_cost": "768000",
+        "gross_profit": "432000",
+        "contribution_profit": "292000"
+      },
+      "base": {
+        "contractual_fee": "1200000",
+        "direct_delivery_cost": "840000",
+        "gross_profit": "360000",
+        "contribution_profit": "220000"
+      },
+      "high": {
+        "contractual_fee": "1440000",
+        "direct_delivery_cost": "912000",
+        "gross_profit": "528000",
+        "contribution_profit": "388000"
+      }
+    },
+    "margins": {
+      "low": [
+        "0.360",
+        "0.243"
+      ],
+      "base": [
+        "0.300",
+        "0.183"
+      ],
+      "high": [
+        "0.367",
+        "0.269"
+      ]
+    },
+    "client_unit_price": {
+      "low": "200",
+      "base": "120"
+    }
+  }
+}
