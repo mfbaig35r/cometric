@@ -10,7 +10,7 @@ Version `0.1.0.dev0`, built against `COMETRIC_SPEC_v0.2.md`. Date: 2026-11-03.
 | M1 core engine | Done | All seven casebook fixtures reproduce the report under both cost policies. |
 | M2 compare, optimize, MCP | Done | Dominance comparison, structure search, risk exposure, stdio MCP with discovery, five core templates. |
 | M3 knowledge packs | Done, with evidence caveats | `base` and `alsp` packs validate; 29 of 39 sources verified (see Evidence). |
-| M4 release | Partly done | Stateless HTTP transport built and tested. Not published; no LICENSE file until Q-2 is confirmed; no practitioner reconciliation yet. |
+| M4 release | Partly done | Stateless HTTP transport built and tested. Public on GitHub under Apache-2.0 with CI; not on PyPI; no practitioner reconciliation yet. |
 | M5 consulting pack | Not started | Needs core realization (standard rates) and outcome pricing first. |
 
 ## Tests
@@ -64,6 +64,6 @@ Many report statements cite sources that are not in its evidence register. The p
 
 ## Open questions
 
-- **Q-2 License.** `pyproject.toml` declares Apache-2.0; add the LICENSE file once confirmed.
+- **Q-2 License.** Resolved: Apache-2.0 (`LICENSE`).
 - **Q-3 Research report.** Kept out of the repository by `.gitignore`.
 - **Q-5 Firm names in evidence.** Pack text never names firms; source URLs do, because they are citations.

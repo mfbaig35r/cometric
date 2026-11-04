@@ -14,7 +14,7 @@ It is built for any service relationship priced through a composite arrangement:
 |---|---|
 | Project | Cometric (`cometric` on PyPI; CLI and MCP server `cometric`) |
 | Status | Draft for architectural review. Open-source project. |
-| License | Apache-2.0 (proposed) |
+| License | Apache-2.0 |
 | Date | November 3, 2026 |
 | Supersedes | `ALSP_COMMERCIAL_ONTOLOGY_SPEC_v0.1.pdf` |
 | Source foundation | `alsp-commercial-models-deep-research.md` (research cutoff November 3, 2026). Note: the report header states an execution date of November 4, 2026, which postdates this specification; the report should be corrected. |
@@ -1013,7 +1013,7 @@ v0.1 framed most open decisions as questions for one organization's stakeholders
 ### 11.2 Remaining open questions
 
 - **Q-1 Resolved: name.** Cometric. Distribution, import package, CLI, and MCP server are all `cometric` `[C-27]`. A trademark search is pending before public launch; the plural "Cometrics" is in use by unrelated companies.
-- **Q-2 [O] License.** Apache-2.0 is proposed for patent-grant coverage and consistency with comparable infrastructure projects.
+- **Q-2 Resolved: license.** Apache-2.0, for patent-grant coverage and consistency with comparable infrastructure projects.
 - **Q-3 [O] Research report in the public repository.** Recommendation: do not publish the report as is. Its citations are dead tokens, its date is wrong, and it names specific providers throughout. Publish this specification; ship evidence only as verified pack data (§7.2).
 - **Q-4 Resolved: second domain pack.** Consulting (§3.4, M5) `[C-30]`. It exercises methods the ALSP pack barely uses (role-based time, fixed projects, retainers, success fees) and has a first user available for reconciliation.
 - **Q-5 [O] Evidence that names firms.** Pack evidence necessarily cites the organizations whose public material supports a claim. Decide whether published packs may name them in source records, or whether sources are cited by document title and URL only.

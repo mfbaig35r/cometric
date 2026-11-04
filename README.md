@@ -1,5 +1,7 @@
 # Cometric
 
+[![CI](https://github.com/mfbaig35r/cometric/actions/workflows/ci.yml/badge.svg)](https://github.com/mfbaig35r/cometric/actions/workflows/ci.yml)
+
 **Commercial Intelligence Engine.** Cometric models the commercial arrangements behind service engagements, simulates their economics month by month, and searches for structures that balance profitability, risk, and client value.
 
 1. **Model.** Arrangements are compositions, not a single "pricing model": billing bases, rate schedules, allowances, minimums, adjustments, delivery costs, and capacity, each typed and validated.
@@ -97,3 +99,7 @@ uv run python scripts/build_fixtures.py   # regenerate casebook fixtures
 ```
 
 The specification is in `docs/COMETRIC_SPEC_v0.2.md`. Implementation status and clarifications are in `docs/STATUS.md`.
+
+## License
+
+Apache License 2.0. See `LICENSE`.

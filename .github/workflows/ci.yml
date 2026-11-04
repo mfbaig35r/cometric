@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --all-extras --locked
+      - run: uv run ruff check src tests scripts
+      - run: uv run ruff format --check src tests scripts
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+      - run: uv sync --all-extras --locked
+      - run: uv run pytest -q
+      - name: Validate packs
+        run: |
+          uv run cometric validate-pack base
+          uv run cometric validate-pack alsp
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: "3.12"
+      - run: uv build
+      - name: Smoke-test the wheel in a clean environment
+        run: |
+          uv venv /tmp/wheeltest
+          uv pip install --python /tmp/wheeltest/bin/python "$(ls dist/*.whl)[mcp]"
+          cd /tmp
+          /tmp/wheeltest/bin/cometric validate-pack alsp
+          /tmp/wheeltest/bin/cometric calculate "$(/tmp/wheeltest/bin/python -c 'import cometric, pathlib; print(pathlib.Path(cometric.__file__).parent / "examples" / "case_b.json")')" --scenario base --cost-policy reference > out.json
+          /tmp/wheeltest/bin/python -c 'import json; d = json.load(open("out.json")); assert d["status"] == "ok" and d["term"]["contribution_profit"] == "240000", d'
