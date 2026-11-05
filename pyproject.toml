@@ -1,14 +1,35 @@
 [project]
 name = "cometric"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Commercial Intelligence Engine: model, simulate, and optimize the economics of service engagements."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
+authors = [{ name = "Fahad Baig" }]
+keywords = ["pricing", "commercial", "economics", "mcp", "consulting", "managed-services", "legal", "simulation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic>=2.9",
     "pyyaml>=6.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/mfbaig35r/cometric"
+Repository = "https://github.com/mfbaig35r/cometric"
+Issues = "https://github.com/mfbaig35r/cometric/issues"
+Changelog = "https://github.com/mfbaig35r/cometric/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 mcp = ["mcp>=1.10"]

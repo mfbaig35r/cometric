@@ -21,7 +21,12 @@ from .core.schema import describe_schema
 from .core.templates import get_template, list_templates
 from .core.validation import validate_engagement
 
-__version__ = "0.1.0.dev0"
+try:
+    from importlib.metadata import PackageNotFoundError, version
+
+    __version__ = version("cometric")
+except PackageNotFoundError:  # running from a source tree without installation
+    __version__ = "0.0.0"
 
 __all__ = [
     "ENGINE_VERSION",
