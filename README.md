@@ -21,9 +21,11 @@ It is built for any service relationship priced through a composite arrangement:
 ## Install
 
 ```bash
-uv pip install "cometric[mcp]"        # once published
+pip install "cometric[mcp]"           # or: uv pip install "cometric[mcp]"
 uv sync --all-extras                  # from a checkout
 ```
+
+[![PyPI](https://img.shields.io/pypi/v/cometric)](https://pypi.org/project/cometric/)
 
 Python 3.11 or later.
 
@@ -62,7 +64,7 @@ cometric mcp --transport http --port 8765      # stateless streamable HTTP at PO
 Claude Code:
 
 ```bash
-claude mcp add cometric -- uv run --directory /path/to/cometric cometric mcp
+claude mcp add cometric -- uvx --from "cometric[mcp]" cometric mcp
 ```
 
 The HTTP transport keeps no session state, answers `GET /mcp` with 405, keeps DNS-rebinding protection on (set `COMETRIC_ALLOWED_HOSTS` for your hostname), and checks a bearer token when `COMETRIC_MCP_TOKEN` is set.

@@ -10,7 +10,7 @@ Version `0.1.0.dev0`, built against `COMETRIC_SPEC_v0.2.md`. Date: 2026-11-03.
 | M1 core engine | Done | All seven casebook fixtures reproduce the report under both cost policies. |
 | M2 compare, optimize, MCP | Done | Dominance comparison, structure search, risk exposure, stdio MCP with discovery, five core templates. |
 | M3 knowledge packs | Done, with evidence caveats | `base` and `alsp` packs validate; 29 of 39 sources verified (see Evidence). |
-| M4 release | Partly done | Stateless HTTP transport built and tested. Public on GitHub under Apache-2.0 with CI; not on PyPI; no practitioner reconciliation yet. |
+| M4 release | Partly done | Stateless HTTP transport built and tested. Public on GitHub under Apache-2.0 with CI; released to PyPI as 0.1.0 (2026-11-04); no practitioner reconciliation yet. |
 | M5 consulting pack | Done (pending reconciliation) | Core realization and `OUTCOME_ADJUSTMENT` built; `consulting` pack with 5 templates and illustrative Case H. Exit criterion still needs one real engagement reconciled. |
 
 ## Tests
