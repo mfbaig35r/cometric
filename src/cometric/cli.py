@@ -132,7 +132,7 @@ def main(argv: list[str] | None = None) -> int:
     on.add_argument("--out", help="directory to write cometric.ttl and the Markdown reference into")
 
     tl = sub.add_parser("templates", help="list templates")
-    tl.add_argument("--pack", help="list a pack's templates instead of the core ones")
+    tl.add_argument("--pack", help="list only this pack's templates")
     t = sub.add_parser("template", help="print a template")
     t.add_argument("template_id")
     t.add_argument("--pack", help="pack that ships the template, e.g. consulting")
@@ -249,18 +249,7 @@ def main(argv: list[str] | None = None) -> int:
             print(out_dir / name)
         return 0
     if a.cmd == "templates":
-        if a.pack:
-            from .core.packs import load_pack
-
-            p = load_pack(a.pack)
-            _print(
-                [
-                    {"template_id": k, "description": v.get("description"), "source": a.pack}
-                    for k, v in sorted(p.templates.items())
-                ]
-            )
-        else:
-            _print(templates.list_templates())
+        _print(templates.list_templates(a.pack))
         return 0
     if a.cmd == "template":
         _print(templates.get_template(a.template_id, a.pack))

@@ -32,7 +32,7 @@ runnable argument object for that tool. describe_schema('paths') explains every 
 
 Typical flow:
 1. list_templates / get_template to start from a skeleton; describe_schema for exact shapes.
-2. Fill every "<required>" value; validate_engagement and repair using each error's JSON Pointer `path`.
+2. Fill every "<required>" or "<required: what to supply>" value; validate_engagement and repair using each error's JSON Pointer `path`.
 3. calculate_periods (detail: summary | periods | line_items) with a scenario and a cost policy
    (pass "reference" for the shipped reference policy, or your own).
 4. compare_arrangements across low/base/high scenarios; derive_risk_exposure to see who absorbs deviations.
@@ -156,12 +156,14 @@ def build_server(http: bool = False) -> MCPServer:
     def describe_pack(pack_id: str) -> dict[str, Any]:
         return packs.describe_pack(pack_id)
 
-    @tool(description="Engagement templates (core and pack).")
-    def list_templates() -> dict[str, Any]:
-        return {"templates": templates.list_templates()}
+    @tool(
+        description="Engagement templates from the core and every installed pack, each labelled with its source. Pass pack to list one pack's; get_template(template_id, pack) fetches a pack template."
+    )
+    def list_templates(pack: str | None = None) -> dict[str, Any]:
+        return {"templates": templates.list_templates(pack)}
 
     @tool(
-        description="An engagement skeleton. Fill every '<required>' value; 'examples' shows the shape of each."
+        description="An engagement skeleton. Fill every '<required>' or '<required: label>' value; 'examples' shows the shape of each."
     )
     def get_template(template_id: str, pack: str | None = None) -> dict[str, Any]:
         return templates.get_template(template_id, pack)

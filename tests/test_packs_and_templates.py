@@ -79,7 +79,9 @@ def test_t027_core_runs_without_packs(case, monkeypatch, tmp_path):
         packs_mod.load_pack.cache_clear()
 
 
-@pytest.mark.parametrize("tid", [t["template_id"] for t in list_templates()])
+@pytest.mark.parametrize(
+    "tid", [t["template_id"] for t in list_templates() if t["source"] == "core"]
+)
 def test_t029_template_round_trip(tid):
     t = get_template(tid)
     unfilled = validate_engagement(t["engagement"])

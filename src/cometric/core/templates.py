@@ -297,11 +297,24 @@ def _all() -> dict[str, dict]:
 TEMPLATES = _all()
 
 
-def list_templates() -> list[dict]:
-    return [
-        {"template_id": k, "description": v["description"], "source": "core"}
-        for k, v in TEMPLATES.items()
-    ]
+def list_templates(pack: str | None = None) -> list[dict]:
+    """Core templates and every installed pack's templates, labelled by source. With `pack`,
+    only that pack's templates."""
+    from .packs import available_packs, load_pack
+
+    out = []
+    if pack is None:
+        out = [
+            {"template_id": k, "description": v["description"], "source": "core"}
+            for k, v in TEMPLATES.items()
+        ]
+    for pid in [pack] if pack else available_packs():
+        for k, v in sorted(load_pack(pid).templates.items()):
+            entry = {"template_id": k, "description": v.get("description"), "source": pid}
+            if v.get("composition"):
+                entry["composition"] = v["composition"]
+            out.append(entry)
+    return out
 
 
 def get_template(template_id: str, pack: str | None = None) -> dict:

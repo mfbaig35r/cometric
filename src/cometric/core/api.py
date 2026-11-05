@@ -895,6 +895,34 @@ def validate_search_spec(spec: Any, issues: Issues) -> None:
             )
     for dup in sorted({n for n in names if n is not None and names.count(n) > 1}):
         issues.error("DUPLICATE_ID", f"parameter name {dup!r} is used twice", "/parameters")
+    # Placeholders must be filled before a search, except where a parameter writes the value.
+    from .validation import find_placeholders, required_issue
+
+    before = "fill this placeholder before searching"
+
+    written = {
+        x
+        for p in spec.get("parameters") or []
+        if isinstance(p, dict)
+        for x in (p.get("pointers") if "pointers" in p else [p.get("pointer")]) or []
+        if isinstance(x, str)
+    }
+    assumed = {p.get("assumption") for p in spec.get("parameters") or [] if isinstance(p, dict)}
+    if isinstance(spec.get("engagement"), dict):
+        for ptr, label in find_placeholders(spec["engagement"]):
+            if ptr not in written:
+                required_issue(issues, "/engagement" + ptr, label, before)
+    for si, sc in enumerate(spec.get("scenarios") or []):
+        if not isinstance(sc, dict):
+            continue
+        for ai, a in enumerate(sc.get("assumptions") or []):
+            skip = isinstance(a, dict) and a.get("name") in assumed
+            for ptr, label in find_placeholders(a, f"/scenarios/{si}/assumptions/{ai}"):
+                if not (skip and ptr.endswith("/value")):
+                    required_issue(issues, ptr, label, before)
+        rest = {k: v for k, v in sc.items() if k != "assumptions"}
+        for ptr, label in find_placeholders(rest, f"/scenarios/{si}"):
+            required_issue(issues, ptr, label, before)
     if spec.get("constraints") is not None:
         for prob in check_predicate(spec["constraints"]):
             issues.error(

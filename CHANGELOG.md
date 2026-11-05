@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `list_templates` lists core and pack templates, each labelled with its source; `pack` narrows it to one pack. The CLI's `cometric templates` lists all of them.
+- Labelled placeholders: `"<required: unit rate, tier high>"` works like `"<required>"` and the label is reported in `REQUIRED_FIELD` (`detail.required_input`). Placeholders in scenarios are now reported as `REQUIRED_FIELD` too.
+- `search_structures` rejects a spec whose engagement or scenarios still hold placeholders, except values a search parameter writes.
+
 ## 0.5.0 (2026-11-05)
 
 Additive; no breaking changes. `ENGINE_VERSION` stays 0.3.0: no calculation or fingerprint changed.

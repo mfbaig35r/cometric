@@ -32,15 +32,34 @@ from .tiers import all_units_cliffs, check_contiguous
 REQUIRED_MARKER = "<required>"
 
 
-def _find_required(obj: Any, path: str, out: list[str]) -> None:
+def placeholder_label(obj: Any) -> str | None:
+    """The label of a placeholder: "" for "<required>", "unit rate" for "<required: unit rate>",
+    None for anything else."""
+    if obj == REQUIRED_MARKER:
+        return ""
+    if isinstance(obj, str) and obj.startswith("<required:") and obj.endswith(">"):
+        return obj[len("<required:") : -1].strip()
+    return None
+
+
+def find_placeholders(obj: Any, path: str = "") -> list[tuple[str, str]]:
+    """(JSON Pointer, label) for every placeholder in a document."""
+    out: list[tuple[str, str]] = []
+    _find_required(obj, path, out)
+    return out
+
+
+def _find_required(obj: Any, path: str, out: list) -> None:
     if isinstance(obj, dict):
         for k, v in obj.items():
             _find_required(v, f"{path}/{str(k).replace('~', '~0').replace('/', '~1')}", out)
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
             _find_required(v, f"{path}/{i}", out)
-    elif obj == REQUIRED_MARKER:
-        out.append(path)
+    else:
+        label = placeholder_label(obj)
+        if label is not None:
+            out.append((path, label))
 
 
 def pydantic_issues(
@@ -62,24 +81,35 @@ def pydantic_issues(
 def parse_engagement(raw: Any, issues: Issues, root: str = "/engagement") -> Engagement | None:
     if isinstance(raw, Engagement):
         return raw
-    required: list[str] = []
-    _find_required(raw, root, required)
-    for p in required:
-        issues.error("REQUIRED_FIELD", "this field must be filled in", p)
+    required = find_placeholders(raw, root)
+    for p, label in required:
+        required_issue(issues, p, label)
     try:
         return Engagement.model_validate(raw)
     except ValidationError as exc:
-        pydantic_issues(exc, root, issues, set(required))
+        pydantic_issues(exc, root, issues, {p for p, _ in required})
         return None
+
+
+def required_issue(
+    issues: Issues, path: str, label: str, message: str = "this field must be filled in"
+) -> None:
+    if label:
+        issues.error("REQUIRED_FIELD", f"{message}: {label}", path, required_input=label)
+    else:
+        issues.error("REQUIRED_FIELD", message, path)
 
 
 def parse_scenario(raw: Any, issues: Issues, root: str = "/scenario") -> Scenario | None:
     if isinstance(raw, Scenario):
         return raw
+    required = find_placeholders(raw, root)
+    for p, label in required:
+        required_issue(issues, p, label)
     try:
         return Scenario.model_validate(raw)
     except ValidationError as exc:
-        pydantic_issues(exc, root, issues)
+        pydantic_issues(exc, root, issues, {p for p, _ in required})
         return None
 
 
