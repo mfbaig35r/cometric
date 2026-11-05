@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+From an LLM-driven pricing analysis:
+
+- Threshold discounts and rebates take a required `threshold_scope`: `EXCESS_ONLY` ("10% off charges above the minimum") or `ENTIRE_SUBTOTAL`. `DISCOUNT` previously ignored `threshold` entirely. `CAP`, `REBATE`, and threshold `DISCOUNT` now require `accumulation_period` (it silently defaulted to `MONTH`).
+- Effective client unit price (and cost per unit, unit contribution) is null with an `AMBIGUOUS_UNIT_PRICE` warning when more than one quantity is priced and `client_value_unit` is not set; `client_value_unit` accepts `a+b` to sum commensurable units.
+- Every calculation result has a `definitions` block: unit-price basis, quantity spreading, thresholds, allowance recognition, minimums.
+- `quickstart` tool and resource with a runnable argument object for every tool; `describe_schema` covers candidates, constraints, reference paths, and actuals.
+- No unstructured MCP errors: every tool returns a code, message, and hint. Candidates may be bare engagements; constraint leaves accept `{path, op, value}`; search specs are validated up front with field paths; clearer message for fractional counts.
+
 ## 0.2.0 (2026-11-05)
 
 - `reconcile`: compare computed figures with recorded actuals by month and term, with a publishable summary that carries no amounts, dates, or names (API, CLI, MCP tool). Guide in `docs/RECONCILIATION.md`.

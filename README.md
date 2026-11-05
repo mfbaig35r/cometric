@@ -55,7 +55,7 @@ print(result["term"]["contribution_margin"], result["input_fingerprint"])
 
 ## MCP server
 
-Cometric ships a read-only, stateless MCP server: 18 tools, schema and template discovery, resources for the glossary, schemas, concept schemes, rules, coverage, templates, and worked examples, and six guided prompts.
+Cometric ships a read-only, stateless MCP server: 19 tools (start with `quickstart`), schema and template discovery, resources for the glossary, schemas, concept schemes, rules, coverage, templates, and worked examples, and six guided prompts.
 
 ```bash
 cometric mcp                                   # stdio
