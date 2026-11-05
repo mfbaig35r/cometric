@@ -79,7 +79,11 @@ def test_all_units_monotonic_outside_reported_cliffs(tiers, q, dq):
     cliffs = all_units_cliffs(tiers)
 
     def inside(x):
-        return any(c["band_lower_exclusive"] < x < c["band_upper_exclusive"] for c in cliffs)
+        return any(
+            (c["band_lower"] <= x if c["band_lower_inclusive"] else c["band_lower"] < x)
+            and x < c["band_upper_exclusive"]
+            for c in cliffs
+        )
 
     a, b = Decimal(q), Decimal(q + dq)
     if price(b, tiers, TierMethod.ALL_UNITS) < price(a, tiers, TierMethod.ALL_UNITS):

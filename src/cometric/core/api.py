@@ -833,3 +833,129 @@ def check_commercial_constraints(engagement: Any, policy: dict | None = None) ->
             **report(issues),
         }
     )
+
+
+# --- reconciliation (M6) ----------------------------------------------------------------
+
+RECONCILABLE = (
+    "contractual_fee",
+    "outcome_fee",
+    "overage_fee",
+    "commitment_shortfall",
+    "direct_delivery_cost",
+    "engagement_avoidable_cost",
+    "gross_profit",
+    "contribution_profit",
+    "worked_hours",
+    "standard_value",
+)
+
+
+def reconcile(
+    engagement: Any,
+    scenario: Any,
+    cost_policy: Any,
+    actuals: dict,
+    tolerance_absolute: Any = "0.01",
+    tolerance_relative: Any = "0",
+) -> dict:
+    """Compare Cometric's figures with recorded actuals (spec 10, M6).
+
+    `actuals` = {"periods": {"YYYY-MM": {metric: amount}}, "term": {metric: amount}}; any subset
+    of the reconcilable metrics. A difference passes when it is within the absolute tolerance or
+    the relative tolerance. The `publishable_summary` carries no amounts, dates, or names: only
+    metric, month number, relative difference, and the mechanisms priced that month.
+    """
+    tol_abs = to_decimal(tolerance_absolute)
+    tol_rel = to_decimal(tolerance_relative)
+    result, issues, e, s, cp = run_calculation(engagement, scenario, cost_policy)
+    if result is None:
+        return to_jsonable({"status": status_for(issues), "issues": report(issues)})
+    periods = {p["period"]: p for p in result.data["periods"]}
+    month_numbers = {ps: i + 1 for i, ps in enumerate(sorted(periods))}
+    unknown = sorted(
+        {k for row in (actuals.get("periods") or {}).values() for k in row}
+        | set((actuals.get("term") or {}).keys())
+    )
+    unknown = [k for k in unknown if k not in RECONCILABLE]
+    rows: list[dict] = []
+
+    def compare(scope: str, computed: Any, actual: Any, metric: str) -> dict:
+        c = _d(computed) if computed is not None else None
+        a = to_decimal(actual)
+        if c is None:
+            return {
+                "scope": scope,
+                "metric": metric,
+                "computed": None,
+                "actual": a,
+                "difference": None,
+                "relative_difference": None,
+                "within_tolerance": False,
+                "note": "metric not computed for this engagement",
+            }
+        diff = c - a
+        rel = safe_ratio(diff, abs(a))
+        ok = abs(diff) <= tol_abs or (rel is not None and abs(rel) <= tol_rel)
+        return {
+            "scope": scope,
+            "metric": metric,
+            "computed": c,
+            "actual": a,
+            "difference": diff,
+            "relative_difference": rel,
+            "within_tolerance": ok,
+        }
+
+    for ps, row in sorted((actuals.get("periods") or {}).items()):
+        if ps not in periods:
+            issues.warn(
+                "ACTUAL_OUTSIDE_HORIZON",
+                f"actuals for {ps} fall outside the calculated months",
+                f"/actuals/periods/{ps}",
+            )
+            continue
+        for metric, actual in row.items():
+            if metric in RECONCILABLE:
+                rows.append(compare(ps, periods[ps].get(metric), actual, metric))
+    term = result.data["term"]
+    for metric, actual in (actuals.get("term") or {}).items():
+        if metric in RECONCILABLE:
+            rows.append(compare("term", term.get(metric), actual, metric))
+
+    failing = [r for r in rows if not r["within_tolerance"]]
+    for r in failing:
+        if r["scope"] != "term":
+            lines = [ln for ln in result.fee_lines if ln.period == r["scope"]]
+            r["fee_line_items"] = [ln.as_dict() for ln in lines]
+    summary = []
+    for r in failing:
+        mechanisms = sorted(
+            {ln.kind for ln in result.fee_lines if r["scope"] == "term" or ln.period == r["scope"]}
+        )
+        summary.append(
+            {
+                "metric": r["metric"],
+                "month": month_numbers.get(r["scope"]) if r["scope"] != "term" else "term",
+                "relative_difference": r["relative_difference"],
+                "direction": None
+                if r["difference"] is None
+                else ("cometric_higher" if r["difference"] > 0 else "cometric_lower"),
+                "mechanisms_priced": mechanisms,
+            }
+        )
+    return to_jsonable(
+        {
+            "status": "reconciled"
+            if rows and not failing
+            else ("discrepancies" if failing else "nothing_compared"),
+            "input_fingerprint": input_fingerprint("calculate_periods", e, s, cp),
+            "tolerance": {"absolute": tol_abs, "relative": tol_rel},
+            "compared": len(rows),
+            "discrepancies": len(failing),
+            "rows": rows,
+            "unknown_metrics": unknown,
+            "publishable_summary": summary,
+            "issues": report(issues),
+        }
+    )

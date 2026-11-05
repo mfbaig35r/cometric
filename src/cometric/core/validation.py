@@ -307,12 +307,17 @@ def _validate_version(e: Engagement, v, vp, units, services, tables, issues: Iss
             )
         if r.tier_method == TierMethod.ALL_UNITS:
             for cliff in all_units_cliffs(r.tiers):
+                lo, hi = cliff["band_lower"], cliff["band_upper_exclusive"]
+                lo_text = (
+                    f"from {lo} (inclusive)" if cliff["band_lower_inclusive"] else f"above {lo}"
+                )
                 issues.warn(
                     "TIER_CLIFF",
-                    f"under ALL_UNITS, quantities between {cliff['band_lower_exclusive']} and {cliff['threshold']} (exclusive) cost more than {cliff['threshold']} units",
+                    f"under ALL_UNITS, quantities {lo_text} and below {hi} cost more than {cliff['threshold']} units",
                     vp("rate_schedules", ri, "tiers"),
                     threshold=str(cliff["threshold"]),
-                    band=[str(cliff["band_lower_exclusive"]), str(cliff["band_upper_exclusive"])],
+                    band=[str(lo), str(hi)],
+                    lower_inclusive=cliff["band_lower_inclusive"],
                 )
 
     for ci, c in enumerate(v.components):

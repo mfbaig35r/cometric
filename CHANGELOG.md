@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- `reconcile`: compare computed figures with recorded actuals by month and term, with a publishable summary that carries no amounts, dates, or names (API, CLI, MCP tool). Guide in `docs/RECONCILIATION.md`.
+- Fix: ALL_UNITS cliff detection now reports bands across non-adjacent tiers, with an inclusive lower bound where a band starts at a tier edge. Found by property testing.
+- MCP resource `cometric://packs/{pack}/templates/{id}`; CLI `templates --pack` and `template --pack`.
+- Spec v0.3.
+
 ## 0.1.0 (2026-11-04)
 
 First release.

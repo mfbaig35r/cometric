@@ -102,6 +102,22 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--scenario")
     b.add_argument("--cost-policy", required=True)
 
+    rc = sub.add_parser("reconcile", help="compare computed figures with recorded actuals")
+    rc.add_argument("engagement")
+    rc.add_argument(
+        "--actuals",
+        required=True,
+        help="file with {periods: {YYYY-MM: {metric: amount}}, term: {...}}",
+    )
+    rc.add_argument("--scenarios")
+    rc.add_argument("--scenario")
+    rc.add_argument("--cost-policy", required=True)
+    rc.add_argument("--tolerance-absolute", default="0.01")
+    rc.add_argument("--tolerance-relative", default="0")
+    rc.add_argument(
+        "--summary-only", action="store_true", help="print only the publishable summary"
+    )
+
     sch = sub.add_parser("schema", help="JSON Schema for a model")
     sch.add_argument("model", choices=schema.model_names())
 
@@ -112,9 +128,11 @@ def main(argv: list[str] | None = None) -> int:
     lk.add_argument("query")
     lk.add_argument("--pack")
 
-    sub.add_parser("templates", help="list templates")
+    tl = sub.add_parser("templates", help="list templates")
+    tl.add_argument("--pack", help="list a pack's templates instead of the core ones")
     t = sub.add_parser("template", help="print a template")
     t.add_argument("template_id")
+    t.add_argument("--pack", help="pack that ships the template, e.g. consulting")
 
     m = sub.add_parser("mcp", help="run the MCP server")
     m.add_argument("--transport", default="stdio", choices=["stdio", "http"])
@@ -179,6 +197,22 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
         return 0
+    if a.cmd == "reconcile":
+        sc = _scenarios(a.scenarios, a.engagement, [a.scenario] if a.scenario else None)[0]
+        out = api.reconcile(
+            _engagement(a.engagement),
+            sc,
+            _policy(a.cost_policy, a.engagement),
+            _read(a.actuals),
+            a.tolerance_absolute,
+            a.tolerance_relative,
+        )
+        _print(
+            {k: out.get(k) for k in ("status", "compared", "discrepancies", "publishable_summary")}
+            if a.summary_only
+            else out
+        )
+        return 0 if out.get("status") in ("reconciled", "discrepancies", "nothing_compared") else 1
     if a.cmd == "schema":
         _print(schema.describe_schema(a.model))
         return 0
@@ -193,10 +227,21 @@ def main(argv: list[str] | None = None) -> int:
         _print(packs.lookup_concept(a.query, a.pack))
         return 0
     if a.cmd == "templates":
-        _print(templates.list_templates())
+        if a.pack:
+            from .core.packs import load_pack
+
+            p = load_pack(a.pack)
+            _print(
+                [
+                    {"template_id": k, "description": v.get("description"), "source": a.pack}
+                    for k, v in sorted(p.templates.items())
+                ]
+            )
+        else:
+            _print(templates.list_templates())
         return 0
     if a.cmd == "template":
-        _print(templates.get_template(a.template_id))
+        _print(templates.get_template(a.template_id, a.pack))
         return 0
     if a.cmd == "mcp":
         from .mcp.server import main as mcp_main

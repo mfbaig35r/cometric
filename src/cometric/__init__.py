@@ -12,6 +12,7 @@ from .core.api import (
     derive_risk_exposure,
     explain_fee,
     price_floor,
+    reconcile,
     search_structures,
 )
 from .core.engine import ENGINE_VERSION
@@ -45,6 +46,7 @@ __all__ = [
     "list_vocabulary",
     "lookup_concept",
     "price_floor",
+    "reconcile",
     "search_structures",
     "validate_engagement",
 ]

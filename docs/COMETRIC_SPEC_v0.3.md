@@ -55,6 +55,8 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-20 | 11 | Open questions updated; new questions from implementation. |
 | V3-21 | App. C | Case H (consulting); fixtures live in `src/cometric/examples/`. |
 | V3-22 | App. D | Evidence verification status replaces the v0.2 priority list. |
+| V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (unreleased fix after 0.1.0). |
+| V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (unreleased, after 0.1.0). |
 
 ## 1. Purpose and intended decisions
 
@@ -383,7 +385,7 @@ Tier rules:
 - Tiered overage (`ALLOWANCE_OVERAGE`) with `tier_scope = ALL_ELIGIBLE` must use `MARGINAL` tiers and non-`PERIOD_END` recognition in v1; other combinations fail with `UNSUPPORTED_COMBINATION`. `[V3-07]`
 - Tier calculations MUST be tested at `threshold - 1`, `threshold`, and `threshold + 1`.
 
-**ALL_UNITS cliff detection [D].** For each threshold *t* where the rate falls from *r_prev* to *r_t*, total fee is higher for every quantity *q* in the open interval `(t × r_t / r_prev, t)` than at *t*. Example: $10 below 1,000 and $9 from 1,000 gives 999 units = $9,990 and 1,000 units = $9,000; quantities 901 to 999 all cost more than 1,000. Validation MUST emit `TIER_CLIFF` with the band for each such threshold. The cliff is a property of the contract, not an error; the warning lets reviewers see the incentive it creates.
+**ALL_UNITS cliff detection [D].** For each threshold *t* (rate *r_t*) and each earlier tier *i* with a higher rate *r_i*, every quantity *q* in tier *i* with *q × r_i > t × r_t* costs more than *t* units. The band is `(t × r_t / r_i, min(to_i, t))` within tier *i*, with an inclusive lower bound when the tier's own start already exceeds `t × r_t / r_i`. Comparing every earlier tier, not only the adjacent one, catches jumps across several tiers. `[V3-23]` Example: $10 below 1,000 and $9 from 1,000 gives 999 units = $9,990 and 1,000 units = $9,000; quantities 901 to 999 all cost more than 1,000. Validation MUST emit `TIER_CLIFF` with the band for each such threshold. The cliff is a property of the contract, not an error; the warning lets reviewers see the incentive it creates.
 
 The same tier machinery applies to tiered **cost** schedules (§5.2).
 
@@ -898,7 +900,11 @@ The CLI, Python API, and MCP server expose the same operations. Every operation 
 
 - `list_applicable_evidence(claim_or_concept, pack?) -> provenance_records` (claims and their source records, with verification status)
 
-The MCP server exposes 17 tools: the operations above plus `describe_schema`, `list_packs`, `describe_pack`, `list_templates`, `get_template`, `list_vocabulary`, and `lookup_concept`. `[V3-17]`
+**Reconciliation** `[V3-24]`:
+
+- `reconcile(engagement, scenario, cost_policy, actuals, tolerance_absolute?, tolerance_relative?) -> reconciliation_result`. `actuals` holds recorded figures by month and for the term. Each compared figure passes within either tolerance. Failing monthly rows carry that month's fee line items. `publishable_summary` carries only metric, month number, relative difference, direction, and the mechanisms priced that month; no amounts, dates, or names.
+
+The MCP server exposes 18 tools: the operations above plus `describe_schema`, `list_packs`, `describe_pack`, `list_templates`, `get_template`, `list_vocabulary`, and `lookup_concept`; `reconcile` is the 18th. `[V3-17]`
 
 **MCP server requirements:**
 
@@ -1008,6 +1014,7 @@ The test suite MUST include:
 | T-039 | Realization `[V3-19]` | Case D with a $200 rate card and 6,000 worked hours → standard value 1,200,000, realization 0.75, write-down 300,000, effective billing rate 150; a rate card without worked hours fails with a pointer to `worked_hours_source` |
 | T-040 | Consulting pack `[V3-19]` | The pack validates; each of its five templates round-trips (T-029); Case H fires CONS-R-001 (approval) and CONS-R-003 |
 | T-041 | Pack templates over MCP `[V3-19]` | `cometric://packs/{pack}/templates/{id}` resolves for every pack template |
+| T-042 | Reconciliation `[V3-24]` | Actuals equal to computed figures reconcile; a changed July invoice is reported at month 7 with the mechanism that priced it; the publishable summary contains no amounts, dates, or names; relative tolerance and unknown metrics are honored |
 
 **Property tests** SHOULD verify: non-negative accepted units; non-overlapping effective dates; contiguous tiers; under `MARGINAL` tier schedules with non-negative rates, the pre-credit fee never decreases when eligible consumption increases, holding other terms fixed. Under `ALL_UNITS` schedules the property holds outside every band reported by `TIER_CLIFF` and is not asserted inside them. T-033 runs only when the private research report is present; CI skips it.
 
@@ -1021,7 +1028,7 @@ The test suite MUST include:
 | M3: Knowledge packs | Pack loader and rule language; `base` and `alsp` packs; evidence; resources and prompts; price floor and scenario-mode indicators | Done; 33 of 39 sources verified (Appendix D). |
 | M4: Public release | PyPI release, documentation, HTTP transport, real-engagement reconciliation | Released as 0.1.0; reconciliation outstanding. |
 | M5: Consulting pack | Realization, outcome pricing, consulting pack | Done; reconciliation outstanding. |
-| M6: Reconciliation | One real consulting engagement reconciled privately; discrepancies (not client data) published | Next. |
+| M6: Reconciliation | One real consulting engagement reconciled privately; discrepancies (not client data) published | Tooling built (`reconcile`, `docs/RECONCILIATION.md`); waiting on engagement data. |
 | M7: Actuals mode | Recorded monthly actuals; the health indicators that need them (CHI-004, 005, 006, 008, 009, 010, 012) | Planned. |
 
 Do not claim real-world accuracy from the illustrative casebook alone.

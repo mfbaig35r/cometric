@@ -62,17 +62,30 @@ def incremental(
 
 
 def all_units_cliffs(tiers: list[TierLike]) -> list[dict]:
-    """Quantities that cost more than the next threshold under ALL_UNITS (W-TIER-CLIFF)."""
+    """Quantities that cost more than a higher threshold under ALL_UNITS (TIER_CLIFF).
+
+    For each threshold t (start of tier j, rate r_j) and each earlier tier i with a higher rate,
+    every q in tier i with q x r_i > t x r_j costs more than t units. One entry per (t, i) pair
+    with a non-empty band, so jumps across several tiers are reported, not only adjacent ones.
+    """
     cliffs = []
-    for prev, cur in zip(tiers, tiers[1:], strict=False):
-        if cur.rate < prev.rate and prev.rate > 0:
-            threshold = cur.from_
-            lower = threshold * cur.rate / prev.rate
-            cliffs.append(
-                {
-                    "threshold": threshold,
-                    "band_lower_exclusive": lower,
-                    "band_upper_exclusive": threshold,
-                }
-            )
+    for j, cur in enumerate(tiers):
+        if j == 0:
+            continue
+        threshold = cur.from_
+        for prev in tiers[:j]:
+            if prev.rate <= cur.rate or prev.rate <= 0:
+                continue
+            break_even = threshold * cur.rate / prev.rate
+            lower = max(prev.from_, break_even)
+            upper = threshold if prev.to is None else min(prev.to, threshold)
+            if lower < upper:
+                cliffs.append(
+                    {
+                        "threshold": threshold,
+                        "band_lower": lower,
+                        "band_lower_inclusive": prev.from_ > break_even,
+                        "band_upper_exclusive": upper,
+                    }
+                )
     return cliffs

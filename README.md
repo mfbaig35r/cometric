@@ -38,6 +38,8 @@ cometric explain src/cometric/examples/spec_example.json --period 2027-01
 cometric break-even src/cometric/examples/case_b.json --driver contracts --scenario base --cost-policy reference
 cometric floor src/cometric/examples/case_b.json --cost-policy reference --target-margin 0.20
 cometric template base_plus_overage
+cometric template phased_fixed_fee --pack consulting
+cometric reconcile engagement.json --scenarios actual-quantities.json --actuals actuals.json --cost-policy reference --summary-only
 cometric lookup PM-023
 ```
 
@@ -53,7 +55,7 @@ print(result["term"]["contribution_margin"], result["input_fingerprint"])
 
 ## MCP server
 
-Cometric ships a read-only, stateless MCP server: 17 tools, schema and template discovery, resources for the glossary, schemas, concept schemes, rules, coverage, templates, and worked examples, and six guided prompts.
+Cometric ships a read-only, stateless MCP server: 18 tools, schema and template discovery, resources for the glossary, schemas, concept schemes, rules, coverage, templates, and worked examples, and six guided prompts.
 
 ```bash
 cometric mcp                                   # stdio
@@ -102,7 +104,7 @@ uv run ruff check src tests scripts && uv run ruff format --check src tests scri
 uv run python scripts/build_fixtures.py   # regenerate casebook fixtures
 ```
 
-The specification is `docs/COMETRIC_SPEC_v0.3.md` (normative for 0.1.0). Implementation status is in `docs/STATUS.md`.
+The specification is `docs/COMETRIC_SPEC_v0.3.md` (normative for 0.1.0). Implementation status is in `docs/STATUS.md`; reconciling a real engagement is described in `docs/RECONCILIATION.md`.
 
 ## License
 

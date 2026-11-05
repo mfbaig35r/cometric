@@ -229,6 +229,26 @@ def build_server(http: bool = False) -> MCPServer:
         return api.check_commercial_constraints(L(engagement), policy)
 
     @server.tool(
+        description="Compare computed figures with recorded actuals by month and term. publishable_summary carries no amounts, dates, or names."
+    )
+    def reconcile(
+        engagement: dict[str, Any] | str,
+        scenario: dict[str, Any] | str,
+        cost_policy: dict[str, Any] | str,
+        actuals: dict[str, Any] | str,
+        tolerance_absolute: str = "0.01",
+        tolerance_relative: str = "0",
+    ) -> dict[str, Any]:
+        return api.reconcile(
+            L(engagement),
+            L(scenario),
+            L(cost_policy),
+            L(actuals),
+            tolerance_absolute,
+            tolerance_relative,
+        )
+
+    @server.tool(
         description="Claims and sources behind a concept or claim id, with verification status."
     )
     def list_applicable_evidence(claim_or_concept: str, pack: str | None = None) -> dict[str, Any]:
