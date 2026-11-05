@@ -56,7 +56,7 @@ print(result["term"]["contribution_margin"], result["input_fingerprint"])
 
 ## MCP server
 
-Cometric ships a read-only, stateless MCP server: 19 tools (start with `quickstart`), schema and template discovery, resources for the glossary, schemas, concept schemes, rules, coverage, templates, and worked examples, and six guided prompts.
+Cometric ships a read-only, stateless MCP server: 20 tools (start with `quickstart`; for a new deal, `propose_structures`), schema and template discovery, resources for the glossary, schemas, concept schemes, rules, coverage, templates, and worked examples, and seven guided prompts.
 
 ```bash
 cometric mcp                                   # stdio
@@ -95,6 +95,17 @@ cometric packs
 cometric validate-pack alsp
 cometric validate-pack consulting
 ```
+
+## Proposing structures
+
+`propose_structures` takes a short deal profile (unit of work and complexity tiers, volume certainty and figures, cost shape, one to three client priorities, the provider's limit on volume risk, term) and lists candidate structures, each a base pricing model plus levers. Candidates are grouped by who absorbs a volume shortfall and never ranked; each shows its risk allocation, which priorities it serves and where it falls short, what its labels assume, trade-offs, evidence strength, and the inputs to supply. It proposes no figures: expanded candidates are skeleton engagements with labelled placeholders and shared scenarios, ready for `compare_arrangements` once filled.
+
+```bash
+cometric propose request.json                 # {packs, deal_profile, options}
+cometric propose request.json --expand PM-011+CL-R01+CL-V07
+```
+
+`quickstart("propose_structures")` returns a runnable request; the full contract is `docs/PROPOSE_STRUCTURES_SPEC_v0.2.md`.
 
 ## Ontology
 

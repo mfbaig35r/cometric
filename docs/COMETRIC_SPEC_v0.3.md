@@ -1,6 +1,6 @@
 # Cometric | Commercial Intelligence Engine
 
-**Engineering Requirements v0.3 (as built for 0.5.0)**
+**Engineering Requirements v0.3 (as built for 0.6.0)**
 
 Cometric does three things:
 
@@ -13,7 +13,7 @@ It is built for any service relationship priced through a composite arrangement:
 | | |
 |---|---|
 | Project | Cometric (`cometric` on PyPI; CLI and MCP server `cometric`) |
-| Status | Normative for `cometric` 0.5.0 (0.1.0 released 2026-11-04; 0.2.0 to 0.5.0 on 2026-11-05). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
+| Status | Normative for `cometric` 0.6.0 (0.1.0 released 2026-11-04; 0.2.0 to 0.6.0 on 2026-11-05). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
 | License | Apache-2.0 |
 | Date | November 4, 2026 |
 | Supersedes | `COMETRIC_SPEC_v0.2.md` (kept for history, with the v0.1 to v0.2 change log) |
@@ -59,6 +59,7 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (0.2.0). |
 | V3-30 | 6.1, 6.4, 9 | Counting rules through RATE assumptions and derived quantities; search parameters can set a named assumption (0.4.0). |
 | V3-31 | 3.7, 9 | Ontology export: Turtle (OWL and SKOS) and a Markdown reference generated from the models, core vocabularies, and packs; committed in `docs/ontology/` (0.5.0). |
+| V3-32 | 3.6, 6.5, 8.3, 9 | `propose_structures`: candidate structures for a deal profile from pack realizations, listed by who absorbs a volume shortfall, never ranked; P-03 amended; labelled placeholders; pack-aware `list_templates` (0.6.0). Full specification: `docs/PROPOSE_STRUCTURES_SPEC_v0.2.md`. |
 | V3-28 | 4.4, 6.1, 9 | Termination scenarios: `termination_date` on a scenario, `termination_rule` on minimums, `termination_fee` on a version (0.3.0). |
 | V3-29 | 3.4, 6.3, App. C | ALSP template `tiered_units_annual_minimum` and five worked patterns (`docs/PATTERNS.md`); "pending human review" defined (0.3.0). |
 | V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (0.3.0). |
@@ -336,7 +337,7 @@ The research report itself is not shipped as prose (§11, Q-3). It is decomposed
 
 **Rules:**
 
-- Knowledge records are advisory and explanatory. The engine computes only from core vocabulary, methods, and caller policies. It never reads selection heuristics, negotiation exchanges, mechanisms, or compatibility classes to compute, rank, or choose (P-03).
+- Knowledge records are advisory and explanatory. The engine computes only from core vocabulary, methods, and caller policies. It never reads selection heuristics, negotiation exchanges, mechanisms, or compatibility classes to compute or rank (P-03). `propose_structures` may read composition rules to exclude a structure and heuristics and evidence to annotate one; no knowledge record computes a figure or ranks `[V3-32]`.
 - Every record keeps its evidence class. A class C or D record is always returned labeled as inference or proposal.
 - Capture is auditable: every report identifier, and every row of the unnumbered tables above, appears in a pack or in `packs/base/excluded.yaml` with a reason (T-033).
 
@@ -737,6 +738,10 @@ In Cometric, "optimize" means a deterministic search over a space of candidate s
 
 **Guardrails.** Results are `PricingRecommendation` records with `approval_state = PENDING_HUMAN_REVIEW` (§6.3). The engine never invents parameter ranges or objectives. An advisory agent may propose a `search_spec`, and the spec must be shown to the user before it runs.
 
+### 6.5 Structure proposal `[V3-32]`
+
+`propose_structures(packs, deal_profile, options?)` answers the question before comparison: which structures are worth modelling. The deal profile states the unit of work (and complexity tiers), volume certainty and any figures, cost shape, one to three ordered client priorities, the provider's limit on volume risk, and the term. Candidates are compositions of a base pricing model and up to three levers, built from pack **realizations** that say how each model and lever becomes engagement terms and how it allocates risk on five axes (volume shortfall, volume excess, spend variability, mix, early exit). The partner's inputs and composition rules decide what is listed; heuristics and evidence only annotate. Candidates are grouped by who absorbs a volume shortfall, never ranked, and carry trade-offs, label assumptions, evidence strength, and the inputs to supply. `options.expand` returns skeleton engagements with labelled placeholders (`"<required: label>"`) and scenarios shared by every candidate, so a comparison runs on identical volumes. No figure is generated. Risk labels use `derive_risk_exposure`'s meaning, and a test checks them against it on filled skeletons. The full contract, pack data formats, and acceptance tests are in `docs/PROPOSE_STRUCTURES_SPEC_v0.2.md`.
+
 ## 7. Evidence and governance
 
 ### 7.1 Evidence classes
@@ -925,12 +930,14 @@ The CLI, Python API, and MCP server expose the same operations. Every operation 
 
 - `describe_schema(model) -> json_schema` for any input or output model
 - `list_packs() -> [{id, version, summary}]` and `describe_pack(id) -> vocabularies, rules, templates`
-- `get_template(template_id, pack?) -> engagement skeleton` with required fields present and unknown values marked `"<required>"`
+- `list_templates(pack?) -> core and pack templates with their source` `[V3-32]`
+- `get_template(template_id, pack?) -> engagement skeleton` with required fields present and unknown values marked `"<required>"` or `"<required: label>"`
 - `list_vocabulary(name, pack?) -> values with definitions`
 - `lookup_concept(id_or_query, pack?) -> concept records` with definitions, links, evidence class, prevalence overlays, and claims
 
 **Engine:**
 
+- `propose_structures(packs, deal_profile, options?) -> structure proposal` `[V3-32]`
 - `validate_engagement(input) -> validation_report`
 - `calculate_periods(engagement, scenario, cost_policy, detail?) -> calculation_result`
 - `compare_arrangements(candidates, scenario_set, cost_policy, objective?, tolerance_policy?) -> comparison_result`
@@ -949,7 +956,7 @@ The CLI, Python API, and MCP server expose the same operations. Every operation 
 
 - `reconcile(engagement, scenario, cost_policy, actuals, tolerance_absolute?, tolerance_relative?) -> reconciliation_result`. `actuals` holds recorded figures by month and for the term, as decimal strings or integers. Each compared figure passes within either tolerance (both non-negative). Unknown metrics, malformed months, floats, nulls, and negative tolerances are errors with JSON Pointer paths, never silently skipped. A metric the engine did not compute (costs without a cost policy, realization without a rate card) is reported as not computed, never as zero. Status is `reconciled`, `discrepancies`, `infeasible` (the scenario breaches capacity, so matching figures do not reconcile it), `nothing_compared`, or `invalid`. Failing monthly rows carry that month's fee line items. The result carries its own fingerprint over the inputs, actuals, and tolerances, plus the underlying calculation's fingerprint. `publishable_summary` carries only metric, month of the engagement term (1 = first month of the engagement), relative difference, direction, and the mechanisms priced that month; no amounts, dates, or names.
 
-The MCP server exposes 19 tools, starting with `quickstart`, which returns the conventions and, per tool, a complete runnable argument object (each one is executed by the test suite). `[V3-26]` The others are the operations above plus `describe_schema`, `list_packs`, `describe_pack`, `list_templates`, `get_template`, `list_vocabulary`, and `lookup_concept`; `reconcile` is the 18th. `[V3-17]`
+The MCP server exposes 20 tools, starting with `quickstart`, which returns the conventions and, per tool, a complete runnable argument object (each one is executed by the test suite). `[V3-26]` The others are the operations above plus `describe_schema`, `list_packs`, `describe_pack`, `list_templates`, `get_template`, `list_vocabulary`, and `lookup_concept`; `reconcile` is the 18th and `propose_structures` the 20th. `[V3-17]`
 
 **MCP server requirements:**
 
@@ -1064,6 +1071,7 @@ The test suite MUST include:
 | T-044 | LLM-feedback fixes `[V3-26]` | Threshold discount and rebate: EXCESS_ONLY 3,175,000 and ENTIRE_SUBTOTAL 2,925,000 on a 3,250,000 gross with a 2,500,000 threshold; the excess discount starts in the crossing month; missing scope or period is an error with an example; several unit types give a null unit price with a warning, and `client_value_unit` with `+` sums them; bare-engagement candidates work and bad ones get a pointer; the constraint `op` alias works; no tool returns an unstructured error; every quickstart payload runs through the MCP server |
 | T-045 | Termination `[V3-28]` | PRORATE charges the shortfall against 150,000 x 181/365 at a 30 June termination; REMAINDER_DUE charges 90,000 for one year and 240,000 with a second year, and owes later years at a period-end termination; WAIVED charges none; the fee posts; quantities spread over the original term; unamortized transition is written off; a cut-short outcome fee is not charged; a missing rule, an out-of-range date, and a mid-month date without proration are errors |
 | T-046 | Patterns `[V3-29]` | Every pattern file matches figures computed by hand in `scripts/build_alsp.py`; the ALSP template round-trips |
+| T-049 to T-066 | Structure proposal `[V3-32]` | P01 to P18 of `docs/PROPOSE_STRUCTURES_SPEC_v0.2.md`: candidates span shortfall groups; skeletons validate except labelled placeholders and calculate when filled; unfilled skeletons are rejected by compare and search; output is deterministic, carries no generated figure, reports exclusions with rule ids, honours partner lever preferences and the provider's risk limit, flags weak evidence, and stays under 8,000 characters; risk labels agree with `derive_risk_exposure`; `validate-pack` rejects broken realizations |
 | T-048 | Ontology export `[V3-31]` | The Turtle parses; every pack concept, rule, claim, and source is typed; no reference points to an undeclared resource; every model field is a property; the README's example query returns rows; the committed `docs/ontology/` matches the generator |
 | T-047 | Counting rules `[V3-30]` | A RATE assumption applies each month; a derived billable quantity prices correctly; rounding is required for COUNT units and applied per month; bad expressions, unknown references, cycles, division by zero, negative results, and name clashes are errors with paths; search can vary an assumption; the counting-rules pattern matches its hand-computed fee |
 | T-042 | Reconciliation `[V3-24]` | Actuals equal to computed figures reconcile; a changed July invoice is reported at month 7 with the mechanism that priced it; the publishable summary contains no amounts, dates, or names; relative tolerance and unknown metrics are honored |

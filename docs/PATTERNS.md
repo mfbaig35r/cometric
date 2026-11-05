@@ -65,3 +65,16 @@ Other termination rules: `REMAINDER_DUE` charges this period's full minimum and 
 Monthly billable units become 42.75 / 17.1 / 51.3 / 79.0875 instead of 50 / 20 / 60 / 80, so the year bills 3,552,525 before the discount and 3,497,272.50 after it, against 3,972,000 without the rules. The counts are fractional expected values (`rounding: NONE`); use `HALF_UP`, `DOWN`, or `UP` to bill whole units each month.
 
 Monthly totals cannot show which documents arrive together, so the bundle share and size are assumptions, not facts. Search them by adding a parameter such as `{"name": "reissue", "assumption": "reissue_rate", "values": ["0", "0.05", "0.10"]}`.
+
+## 7. Starting from a deal profile
+
+`quickstart("propose_structures")`. A contract-review deal: three complexity tiers, 400 to 1,500 requests a year (1,200 expected), a fixed team, a 24-month term the client can exit early, and the client wants budget certainty first and to pay for use second; the provider accepts at most a shared volume risk. The proposal lists four candidates:
+
+| Candidate | Volume shortfall | Spend | Serves | Falls short on |
+|---|---|---|---|---|
+| Dedicated team priced per FTE (PM-004) | CLIENT | FIXED | budget certainty | pay for use |
+| Fixed-fee managed service (PM-007) | CLIENT | FIXED | budget certainty | pay for use |
+| Per-unit pricing with a minimum and an annual cap (PM-011 + CL-R01 + CL-V07) | SHARED | BOUNDED | both | |
+| Volume-banded unit pricing with an annual cap (PM-014 + CL-V07) | SHARED | BOUNDED | both | |
+
+Per-unit pricing alone is excluded because the provider would carry the whole shortfall. The fixed fee carries a validation approval: nothing bounds the provider's volume exposure. The minimum's label assumes it sits below expected spend, and the banded structure's assumes expected volume reaches the cheaper band. Expanding two candidates gives skeletons with identical scenarios (low, expected, high as term totals, tier shares as derived quantities, and an early-exit case); once their rates, minimum, cap, and costs are filled, `compare_arrangements` runs on them unchanged, and `derive_risk_exposure` confirms each shortfall label. The figures are the partner's; the tool supplies none.

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 (2026-11-05)
+
+Additive. `ENGINE_VERSION` stays 0.3.0: no calculation changed. Validation now reports labelled placeholders and scenario placeholders, and `search_structures` rejects unfilled placeholders. The `base` pack is 0.2.0, so engagements that pin `base` 0.1.0 get a `PACK_VERSION` warning.
 
 - `list_templates` lists core and pack templates, each labelled with its source; `pack` narrows it to one pack. The CLI's `cometric templates` lists all of them.
 - Labelled placeholders: `"<required: unit rate, tier high>"` works like `"<required>"` and the label is reported in `REQUIRED_FIELD` (`detail.required_input`). Placeholders in scenarios are now reported as `REQUIRED_FIELD` too.

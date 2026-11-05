@@ -5,7 +5,7 @@
 | Version | 0.2 (supersedes the 0.1 draft) |
 | Date | 2026-11-05 |
 | Authors | Fahad Baig, with Claude |
-| Status | Draft for review. Part A is the specification; Part B is the implementation plan. Section A11 lists the decisions to confirm. |
+| Status | Implemented in `cometric` 0.6.0 (`base` pack 0.2.0). Part A is the specification as built; Part B is the plan it was built to. Decisions in A11 were confirmed as proposed. |
 | Target release | `cometric` 0.6.0, `base` pack 0.2.0 |
 
 ## What changed from 0.1
