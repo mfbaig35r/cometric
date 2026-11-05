@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 (2026-11-05)
+
+Additive; no breaking changes. `ENGINE_VERSION` stays 0.3.0 because no existing calculation changed. Fingerprints of existing scenarios still change, because the scenario schema gained fields with default values (`derived`, and `basis` on assumptions) that are part of the fingerprint.
 
 - Counting rules: assumptions with `basis: RATE` apply every month unchanged; scenarios can declare `derived` quantities (sum, difference, product, quotient over other quantities and constants), evaluated each month in dependency order, with explicit rounding for COUNT units. Results list derived formulas under `definitions`.
 - Search parameters can set a named scenario assumption in every scenario (`"assumption": "reissue_rate"`).
