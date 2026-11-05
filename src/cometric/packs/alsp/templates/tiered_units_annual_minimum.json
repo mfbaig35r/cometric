@@ -1,0 +1,298 @@
+{
+  "template_id": "tiered_units_annual_minimum",
+  "description": "Per-unit prices for four complexity tiers, an annual minimum, and a discount on charges above the minimum (excess only). Set termination_rule for early-exit analysis.",
+  "pack": "alsp",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "ALSP-TIERED-MINIMUM",
+    "name": "<required>",
+    "currency": "<required>",
+    "start_date": "<required>",
+    "end_date": "<required>",
+    "packs": [
+      {
+        "id": "alsp"
+      }
+    ],
+    "unit_definitions": [
+      {
+        "code": "tier_1",
+        "kind": "COUNT",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      },
+      {
+        "code": "tier_2",
+        "kind": "COUNT",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      },
+      {
+        "code": "tier_3",
+        "kind": "COUNT",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      },
+      {
+        "code": "tier_4",
+        "kind": "COUNT",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      }
+    ],
+    "services": [
+      {
+        "id": "service",
+        "unit_definition_id": "tier_1",
+        "service_category": "<required>"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "<required>",
+        "components": [
+          {
+            "id": "price_tier_1",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "<required>",
+            "quantity_source": "scenario.tier_1",
+            "unit": "tier_1",
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_1"
+          },
+          {
+            "id": "price_tier_2",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "<required>",
+            "quantity_source": "scenario.tier_2",
+            "unit": "tier_2",
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_2"
+          },
+          {
+            "id": "price_tier_3",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "<required>",
+            "quantity_source": "scenario.tier_3",
+            "unit": "tier_3",
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_3"
+          },
+          {
+            "id": "price_tier_4",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "<required>",
+            "quantity_source": "scenario.tier_4",
+            "unit": "tier_4",
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_4"
+          }
+        ],
+        "rate_schedules": [
+          {
+            "id": "rate_tier_1",
+            "currency": "<required>",
+            "unit": "tier_1",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "<required>"
+              }
+            ]
+          },
+          {
+            "id": "rate_tier_2",
+            "currency": "<required>",
+            "unit": "tier_2",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "<required>"
+              }
+            ]
+          },
+          {
+            "id": "rate_tier_3",
+            "currency": "<required>",
+            "unit": "tier_3",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "<required>"
+              }
+            ]
+          },
+          {
+            "id": "rate_tier_4",
+            "currency": "<required>",
+            "unit": "tier_4",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "<required>"
+              }
+            ]
+          }
+        ],
+        "commitments": [
+          {
+            "id": "annual_minimum",
+            "kind": "MINIMUM_SPEND",
+            "amount": "<required>",
+            "aggregation_scope": "ENGAGEMENT",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tested_against": "GROSS",
+            "shortfall_rule": "PERIOD_END_TRUE_UP",
+            "termination_rule": "<required>"
+          }
+        ],
+        "adjustments": [
+          {
+            "id": "discount_above_minimum",
+            "type": "DISCOUNT",
+            "applies_to": [
+              "price_tier_1",
+              "price_tier_2",
+              "price_tier_3",
+              "price_tier_4"
+            ],
+            "percent": "<required>",
+            "threshold": "<required>",
+            "threshold_scope": "EXCESS_ONLY",
+            "accumulation_period": "CONTRACT_YEAR"
+          }
+        ]
+      }
+    ],
+    "client_value_unit": "tier_1+tier_2+tier_3+tier_4",
+    "delivery_plan": {
+      "cost_components": []
+    }
+  },
+  "scenario": {
+    "id": "base",
+    "assumptions": [
+      {
+        "name": "tier_1",
+        "value": "<required>",
+        "unit": "tier_1",
+        "time_period": "<required>",
+        "origin": "<required>"
+      },
+      {
+        "name": "tier_2",
+        "value": "<required>",
+        "unit": "tier_2",
+        "time_period": "<required>",
+        "origin": "<required>"
+      },
+      {
+        "name": "tier_3",
+        "value": "<required>",
+        "unit": "tier_3",
+        "time_period": "<required>",
+        "origin": "<required>"
+      },
+      {
+        "name": "tier_4",
+        "value": "<required>",
+        "unit": "tier_4",
+        "time_period": "<required>",
+        "origin": "<required>"
+      }
+    ]
+  },
+  "examples": {
+    "/engagement/name": "Tiered contract review with an annual minimum",
+    "/engagement/currency": "USD",
+    "/engagement/start_date": "2027-01-01",
+    "/engagement/end_date": "2027-12-31",
+    "/engagement/arrangement_versions/0/effective_from": "2027-01-01",
+    "/engagement/services/0/service_category": "CONTRACTS",
+    "/engagement/arrangement_versions/0/commitments/0/amount": "3000000",
+    "/engagement/arrangement_versions/0/commitments/0/termination_rule": "PRORATE",
+    "/engagement/arrangement_versions/0/adjustments/0/percent": "0.10",
+    "/engagement/arrangement_versions/0/adjustments/0/threshold": "3000000",
+    "/engagement/unit_definitions/0/counting_rule": "One completed tier 1 review of one eligible document, classified by the agreed complexity criteria",
+    "/engagement/unit_definitions/0/acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection",
+    "/engagement/arrangement_versions/0/components/0/currency": "USD",
+    "/engagement/arrangement_versions/0/components/0/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/rate_schedules/0/currency": "USD",
+    "/engagement/arrangement_versions/0/rate_schedules/0/tiers/0/rate": "4000",
+    "/scenario/assumptions/0/value": "600",
+    "/scenario/assumptions/0/time_period": "2027",
+    "/scenario/assumptions/0/origin": "ESTIMATED",
+    "/engagement/unit_definitions/1/counting_rule": "One completed tier 2 review of one eligible document, classified by the agreed complexity criteria",
+    "/engagement/unit_definitions/1/acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection",
+    "/engagement/arrangement_versions/0/components/1/currency": "USD",
+    "/engagement/arrangement_versions/0/components/1/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/rate_schedules/1/currency": "USD",
+    "/engagement/arrangement_versions/0/rate_schedules/1/tiers/0/rate": "2000",
+    "/scenario/assumptions/1/value": "240",
+    "/scenario/assumptions/1/time_period": "2027",
+    "/scenario/assumptions/1/origin": "ESTIMATED",
+    "/engagement/unit_definitions/2/counting_rule": "One completed tier 3 review of one eligible document, classified by the agreed complexity criteria",
+    "/engagement/unit_definitions/2/acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection",
+    "/engagement/arrangement_versions/0/components/2/currency": "USD",
+    "/engagement/arrangement_versions/0/components/2/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/rate_schedules/2/currency": "USD",
+    "/engagement/arrangement_versions/0/rate_schedules/2/tiers/0/rate": "1000",
+    "/scenario/assumptions/2/value": "720",
+    "/scenario/assumptions/2/time_period": "2027",
+    "/scenario/assumptions/2/origin": "ESTIMATED",
+    "/engagement/unit_definitions/3/counting_rule": "One completed tier 4 review of one eligible document, classified by the agreed complexity criteria",
+    "/engagement/unit_definitions/3/acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection",
+    "/engagement/arrangement_versions/0/components/3/currency": "USD",
+    "/engagement/arrangement_versions/0/components/3/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/rate_schedules/3/currency": "USD",
+    "/engagement/arrangement_versions/0/rate_schedules/3/tiers/0/rate": "500",
+    "/scenario/assumptions/3/value": "960",
+    "/scenario/assumptions/3/time_period": "2027",
+    "/scenario/assumptions/3/origin": "ESTIMATED"
+  }
+}

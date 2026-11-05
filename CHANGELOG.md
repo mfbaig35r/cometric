@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Termination scenarios: `termination_date` on a scenario; `termination_rule` (PRORATE, REMAINDER_DUE, WAIVED) on minimum-spend commitments; `termination_fee` on an arrangement version; allowances expire, unamortized one-time costs are written off, and a `termination` block reports the cost of exiting early.
+- ALSP template `tiered_units_annual_minimum` and five worked patterns with hand-computed figures (`docs/PATTERNS.md`).
+- "Pending human review" defined in the spec: a label for the user's own approval process, not a workflow.
+
 From an LLM-driven pricing analysis:
 
 - Search: best results first, with full figures per scenario, objective values, constraint results, grid-edge flags (`BEST_AT_GRID_EDGE`), difference from the baseline (the engagement as given), downside per deviation, and fingerprints; `objective.tie_breakers`; `dry_run`; parameters that write several pointers with `set`, `scale`, or `add`.

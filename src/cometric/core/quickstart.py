@@ -147,6 +147,8 @@ def payloads() -> dict[str, dict]:
 
 
 NOTES = {
+    "termination": 'Add "termination_date": "2027-09-30" to a scenario to run an early exit; each minimum needs a termination_rule (PRORATE, REMAINDER_DUE, WAIVED). See cometric://examples/pattern_termination.',
+    "patterns": "Worked engagements: cometric://examples/pattern_tiered_minimum, pattern_transition_credit, pattern_partial_and_hours, pattern_termination; ALSP template tiered_units_annual_minimum (get_template with pack=alsp).",
     "search_dry_run": 'Add "dry_run": true to a search_spec to get grid size, calculation count, and estimated time; show it to the user before the real run.',
     "search_linked_parameters": 'One parameter can write several places: {"name": "uplift", "pointers": [p1, p2], "transform": "scale", "values": ["0", "0.05"]} applies base x (1 + uplift) at each pointer.',
     "detail_and_precision": "compare_arrangements and search_structures default to detail=summary and precision=display; ask for detail=full or precision=exact only when needed.",

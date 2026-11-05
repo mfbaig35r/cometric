@@ -39,6 +39,7 @@ cometric break-even src/cometric/examples/case_b.json --driver contracts --scena
 cometric floor src/cometric/examples/case_b.json --cost-policy reference --target-margin 0.20
 cometric template base_plus_overage
 cometric template phased_fixed_fee --pack consulting
+cometric template tiered_units_annual_minimum --pack alsp
 cometric reconcile engagement.json --scenarios actual-quantities.json --actuals actuals.json --cost-policy reference --summary-only
 cometric lookup PM-023
 ```
@@ -104,7 +105,7 @@ uv run ruff check src tests scripts && uv run ruff format --check src tests scri
 uv run python scripts/build_fixtures.py   # regenerate casebook fixtures
 ```
 
-The specification is `docs/COMETRIC_SPEC_v0.3.md` (normative for 0.1.0). Implementation status is in `docs/STATUS.md`; reconciling a real engagement is described in `docs/RECONCILIATION.md`.
+The specification is `docs/COMETRIC_SPEC_v0.3.md` (normative for 0.1.0). Implementation status is in `docs/STATUS.md`; worked commercial patterns (tiered minimums, transition credits, partial billing, cost from hours, early termination) are in `docs/PATTERNS.md`; reconciling a real engagement is described in `docs/RECONCILIATION.md`.
 
 ## License
 

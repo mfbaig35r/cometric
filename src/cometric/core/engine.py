@@ -23,6 +23,7 @@ from .enums import (
     Recognition,
     RoundingLevel,
     ShortfallRule,
+    TerminationRule,
     TestedAgainst,
     ThresholdScope,
     TierScope,
@@ -44,7 +45,9 @@ from .periods import (
     DaySpan,
     Month,
     contract_year,
+    first_day,
     is_period_end,
+    last_day,
     month_index,
     month_of,
     month_span,
@@ -180,7 +183,15 @@ class Calculator:
         self.money = effective_money_policy(engagement)
         self.scale = self.money.rounding_scale
         self.anchor = month_of(engagement.start_date)
-        self.eng_last = month_of(engagement.end_date)
+        # A terminated scenario ends the engagement early; the original term still governs how
+        # declared totals are spread and how many later minimum periods REMAINDER_DUE owes.
+        self.orig_last = month_of(engagement.end_date)
+        self.termination = scenario.termination_date
+        self.end_date = (
+            min(engagement.end_date, self.termination) if self.termination else engagement.end_date
+        )
+        self.eng_last = month_of(self.end_date)
+        self.unamortized_written_off = ZERO
         hz_from = scenario.horizon.from_ if scenario.horizon else engagement.start_date
         hz_to = scenario.horizon.to if scenario.horizon else engagement.end_date
         self.anchor_day = engagement.start_date.day
@@ -282,7 +293,7 @@ class Calculator:
     def version_span(self, v: ArrangementVersion) -> DaySpan:
         return DaySpan(
             max(v.effective_from, self.e.start_date),
-            min(v.effective_to or self.e.end_date, self.e.end_date),
+            min(v.effective_to or self.end_date, self.end_date),
         )
 
     def segments(self, m: Month) -> list[Segment]:
@@ -330,12 +341,13 @@ class Calculator:
     # -- run ------------------------------------------------------------------------------
 
     def run(self) -> CalculationResult:
-        term_months = months_between(self.anchor, self.eng_last)
+        term_months = months_between(self.anchor, self.orig_last)
         quantities = build_quantities(self.e, self.s, term_months, self.issues)
         if self.issues.has_errors:
             raise CometricError(self.issues)
         self.quantities = quantities
         self._check_triggers(quantities)
+        self._check_termination()
         if self.first > self.anchor:
             pre = [m for m in self.sim_months if m not in self.reported]
             has_pre = any(
@@ -389,9 +401,26 @@ class Calculator:
             if e.period in reported
         ]
         status = "ok" if self.feasible else "infeasible"
-        return CalculationResult(
+        result = CalculationResult(
             data, self.fee_lines, self.cost_lines, ledger, self.issues, self.feasible, status
         )
+        if self.termination:
+            last = month_str(self.eng_last)
+            lines = [ln for ln in self.fee_lines if ln.period == last]
+            result.extras["termination"] = {
+                "date": self.termination,
+                "original_end_date": self.e.end_date,
+                "months_run": len(months_between(self.anchor, self.eng_last)),
+                "months_not_run": len(months_between(self.eng_last, self.orig_last)) - 1,
+                "minimum_charges": sum(
+                    (ln.rounded for ln in lines if ln.kind == "minimum_shortfall"), ZERO
+                ),
+                "termination_fee": sum(
+                    (ln.rounded for ln in lines if ln.kind == "termination_fee"), ZERO
+                ),
+                "unamortized_written_off": self.unamortized_written_off,
+            }
+        return result
 
     # -- fees -----------------------------------------------------------------------------
 
@@ -422,6 +451,17 @@ class Calculator:
         self._period_end_outcome(m, last_version)
         self._indexation(m)
         self._adjustments(m, last_version)
+        if self.termination and m == self.eng_last and last_version.termination_fee:
+            self.fee(
+                m,
+                9,
+                "termination_fee",
+                None,
+                "termination_fee",
+                last_version.termination_fee,
+                f"termination fee on {self.termination.isoformat()}",
+                version=last_version.id,
+            )
 
     def _split(self, q: Decimal, priced: list[Segment], idx: int) -> Decimal:
         weights = [Decimal(s.span.days) for s in priced]
@@ -440,7 +480,7 @@ class Calculator:
         # fingerprint sorts components), e.g. when two components draw on one entitlement.
         for ci, c in sorted(enumerate(v.components), key=lambda t: t[1].id):
             path = pointer("engagement", "arrangement_versions", vi, "components", ci)
-            cspan = DaySpan(c.effective_period.from_, c.effective_period.to or self.e.end_date)
+            cspan = DaySpan(c.effective_period.from_, c.effective_period.to or self.end_date)
             if seg.full_month:
                 # FULL_MONTH_FROM_* gives the version the whole month: component dates inside the
                 # month snap to it, so the component is either in for the month or out.
@@ -632,6 +672,12 @@ class Calculator:
             if c.calculation_method != CalculationMethod.OUTCOME_ADJUSTMENT or c.outcome is None:
                 continue
             o = c.outcome
+            if self.ends_early(o.accumulation_period, m):
+                self.issues.warn(
+                    "TERMINATED_MID_PERIOD",
+                    f"outcome fee for {c.id} is not charged: termination cuts its measurement period short; the contract decides what is owed",
+                )
+                continue
             if self.truncated(o.accumulation_period, m):
                 self.issues.warn(
                     "TRUE_UP_OUTSIDE_HORIZON",
@@ -835,7 +881,12 @@ class Calculator:
                 scope = set(adj.applies_to) if adj.applies_to else None
                 key = ("rebate", adj.id, self.pk(adj.accumulation_period, m))
                 self.acc_add(key, self._subtotal(m, 5, scope, False))
-                if self.truncated(adj.accumulation_period, m):
+                if self.ends_early(adj.accumulation_period, m):
+                    self.issues.warn(
+                        "TERMINATED_MID_PERIOD",
+                        f"rebate {adj.id} is not settled: termination cuts its period short; the contract decides what is owed",
+                    )
+                elif self.truncated(adj.accumulation_period, m):
                     self.issues.warn(
                         "TRUE_UP_OUTSIDE_HORIZON", f"rebate {adj.id} is settled after the horizon"
                     )
@@ -946,6 +997,22 @@ class Calculator:
         tested = self._subtotal(m, basis, scope, unattributed)
         key = ("min", com.id, self.pk(com.accumulation_period, m))
         if com.shortfall_rule == ShortfallRule.PER_SEGMENT:
+            if (
+                self.termination
+                and m == self.eng_last
+                and com.termination_rule == TerminationRule.REMAINDER_DUE
+            ):
+                later = len(self._later_period_keys(com.accumulation_period))
+                if later:
+                    self.fee(
+                        m,
+                        7,
+                        com.id,
+                        None,
+                        "minimum_shortfall",
+                        com.amount * later,
+                        f"REMAINDER_DUE: {later} later periods x {com.amount}",
+                    )
             shortfall = max(ZERO, com.amount - tested)
             if shortfall > 0:
                 self.fee(
@@ -959,6 +1026,9 @@ class Calculator:
                 )
             return
         self.acc_add(key, tested)
+        if self.ends_early(com.accumulation_period, m):
+            self._minimum_at_termination(m, com, key)
+            return
         if self.truncated(com.accumulation_period, m):
             self.issues.warn(
                 "TRUE_UP_OUTSIDE_HORIZON", f"minimum true-up for {com.id} falls after the horizon"
@@ -977,6 +1047,112 @@ class Calculator:
                     shortfall,
                     f"minimum {com.amount} - period total {total}",
                 )
+        if (
+            self.termination
+            and m == self.eng_last
+            and com.termination_rule == TerminationRule.REMAINDER_DUE
+        ):
+            # termination on a period's natural end: later periods are still owed
+            later = len(self._later_period_keys(com.accumulation_period))
+            if later:
+                self.fee(
+                    m,
+                    7,
+                    com.id,
+                    None,
+                    "minimum_shortfall",
+                    com.amount * later,
+                    f"REMAINDER_DUE: {later} later periods x {com.amount}",
+                )
+
+    # -- termination ----------------------------------------------------------------------
+
+    def ends_early(self, period, m: Month) -> bool:
+        """True in the termination month when termination cuts this accumulation period short."""
+        if not self.termination or m != self.eng_last:
+            return False
+        _start, end = self._period_bounds(period, m)
+        return self.termination < end
+
+    def _period_bounds(self, period, m: Month):
+        """First and last day of m's accumulation period within the ORIGINAL term."""
+        key = self.pk(period, m)
+        months = [
+            x for x in months_between(self.anchor, self.orig_last) if self.pk(period, x) == key
+        ]
+        start = max(first_day(months[0]), self.e.start_date)
+        end = min(last_day(months[-1]), self.e.end_date)
+        return start, end
+
+    def _later_period_keys(self, period) -> list:
+        current = self.pk(period, self.eng_last)
+        later = []
+        for x in months_between(self.eng_last, self.orig_last):
+            k = self.pk(period, x)
+            if k != current and k not in later:
+                later.append(k)
+        return later
+
+    def _minimum_at_termination(self, m: Month, com, key) -> None:
+        rule = com.termination_rule
+        total = self.acc[key]
+        if rule == TerminationRule.WAIVED:
+            self.issues.info(
+                "MINIMUM_WAIVED_ON_TERMINATION", f"minimum {com.id} is waived on termination"
+            )
+            return
+        if rule == TerminationRule.PRORATE:
+            start, end = self._period_bounds(com.accumulation_period, m)
+            fraction = Decimal((self.termination - start).days + 1) / Decimal(
+                (end - start).days + 1
+            )
+            required = com.amount * fraction
+            shortfall = max(ZERO, required - total)
+            if shortfall > 0:
+                self.fee(
+                    m,
+                    7,
+                    com.id,
+                    None,
+                    "minimum_shortfall",
+                    shortfall,
+                    f"PRORATE: minimum {com.amount} x {fraction:.6f} of period - period total {total}",
+                )
+            return
+        later = self._later_period_keys(com.accumulation_period)
+        current = max(ZERO, com.amount - total)
+        owed = current + com.amount * len(later)
+        if owed > 0:
+            self.fee(
+                m,
+                7,
+                com.id,
+                None,
+                "minimum_shortfall",
+                owed,
+                f"REMAINDER_DUE: {current} for this period + {len(later)} later periods x {com.amount}",
+            )
+
+    def _check_termination(self) -> None:
+        if not self.termination:
+            return
+        for vi, v in enumerate(self.e.arrangement_versions):
+            for ci, com in enumerate(v.commitments):
+                if com.kind == CommitmentKind.MINIMUM_SPEND and com.termination_rule is None:
+                    self.issues.error(
+                        "TERMINATION_RULE_REQUIRED",
+                        f"scenario terminates on {self.termination.isoformat()}, but minimum {com.id} has no termination_rule (PRORATE, REMAINDER_DUE, or WAIVED)",
+                        pointer(
+                            "engagement",
+                            "arrangement_versions",
+                            vi,
+                            "commitments",
+                            ci,
+                            "termination_rule",
+                        ),
+                    )
+        if self.issues.has_errors:
+            raise CometricError(self.issues)
 
     # -- capacity -------------------------------------------------------------------------
 
@@ -1142,7 +1318,7 @@ class Calculator:
         for ci, cc in enumerate(plan.cost_components):
             path = pointer("engagement", "delivery_plan", "cost_components", ci)
             if cc.effective_period is not None:
-                cs = DaySpan(cc.effective_period.from_, cc.effective_period.to or self.e.end_date)
+                cs = DaySpan(cc.effective_period.from_, cc.effective_period.to or self.end_date)
                 if overlap(cs, month_span(m)) is None:
                     continue
             layer = self._layer(cc)
@@ -1252,7 +1428,7 @@ class Calculator:
         if cc.period == CostPeriod.ANNUAL:
             return allocate_exact(amt, 12, self.scale)[(month_index(m) - month_index(start)) % 12]
         # TERM: spread over the months the cost is in effect, so its declared total is kept
-        end = self.eng_last
+        end = self.orig_last
         if cc.effective_period and cc.effective_period.to:
             end = min(month_of(cc.effective_period.to), self.eng_last)
         active = months_between(start, end)
@@ -1271,8 +1447,13 @@ class Calculator:
                 inc += amount
             n = cc.amortize_months or 1
             offset = month_index(m) - month_index(start)
+            shares = allocate_exact(amount, n, self.scale)
             if 0 <= offset < n:
-                amo += allocate_exact(amount, n, self.scale)[offset]
+                amo += shares[offset]
+            if self.termination and m == self.eng_last and offset < n - 1:
+                remaining = sum(shares[max(offset + 1, 0) :], ZERO)
+                amo += remaining
+                self.unamortized_written_off += remaining
         return inc, amo
 
     # -- aggregation ----------------------------------------------------------------------

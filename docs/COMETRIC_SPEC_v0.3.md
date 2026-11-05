@@ -57,6 +57,8 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-22 | App. D | Evidence verification status replaces the v0.2 priority list. |
 | V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (unreleased fix after 0.1.0). |
 | V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (unreleased, after 0.1.0). |
+| V3-28 | 4.4, 6.1, 9 | Termination scenarios: `termination_date` on a scenario, `termination_rule` on minimums, `termination_fee` on a version (unreleased). |
+| V3-29 | 3.4, 6.3, App. C | ALSP template `tiered_units_annual_minimum` and five worked patterns (`docs/PATTERNS.md`); "pending human review" defined (unreleased). |
 | V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (unreleased). |
 | V3-26 | 4.5, 5.4, 7.3, 8.3, 9 | From an LLM-driven pricing analysis (unreleased, after 0.2.0): threshold scope for discounts and rebates; unit price only for an unambiguous quantity; a `definitions` block on results; `quickstart`; no unstructured errors; candidate and constraint input forms. |
 | V3-25 | 4.1, 4.3, 4.5, 4.6, 5.2, 6.1, 8.4, 9 | Rules clarified by the full engine review (0.2.0): full-month proration, horizon simulation, one-time fees, indexation scope and contract years, required performance triggers, term-cost spreading, incurred view, component order. |
@@ -428,6 +430,15 @@ As built `[V3-09]`:
 - A grant is posted when an entitlement's accumulation period opens, for the full `included_quantity`; grants are not prorated when a contract version starts mid-period.
 - Consumption is FIFO with rolled-in lots first. `NEXT_PERIOD` rolls unused granted quantity (up to `ceiling`) into the next period, where it expires if unused; it does not roll twice. `TERM` rolls everything until the engagement ends. Remaining quantity expires at the engagement's end; a horizon that ends earlier leaves lots open.
 
+**Termination** `[V3-28]`. A scenario may set `termination_date` (on or after the start, before the end; mid-month needs a proration policy). The engine then runs to that date:
+
+- Fees and costs stop. Quantities and `TERM` costs are still spread over the original term, so a year's volume is not compressed into the months that ran.
+- Each `MINIMUM_SPEND` commitment needs a `termination_rule` (an error otherwise, raised only for terminated scenarios): `PRORATE` charges the shortfall against the current period's minimum pro rata by days; `REMAINDER_DUE` charges the current period's full shortfall plus the full minimum for every later period of the original term, including when termination falls on a period's natural end; `WAIVED` charges none.
+- The version's `termination_fee`, if any, is charged once in the termination month, after caps.
+- Allowances expire. One-time costs still being amortized are written off in the termination month (amortized view), and the amount is reported.
+- Outcome fees and rebates whose accumulation period is cut short are not charged, with `TERMINATED_MID_PERIOD`: the contract decides what is owed.
+- Results carry a `termination` block: date, original end date, months run and not run, minimum charges, termination fee, and unamortized cost written off.
+
 [O] Treatment of unused prepaid entitlements for financial-statement accounting is excluded from v1.
 
 ### 4.5 Evaluation order
@@ -674,6 +685,8 @@ An AI layer MAY propose alternatives, explain tradeoffs, or identify missing fac
 - bypass legal or commercial approval requirements.
 
 Recommendations SHALL cite calculation IDs, assumptions, constraints, and evidence claims. Human sign-off is required before adopting a commercial recommendation.
+
+**Pending human review** `[V3-29]` is a label, not a workflow. Cometric never changes it and has no notion of approvers: it marks every search and comparison result as advice that a person with authority over the commercial terms must accept in the user's own process. A reviewed result is cited, with its fingerprint, in that process's record.
 
 ### 6.4 Structure search (Optimize)
 
@@ -1033,6 +1046,8 @@ The test suite MUST include:
 | T-041 | Pack templates over MCP `[V3-19]` | `cometric://packs/{pack}/templates/{id}` resolves for every pack template |
 | T-043 | Engine review regressions `[V3-25]` | Full-month policies bill whole months; a project payment in a split month posts; a mid-year horizon carries the annual allowance; one-time and annual fees keep their totals; collars reprice at the cumulative tier position; cumulative and period-end overage index identically and project payments are not indexed; a later-starting term cost keeps its total; the incurred view ignores portfolio costs; a missing trigger is an error; the price floor needs costs; quarterly shares anchor at the component start; contract years honor the start day; component order never changes results |
 | T-044 | LLM-feedback fixes `[V3-26]` | Threshold discount and rebate: EXCESS_ONLY 3,175,000 and ENTIRE_SUBTOTAL 2,925,000 on a 3,250,000 gross with a 2,500,000 threshold; the excess discount starts in the crossing month; missing scope or period is an error with an example; several unit types give a null unit price with a warning, and `client_value_unit` with `+` sums them; bare-engagement candidates work and bad ones get a pointer; the constraint `op` alias works; no tool returns an unstructured error; every quickstart payload runs through the MCP server |
+| T-045 | Termination `[V3-28]` | PRORATE charges the shortfall against 150,000 x 181/365 at a 30 June termination; REMAINDER_DUE charges 90,000 for one year and 240,000 with a second year, and owes later years at a period-end termination; WAIVED charges none; the fee posts; quantities spread over the original term; unamortized transition is written off; a cut-short outcome fee is not charged; a missing rule, an out-of-range date, and a mid-month date without proration are errors |
+| T-046 | Patterns `[V3-29]` | Every pattern file matches figures computed by hand in `scripts/build_alsp.py`; the ALSP template round-trips |
 | T-042 | Reconciliation `[V3-24]` | Actuals equal to computed figures reconcile; a changed July invoice is reported at month 7 with the mechanism that priced it; the publishable summary contains no amounts, dates, or names; relative tolerance and unknown metrics are honored |
 
 **Property tests** SHOULD verify: non-negative accepted units; non-overlapping effective dates; contiguous tiers; under `MARGINAL` tier schedules with non-negative rates, the pre-credit fee never decreases when eligible consumption increases, holding other terms fixed. Under `ALL_UNITS` schedules the property holds outside every band reported by `TIER_CLIFF` and is not asserted inside them. T-033 runs only when the private research report is present; CI skips it.
@@ -1170,6 +1185,8 @@ Expected: low 5,000 at 70/20/10 → 6,800 WU, fee $776,000, direct $508,000; bas
 **Case G (new): capacity breach.** *(v0.2, not in the report)*
 Case A with demand 16,000 units and `OVERFLOW_COST` at $40/unit replacing the $18 variable rate for units above capacity.
 Expected: fee $1,200,000 + 4,000 × $120 = $1,680,000; direct $660,000 + 14,000 × $18 + 2,000 × $40 = $992,000; GP $688,000; CP $548,000; overflow recognized in November and December under cumulative capacity. Variants: `BACKLOG` carries 2,000 units past the horizon with an SLA warning; `INFEASIBLE` and undeclared mode fail feasibility (T-010).
+
+**Patterns** `[V3-29]`: `pattern_tiered_minimum`, `pattern_transition_credit`, `pattern_partial_and_hours`, and `pattern_termination` are documented in `docs/PATTERNS.md`, with expected figures computed independently of the engine.
 
 **Case H (new): consulting phased fixed fee plus gain-share.** *(v0.3, illustrative, not from the report)* `[V3-21]`
 `FIXED_PROJECT` $600,000 paid $150,000 / $250,000 / $200,000 in March, July, December; `OUTCOME_ADJUSTMENT` SHARE of 10% with 70% attribution on reduction of annual addressable spend below a $10,000,000 baseline (`LOWER_IS_BETTER`), capped at $100,000. Costs: 4,000 delivery hours at $90 → `DIRECT_DELIVERY`; engagement overhead $30,000 → `ENGAGEMENT_AVOIDABLE`. Standard rate card: partner $400 (500 hours), consultant $175 (3,500 hours). Declares the consulting pack; service category `TRANSFORMATION`; provider type `BOUTIQUE`.

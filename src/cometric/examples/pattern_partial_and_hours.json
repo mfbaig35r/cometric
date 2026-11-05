@@ -1,0 +1,169 @@
+{
+  "case": "pattern_partial_and_hours",
+  "title": "Partial billing for reviews handed back part-way (40% of the rate), and delivery cost from hours per unit x a blended rate",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "PATTERN-PARTIAL-AND-HOURS",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "packs": [
+      {
+        "id": "alsp"
+      }
+    ],
+    "unit_definitions": [
+      {
+        "code": "review",
+        "kind": "COUNT",
+        "counting_rule": "One completed review of one eligible contract",
+        "acceptance_rule": "Client sign-off"
+      },
+      {
+        "code": "returned_review",
+        "kind": "COUNT",
+        "counting_rule": "One review handed back part-way at the client's request",
+        "acceptance_rule": "Client confirms the hand-back"
+      }
+    ],
+    "services": [
+      {
+        "id": "service",
+        "unit_definition_id": "review",
+        "service_category": "CONTRACTS"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "reviews",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.reviews",
+            "unit": "review",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "review_rate"
+          },
+          {
+            "id": "returned",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.returned",
+            "unit": "returned_review",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "returned_rate"
+          }
+        ],
+        "rate_schedules": [
+          {
+            "id": "review_rate",
+            "currency": "USD",
+            "unit": "review",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "1000"
+              }
+            ]
+          },
+          {
+            "id": "returned_rate",
+            "currency": "USD",
+            "unit": "returned_review",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "400"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "client_value_unit": "reviews",
+    "delivery_plan": {
+      "production_standards": [
+        {
+          "unit": "reviews",
+          "hours_per_unit": "2.5"
+        },
+        {
+          "unit": "returned",
+          "hours_per_unit": "1"
+        }
+      ],
+      "cost_components": [
+        {
+          "id": "review_hours",
+          "category": "POOLED_LABOR",
+          "behavior": "VARIABLE",
+          "driver": "demand_hours",
+          "rate": "80"
+        },
+        {
+          "id": "account_management",
+          "category": "ENGAGEMENT_OVERHEAD",
+          "behavior": "FIXED",
+          "amount": "50000",
+          "period": "ANNUAL"
+        }
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "reviews",
+          "value": "1200",
+          "unit": "review",
+          "time_period": "2027",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "returned",
+          "value": "60",
+          "unit": "returned_review",
+          "time_period": "2027",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "reference": "reference"
+  },
+  "expected": {
+    "base": {
+      "contractual_fee": "1224000",
+      "direct_delivery_cost": "244800",
+      "contribution_profit": "929200"
+    }
+  }
+}

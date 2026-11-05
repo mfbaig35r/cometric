@@ -36,6 +36,7 @@ from .enums import (
     RoundingLevel,
     RoundingMode,
     ShortfallRule,
+    TerminationRule,
     TestedAgainst,
     ThresholdScope,
     TierMethod,
@@ -236,6 +237,10 @@ class Commitment(Model):
     accumulation_period: AccumulationPeriod
     tested_against: TestedAgainst
     shortfall_rule: ShortfallRule
+    termination_rule: TerminationRule | None = Field(
+        default=None,
+        description="What a minimum becomes if the engagement terminates early: PRORATE, REMAINDER_DUE, or WAIVED. Required when a scenario sets termination_date.",
+    )
 
 
 class Adjustment(Model):
@@ -274,6 +279,10 @@ class ArrangementVersion(Model):
     retroactive: bool = False
     proration_policy: ProrationPolicy | None = None
     adjustment_order: Literal["DEFAULT"] = "DEFAULT"
+    termination_fee: Dec | None = Field(
+        default=None,
+        description="Charged once in the termination month when a scenario terminates early",
+    )
     components: list[FeeComponent] = Field(min_length=1)
     entitlements: list[Entitlement] = []
     rate_schedules: list[RateSchedule] = []
@@ -433,6 +442,10 @@ class Scenario(Model):
     horizon: Horizon | None = None
     assumptions: list[Assumption] = []
     breach_mode: BreachMode | None = None
+    termination_date: date | None = Field(
+        default=None,
+        description="Run the engagement as terminated on this date (inclusive): fees and costs stop, minimums follow each commitment's termination_rule, the version's termination_fee is charged, allowances expire, and unamortized one-time costs are written off.",
+    )
     probability_label: str | None = None
     deviation_driver: str | None = None
 

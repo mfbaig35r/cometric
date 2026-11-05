@@ -172,6 +172,8 @@ def calculate_periods(
         "years": data["years"],
         "definitions": definitions(e, result),
     }
+    if "termination" in result.extras:
+        out["termination"] = result.extras["termination"]
     if detail in ("periods", "line_items"):
         out["periods"] = data["periods"]
     if detail == "line_items":

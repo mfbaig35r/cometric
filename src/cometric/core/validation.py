@@ -747,6 +747,26 @@ def _cycles(graph: dict[str, list[str]], issues: Issues, path: str) -> None:
 def validate_scenario_model(
     e: Engagement, s: Scenario, issues: Issues, root: str = "/scenario"
 ) -> None:
+    t = s.termination_date
+    if t is not None:
+        if not (e.start_date <= t < e.end_date):
+            issues.error(
+                "TERMINATION_DATE_RANGE",
+                f"termination_date must be on or after {e.start_date} and before the end date {e.end_date}",
+                root + "/termination_date",
+            )
+        elif t != last_day((t.year, t.month)):
+            active = [
+                v
+                for v in e.arrangement_versions
+                if v.effective_from <= t <= (v.effective_to or e.end_date)
+            ]
+            if active and active[0].proration_policy is None:
+                issues.error(
+                    "PRORATION_POLICY_REQUIRED",
+                    "termination falls mid-month; declare proration_policy on the version in force, or terminate on a month end",
+                    root + "/termination_date",
+                )
     if s.horizon is not None:
         if s.horizon.from_ > s.horizon.to:
             issues.error("DATE_ORDER", "horizon from is after to", root + "/horizon")

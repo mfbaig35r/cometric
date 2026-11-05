@@ -262,6 +262,12 @@ class Prevalence(StrEnum):
     UNVERIFIED = "UNVERIFIED"
 
 
+class TerminationRule(StrEnum):
+    PRORATE = "PRORATE"  # current period's minimum pro rata by days; later periods waived
+    REMAINDER_DUE = "REMAINDER_DUE"  # current period's full minimum plus every later period's
+    WAIVED = "WAIVED"  # no minimum for the terminated period or later
+
+
 class ThresholdScope(StrEnum):
     EXCESS_ONLY = "EXCESS_ONLY"  # the percentage applies only to the amount above the threshold
     ENTIRE_SUBTOTAL = "ENTIRE_SUBTOTAL"  # once the threshold is reached, it applies to all of it
