@@ -13,7 +13,7 @@
 <https://github.com/mfbaig35r/cometric/ontology/> a owl:Ontology ;
     rdfs:label "Cometric commercial ontology"@en ;
     rdfs:comment "Commercial arrangements, engagement economics, and domain knowledge: OWL classes for the input model, SKOS concept schemes for the core vocabularies and every pack, and the rules and evidence the packs carry. Generated from the cometric package."@en ;
-    owl:versionInfo "schema 0.2; packs alsp 0.1.0, base 0.1.0, consulting 0.1.0" ;
+    owl:versionInfo "schema 0.2; packs alsp 0.1.0, base 0.2.0, consulting 0.1.0" ;
     dcterms:license <https://www.apache.org/licenses/LICENSE-2.0> .
 
 # --- ontology terms ------------------------------------------------------------------------
@@ -37,6 +37,26 @@ cm:Claim a owl:Class ;
 cm:Source a owl:Class ;
     rdfs:label "source"@en ;
     rdfs:comment "An external source that supports claims."@en .
+
+cm:Realization a owl:Class ;
+    rdfs:label "realization"@en ;
+    rdfs:comment "How a pricing model or lever becomes engagement terms, with the risk labels or label effects that structure proposals use."@en .
+
+cm:realizes a owl:ObjectProperty ;
+    rdfs:label "realizes"@en ;
+    rdfs:comment "The pricing model or lever a realization turns into engagement terms."@en .
+
+cm:riskLabels a owl:DatatypeProperty ;
+    rdfs:label "risk labels"@en ;
+    rdfs:comment "Who absorbs each deviation under a model, as a JSON object."@en .
+
+cm:riskEffects a owl:DatatypeProperty ;
+    rdfs:label "risk effects"@en ;
+    rdfs:comment "How a lever changes a model's risk labels, as a JSON object of from-to maps."@en .
+
+cm:fragment a owl:DatatypeProperty ;
+    rdfs:label "fragment"@en ;
+    rdfs:comment "The engagement terms a realization adds, with placeholders for every figure, as JSON."@en .
 
 cm:pack a owl:ObjectProperty ;
     rdfs:label "pack"@en ;
@@ -4844,7 +4864,7 @@ pack-alsp:E040 a cm:Source ;
 pack-base:pack a cm:Pack ;
     rdfs:label "Base commercial knowledge"@en ;
     rdfs:comment "Domain-neutral commercial-arrangement knowledge: billing bases, pricing models, levers, dimensions, metrics, cost categories, compatibility and reasoning rules, and cross-sector evidence."@en ;
-    owl:versionInfo "0.1.0" .
+    owl:versionInfo "0.2.0" .
 
 pack-base:scheme.automation_structures a skos:ConceptScheme ;
     rdfs:label "Structures for automation-reduced effort"@en ;
@@ -5127,6 +5147,74 @@ pack-base:BB-OUTCOME a skos:Concept ;
     cm:sourceRef "report:billing-bases" ;
     cm:status "active" ;
     cm:attributes "{\"cadence_note\": \"any cadence\", \"calculation\": \"Formula linked to outcome\", \"core_basis\": \"OUTCOME\", \"economic_object\": \"Defined result, savings or recovery\", \"row\": 10}"^^rdf:JSON .
+
+pack-base:scheme.client_priorities a skos:ConceptScheme ;
+    rdfs:label "Client priorities for structure proposals"@en ;
+    skos:notation "client_priorities" ;
+    cm:pack pack-base:pack .
+
+pack-base:budget_certainty a skos:Concept ;
+    skos:notation "budget_certainty" ;
+    skos:prefLabel "Budget certainty"@en ;
+    skos:altLabel "predictable spend"@en, "cost certainty"@en ;
+    skos:definition "The client wants to know what it will spend. Served by structures whose spend is fixed or bounded."@en ;
+    skos:inScheme pack-base:scheme.client_priorities ;
+    skos:related pack-base:SEL-007 ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:prevalence cmv:Prevalence.UNVERIFIED ;
+    cm:sourceRef "cometric:design" ;
+    cm:status "active" ;
+    cm:attributes "{\"fits\": {\"in\": [\"FIXED\", \"BOUNDED\"], \"path\": \"labels.spend_variability\"}, \"suggests\": [\"CL-V07\"], \"tension\": {\"equals\": \"VARIABLE\", \"path\": \"labels.spend_variability\"}, \"tension_note\": \"Spend moves with volume.\"}"^^rdf:JSON .
+
+pack-base:pay_for_use a skos:Concept ;
+    skos:notation "pay_for_use" ;
+    skos:prefLabel "Pay for use"@en ;
+    skos:altLabel "flexibility"@en, "pay as you go"@en ;
+    skos:definition "The client wants to pay for the work it sends and not for unused capacity. Served by structures where the client does not absorb a volume shortfall."@en ;
+    skos:inScheme pack-base:scheme.client_priorities ;
+    skos:related pack-base:SEL-008 ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:prevalence cmv:Prevalence.UNVERIFIED ;
+    cm:sourceRef "cometric:design" ;
+    cm:status "active" ;
+    cm:attributes "{\"fits\": {\"all\": [{\"not\": {\"equals\": \"CLIENT\", \"path\": \"labels.volume_shortfall\"}}, {\"not\": {\"equals\": \"FIXED\", \"path\": \"labels.spend_variability\"}}]}, \"suggests\": [\"CL-R06\"], \"tension\": {\"equals\": \"CLIENT\", \"path\": \"labels.volume_shortfall\"}, \"tension_note\": \"The client pays for capacity it does not use.\"}"^^rdf:JSON .
+
+pack-base:cost_reduction_over_time a skos:Concept ;
+    skos:notation "cost_reduction_over_time" ;
+    skos:prefLabel "Cost reduction over time"@en ;
+    skos:altLabel "savings with scale"@en ;
+    skos:definition "The client wants its unit cost to fall as volume grows. Served by volume bands, discounts, or rebates."@en ;
+    skos:inScheme pack-base:scheme.client_priorities ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:prevalence cmv:Prevalence.UNVERIFIED ;
+    cm:sourceRef "cometric:design" ;
+    cm:status "active" ;
+    cm:attributes "{\"fits\": {\"any\": [{\"equals\": \"PM-014\", \"path\": \"base_model\"}, {\"in\": [\"CL-V04\", \"CL-V05\"], \"path\": \"levers[*]\"}]}, \"suggests\": [\"CL-V04\", \"CL-V05\"], \"tension\": {\"not\": {\"any\": [{\"equals\": \"PM-014\", \"path\": \"base_model\"}, {\"in\": [\"CL-V04\", \"CL-V05\"], \"path\": \"levers[*]\"}]}}, \"tension_note\": \"Nothing lowers the price as volume grows.\"}"^^rdf:JSON .
+
+pack-base:outcome_alignment a skos:Concept ;
+    skos:notation "outcome_alignment" ;
+    skos:prefLabel "Outcome alignment"@en ;
+    skos:altLabel "performance alignment"@en ;
+    skos:definition "The client wants the provider's fees to respond to service performance. Served by service credits or performance bonuses."@en ;
+    skos:inScheme pack-base:scheme.client_priorities ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:prevalence cmv:Prevalence.UNVERIFIED ;
+    cm:caveat "Outcome-based fees (gain-share"@en, "success fees) are not proposed in this version."@en ;
+    cm:sourceRef "cometric:design" ;
+    cm:status "active" ;
+    cm:attributes "{\"fits\": {\"in\": [\"CL-P01\", \"CL-P02\"], \"path\": \"levers[*]\"}, \"suggests\": [\"CL-P01\", \"CL-P02\"], \"tension\": {\"not\": {\"in\": [\"CL-P01\", \"CL-P02\"], \"path\": \"levers[*]\"}}, \"tension_note\": \"Fees do not respond to service performance.\"}"^^rdf:JSON .
+
+pack-base:simplicity a skos:Concept ;
+    skos:notation "simplicity" ;
+    skos:prefLabel "Simplicity"@en ;
+    skos:altLabel "easy to administer"@en ;
+    skos:definition "The client wants a structure that is easy to understand and administer. Served by structures with at most one lever."@en ;
+    skos:inScheme pack-base:scheme.client_priorities ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:prevalence cmv:Prevalence.UNVERIFIED ;
+    cm:sourceRef "cometric:design" ;
+    cm:status "active" ;
+    cm:attributes "{\"fits\": {\"lte\": 1, \"path\": \"lever_count\"}, \"suggests\": [], \"tension\": {\"gte\": 3, \"path\": \"lever_count\"}, \"tension_note\": \"Several mechanisms to administer.\"}"^^rdf:JSON .
 
 pack-base:scheme.cost_categories a skos:ConceptScheme ;
     rdfs:label "Cost categories and allocation guidance"@en ;
@@ -8939,7 +9027,7 @@ pack-base:SEL-001 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Unlimited fixed fee\"], \"caution_refs\": [], \"characteristic\": \"Highly uncertain scope\", \"favored\": [\"Time and materials\", \"Capped time and materials\", \"Phased fee\", \"Cost-plus\"], \"favored_refs\": [\"PM-001\", \"PM-020\", \"PM-017\", \"PM-019\"], \"row\": 1}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Unlimited fixed fee\"], \"caution_refs\": [], \"characteristic\": \"Highly uncertain scope\", \"favored\": [\"Time and materials\", \"Capped time and materials\", \"Phased fee\", \"Cost-plus\"], \"favored_refs\": [\"PM-001\", \"PM-020\", \"PM-017\", \"PM-019\"], \"profile_signal\": {\"equals\": \"UNKNOWN\", \"path\": \"volume.certainty\"}, \"row\": 1}"^^rdf:JSON .
 
 pack-base:SEL-002 a skos:Concept ;
     skos:notation "SEL-002" ;
@@ -8952,7 +9040,7 @@ pack-base:SEL-002 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Pure hourly if automation is expected to increase materially\"], \"caution_refs\": [\"PM-001\"], \"characteristic\": \"Stable high-volume repetitive work\", \"favored\": [\"Unit pricing\", \"Fixed managed service\", \"Subscription\", \"Base plus variable\"], \"favored_refs\": [\"PM-011\", \"PM-007\", \"PM-010\", \"PM-023\"], \"row\": 2}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Pure hourly if automation is expected to increase materially\"], \"caution_refs\": [\"PM-001\"], \"characteristic\": \"Stable high-volume repetitive work\", \"favored\": [\"Unit pricing\", \"Fixed managed service\", \"Subscription\", \"Base plus variable\"], \"favored_refs\": [\"PM-011\", \"PM-007\", \"PM-010\", \"PM-023\"], \"profile_signal\": {\"all\": [{\"equals\": \"KNOWN\", \"path\": \"volume.certainty\"}, {\"equals\": \"COUNT\", \"path\": \"unit_of_work.kind\"}]}, \"row\": 2}"^^rdf:JSON .
 
 pack-base:SEL-003 a skos:Concept ;
     skos:notation "SEL-003" ;
@@ -8965,7 +9053,7 @@ pack-base:SEL-003 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Pure per-unit pricing without a minimum if staffing cannot flex\"], \"caution_refs\": [\"PM-011\"], \"characteristic\": \"Dedicated ongoing team required\", \"favored\": [\"FTE or capacity reservation\", \"Fixed managed service\"], \"favored_refs\": [\"PM-004\", \"PM-009\", \"PM-007\"], \"row\": 3}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Pure per-unit pricing without a minimum if staffing cannot flex\"], \"caution_refs\": [\"PM-011\"], \"characteristic\": \"Dedicated ongoing team required\", \"favored\": [\"FTE or capacity reservation\", \"Fixed managed service\"], \"favored_refs\": [\"PM-004\", \"PM-009\", \"PM-007\"], \"profile_signal\": {\"equals\": true, \"path\": \"cost_profile.fixed_team\"}, \"row\": 3}"^^rdf:JSON .
 
 pack-base:SEL-004 a skos:Concept ;
     skos:notation "SEL-004" ;
@@ -8978,7 +9066,7 @@ pack-base:SEL-004 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Large take-or-pay commitment without rollover or flexibility\"], \"caution_refs\": [\"PM-034\"], \"characteristic\": \"Highly variable demand with pooled capacity\", \"favored\": [\"Per-unit\", \"Consumption\", \"Base plus overage\"], \"favored_refs\": [\"PM-011\", \"PM-013\", \"PM-023\"], \"row\": 4}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Large take-or-pay commitment without rollover or flexibility\"], \"caution_refs\": [\"PM-034\"], \"characteristic\": \"Highly variable demand with pooled capacity\", \"favored\": [\"Per-unit\", \"Consumption\", \"Base plus overage\"], \"favored_refs\": [\"PM-011\", \"PM-013\", \"PM-023\"], \"profile_signal\": {\"all\": [{\"in\": [\"RANGE\", \"UNKNOWN\"], \"path\": \"volume.certainty\"}, {\"not\": {\"equals\": true, \"path\": \"cost_profile.fixed_team\"}}]}, \"row\": 4}"^^rdf:JSON .
 
 pack-base:SEL-005 a skos:Concept ;
     skos:notation "SEL-005" ;
@@ -8991,7 +9079,7 @@ pack-base:SEL-005 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Month-to-month fee with no termination recovery\"], \"caution_refs\": [], \"characteristic\": \"Material setup or engineering investment\", \"favored\": [\"Implementation fee plus recurring\", \"Multi-year commitment\"], \"favored_refs\": [\"PM-029\"], \"row\": 5}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Month-to-month fee with no termination recovery\"], \"caution_refs\": [], \"characteristic\": \"Material setup or engineering investment\", \"favored\": [\"Implementation fee plus recurring\", \"Multi-year commitment\"], \"favored_refs\": [\"PM-029\"], \"profile_signal\": {\"equals\": true, \"path\": \"cost_profile.setup_investment\"}, \"row\": 5}"^^rdf:JSON .
 
 pack-base:SEL-006 a skos:Concept ;
     skos:notation "SEL-006" ;
@@ -9004,7 +9092,7 @@ pack-base:SEL-006 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Single unadjusted unit price\"], \"caution_refs\": [\"PM-011\"], \"characteristic\": \"Heterogeneous complexity\", \"favored\": [\"Complexity-weighted units\", \"Bands\", \"Hourly for exceptions\"], \"favored_refs\": [\"PM-015\", \"PM-001\"], \"row\": 6}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Single unadjusted unit price\"], \"caution_refs\": [\"PM-011\"], \"characteristic\": \"Heterogeneous complexity\", \"favored\": [\"Complexity-weighted units\", \"Bands\", \"Hourly for exceptions\"], \"favored_refs\": [\"PM-015\", \"PM-001\"], \"profile_signal\": {\"exists\": true, \"path\": \"unit_of_work.tiers[*]\"}, \"row\": 6}"^^rdf:JSON .
 
 pack-base:SEL-007 a skos:Concept ;
     skos:notation "SEL-007" ;
@@ -9017,7 +9105,7 @@ pack-base:SEL-007 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Pure uncapped usage\"], \"caution_refs\": [\"PM-013\"], \"characteristic\": \"Strong client budget-certainty preference\", \"favored\": [\"Fixed fee\", \"Subscription\", \"Capped hybrid\"], \"favored_refs\": [\"PM-006\", \"PM-010\"], \"row\": 7}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Pure uncapped usage\"], \"caution_refs\": [\"PM-013\"], \"characteristic\": \"Strong client budget-certainty preference\", \"favored\": [\"Fixed fee\", \"Subscription\", \"Capped hybrid\"], \"favored_refs\": [\"PM-006\", \"PM-010\"], \"profile_signal\": {\"equals\": \"budget_certainty\", \"path\": \"client_priorities[*]\"}, \"row\": 7}"^^rdf:JSON .
 
 pack-base:SEL-008 a skos:Concept ;
     skos:notation "SEL-008" ;
@@ -9030,7 +9118,7 @@ pack-base:SEL-008 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Dedicated FTE or high minimum commitment\"], \"caution_refs\": [\"PM-004\"], \"characteristic\": \"Strong client flexibility preference\", \"favored\": [\"Usage\", \"Pooled unit pricing\", \"Low base plus overage\"], \"favored_refs\": [\"PM-013\", \"PM-011\", \"PM-023\"], \"row\": 8}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Dedicated FTE or high minimum commitment\"], \"caution_refs\": [\"PM-004\"], \"characteristic\": \"Strong client flexibility preference\", \"favored\": [\"Usage\", \"Pooled unit pricing\", \"Low base plus overage\"], \"favored_refs\": [\"PM-013\", \"PM-011\", \"PM-023\"], \"profile_signal\": {\"equals\": \"pay_for_use\", \"path\": \"client_priorities[*]\"}, \"row\": 8}"^^rdf:JSON .
 
 pack-base:SEL-009 a skos:Concept ;
     skos:notation "SEL-009" ;
@@ -9056,7 +9144,7 @@ pack-base:SEL-010 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Hourly-only if value remains constant\"], \"caution_refs\": [\"PM-001\"], \"characteristic\": \"AI lowers human time sharply\", \"favored\": [\"Output\", \"Fixed\", \"Platform plus service\", \"Outcome\", \"Usage\"], \"favored_refs\": [\"PM-011\", \"PM-006\", \"PM-028\", \"PM-024\", \"PM-030\"], \"row\": 10}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Hourly-only if value remains constant\"], \"caution_refs\": [\"PM-001\"], \"characteristic\": \"AI lowers human time sharply\", \"favored\": [\"Output\", \"Fixed\", \"Platform plus service\", \"Outcome\", \"Usage\"], \"favored_refs\": [\"PM-011\", \"PM-006\", \"PM-028\", \"PM-024\", \"PM-030\"], \"profile_signal\": {\"equals\": true, \"path\": \"flags.automation_expected\"}, \"row\": 10}"^^rdf:JSON .
 
 pack-base:SEL-011 a skos:Concept ;
     skos:notation "SEL-011" ;
@@ -9069,7 +9157,7 @@ pack-base:SEL-011 a skos:Concept ;
     cm:caveat "Advisory heuristic; never used to rank or choose structures."@en ;
     cm:sourceRef "report:decision-matrix" ;
     cm:status "active" ;
-    cm:attributes "{\"caution\": [\"Extremely lean on-demand pool without continuity guarantees\"], \"caution_refs\": [], \"characteristic\": \"Material regulatory continuity requirement\", \"favored\": [\"Reserved capacity\", \"Dedicated or hybrid delivery\", \"Robust exit provisions\"], \"favored_refs\": [\"PM-009\", \"PM-004\"], \"row\": 11}"^^rdf:JSON .
+    cm:attributes "{\"caution\": [\"Extremely lean on-demand pool without continuity guarantees\"], \"caution_refs\": [], \"characteristic\": \"Material regulatory continuity requirement\", \"favored\": [\"Reserved capacity\", \"Dedicated or hybrid delivery\", \"Robust exit provisions\"], \"favored_refs\": [\"PM-009\", \"PM-004\"], \"profile_signal\": {\"equals\": true, \"path\": \"flags.continuity_required\"}, \"row\": 11}"^^rdf:JSON .
 
 pack-base:COMPAT-001 a cm:Rule ;
     skos:notation "COMPAT-001" ;
@@ -9472,6 +9560,62 @@ pack-base:RULE-015 a cm:Rule ;
     cm:explanation "When a provider claims savings, transition, technology, governance and QA costs should be included before comparing total economics."@en ;
     cm:evidenceClass cmv:EvidenceClass.C_INFERENCE ;
     cm:sourceRef "report:RULE-015" .
+
+pack-base:COMP-001 a cm:Rule ;
+    skos:notation "COMP-001" ;
+    cm:pack pack-base:pack ;
+    cm:kind "composition" ;
+    cm:assessment "ECONOMICALLY_CONFLICTING" ;
+    cm:evaluable "true"^^xsd:boolean ;
+    cm:code "COMP_DOUBLE_VOLUME_REDUCTION" ;
+    cm:severity cmv:Severity.INFO ;
+    cm:message "Volume bands and a volume discount or rebate reduce the price for the same volume twice."@en ;
+    cm:explanation "Banded unit prices already lower the price as volume grows; a discount or rebate on top rewards the same volume a second time."@en ;
+    cm:condition "{\"all\": [{\"equals\": \"PM-014\", \"path\": \"base_model\"}, {\"in\": [\"CL-V04\", \"CL-V05\"], \"path\": \"levers[*]\"}]}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:COMP-002 a cm:Rule ;
+    skos:notation "COMP-002" ;
+    cm:pack pack-base:pack ;
+    cm:kind "composition" ;
+    cm:assessment "ECONOMICALLY_CONFLICTING" ;
+    cm:evaluable "true"^^xsd:boolean ;
+    cm:code "COMP_DOUBLE_SHORTFALL_PROTECTION" ;
+    cm:severity cmv:Severity.INFO ;
+    cm:message "A volume collar and a minimum commitment both protect the provider against a shortfall; keep one."@en ;
+    cm:explanation "Both terms move shortfall risk to the client; together they charge for the same missing volume twice."@en ;
+    cm:condition "{\"all\": [{\"equals\": \"CL-V08\", \"path\": \"levers[*]\"}, {\"equals\": \"CL-R01\", \"path\": \"levers[*]\"}]}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:COMP-003 a cm:Rule ;
+    skos:notation "COMP-003" ;
+    cm:pack pack-base:pack ;
+    cm:kind "composition" ;
+    cm:assessment "ECONOMICALLY_CONFLICTING" ;
+    cm:evaluable "true"^^xsd:boolean ;
+    cm:code "COMP_DISCOUNT_AND_REBATE" ;
+    cm:severity cmv:Severity.INFO ;
+    cm:message "A volume discount and a volume rebate reward the same spend twice."@en ;
+    cm:explanation "Use one volume incentive per charge."@en ;
+    cm:condition "{\"all\": [{\"equals\": \"CL-V04\", \"path\": \"levers[*]\"}, {\"equals\": \"CL-V05\", \"path\": \"levers[*]\"}]}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:COMP-004 a cm:Rule ;
+    skos:notation "COMP-004" ;
+    cm:pack pack-base:pack ;
+    cm:kind "composition" ;
+    cm:assessment "ECONOMICALLY_CONFLICTING" ;
+    cm:evaluable "true"^^xsd:boolean ;
+    cm:code "COMP_ALTERNATIVE_TERMINATION_TERMS" ;
+    cm:severity cmv:Severity.INFO ;
+    cm:message "A termination fee and a prorated minimum are alternative early-exit terms."@en ;
+    cm:explanation "Choose one early-exit term."@en ;
+    cm:condition "{\"all\": [{\"equals\": \"CL-P14.fee\", \"path\": \"keys[*]\"}, {\"equals\": \"CL-P14.prorated\", \"path\": \"keys[*]\"}]}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
 
 pack-base:CLM-B-0001 a cm:Claim ;
     skos:notation "CLM-B-0001" ;
@@ -9907,6 +10051,221 @@ pack-base:CLM-B-0052 a cm:Claim ;
     cm:evidenceClass cmv:EvidenceClass.C_INFERENCE ;
     cm:prevalence cmv:Prevalence.UNVERIFIED ;
     cm:sourceRef "report:MECH-009" .
+
+pack-base:realization.CL-R01 a cm:Realization ;
+    rdfs:label "Minimum spend commitment"@en ;
+    skos:notation "CL-R01" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-R01 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"volume_shortfall\": {\"NONE_ADVERSE\": \"SHARED\", \"PROVIDER\": \"SHARED\"}}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"commitments\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"aggregation_scope\": \"ENGAGEMENT\", \"amount\": \"<required: minimum spend per contract year>\", \"id\": \"minimum_spend\", \"kind\": \"MINIMUM_SPEND\", \"shortfall_rule\": \"PERIOD_END_TRUE_UP\", \"tested_against\": \"GROSS\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-R06 a cm:Realization ;
+    rdfs:label "Rollover of unused allowance"@en ;
+    skos:notation "CL-R06" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-R06 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"volume_shortfall\": {\"CLIENT\": \"SHARED\"}}"^^rdf:JSON ;
+    cm:fragment "{\"patch\": {\"entitlements\": {\"rollover\": {\"policy\": \"NEXT_PERIOD\"}}}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-R09 a cm:Realization ;
+    rdfs:label "Setup or onboarding fee"@en ;
+    skos:notation "CL-R09" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-R09 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"early_exit\": {\"PROVIDER\": \"SHARED\"}}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"FIXED\", \"calculation_method\": \"FIXED_RECURRING\", \"charge_cadence\": \"ONE_TIME\", \"fixed_amount\": \"<required: setup fee>\", \"id\": \"setup_fee\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-V04 a cm:Realization ;
+    rdfs:label "Volume discount above a threshold"@en ;
+    skos:notation "CL-V04" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-V04 ;
+    cm:kind "lever" ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"applies_to\": \"{variable_ids}\", \"id\": \"volume_discount\", \"percent\": \"<required: discount on spend above the threshold, as a fraction>\", \"threshold\": \"<required: spend threshold per contract year>\", \"threshold_scope\": \"EXCESS_ONLY\", \"type\": \"DISCOUNT\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-V05 a cm:Realization ;
+    rdfs:label "Volume rebate"@en ;
+    skos:notation "CL-V05" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-V05 ;
+    cm:kind "lever" ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"applies_to\": \"{variable_ids}\", \"id\": \"volume_rebate\", \"percent\": \"<required: rebate on the year's spend, as a fraction>\", \"threshold\": \"<required: spend threshold per contract year>\", \"threshold_scope\": \"ENTIRE_SUBTOTAL\", \"type\": \"REBATE\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-V07 a cm:Realization ;
+    rdfs:label "Annual fee cap"@en ;
+    skos:notation "CL-V07" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-V07 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"spend_variability\": {\"VARIABLE\": \"BOUNDED\"}, \"volume_excess\": {\"NONE_ADVERSE\": \"PROVIDER\"}}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"amount\": \"<required: fee cap per contract year>\", \"applies_to\": \"{variable_ids}\", \"id\": \"fee_cap\", \"type\": \"CAP\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-V08 a cm:Realization ;
+    rdfs:label "Volume collar"@en ;
+    skos:notation "CL-V08" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-V08 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"volume_excess\": {\"NONE_ADVERSE\": \"SHARED\"}, \"volume_shortfall\": {\"NONE_ADVERSE\": \"SHARED\", \"PROVIDER\": \"SHARED\"}}"^^rdf:JSON ;
+    cm:fragment "{\"per_variable\": {\"adjustments\": [{\"component_id\": \"{c}\", \"id\": \"collar_{c}\", \"lower\": \"<required: lower volume bound per month{c_t}>\", \"outside_rate_schedule_id\": \"outside_rate_{c}\", \"type\": \"COLLAR\", \"upper\": \"<required: upper volume bound per month{c_t}>\"}], \"rate_schedules\": [{\"id\": \"outside_rate_{c}\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: unit rate outside the volume band{c_t}>\", \"to\": null}], \"unit\": \"{c_unit}\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-P01 a cm:Realization ;
+    rdfs:label "Service-level credit"@en ;
+    skos:notation "CL-P01" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-P01 ;
+    cm:kind "lever" ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"cap_percent\": \"<required: maximum credit in a month, as a fraction of the month's fees>\", \"id\": \"service_credit\", \"percent\": \"<required: credit when the service level is missed, as a fraction of the month's fees>\", \"trigger\": \"scenario.sla_missed\", \"type\": \"SLA_CREDIT\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-P02 a cm:Realization ;
+    rdfs:label "Performance bonus"@en ;
+    skos:notation "CL-P02" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-P02 ;
+    cm:kind "lever" ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"cap_percent\": \"<required: maximum bonus in a month, as a fraction of the month's fees>\", \"id\": \"performance_bonus\", \"percent\": \"<required: bonus when the target is met, as a fraction of the month's fees>\", \"trigger\": \"scenario.target_met\", \"type\": \"BONUS\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-P12 a cm:Realization ;
+    rdfs:label "Annual indexation"@en ;
+    skos:notation "CL-P12" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-P12 ;
+    cm:kind "lever" ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"id\": \"indexation\", \"percent\": \"<required: annual indexation, as a fraction>\", \"type\": \"INDEXATION\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-P14.fee a cm:Realization ;
+    rdfs:label "Termination fee"@en ;
+    skos:notation "CL-P14.fee" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-P14 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"early_exit\": {\"NONE_ADVERSE\": \"CLIENT\", \"PROVIDER\": \"CLIENT\", \"SHARED\": \"CLIENT\"}}"^^rdf:JSON ;
+    cm:fragment "{\"patch\": {\"version\": {\"termination_fee\": \"<required: termination fee>\"}}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.CL-P14.prorated a cm:Realization ;
+    rdfs:label "Prorated minimum on early exit"@en ;
+    skos:notation "CL-P14.prorated" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:CL-P14 ;
+    cm:kind "lever" ;
+    cm:riskEffects "{\"early_exit\": {\"NONE_ADVERSE\": \"SHARED\", \"PROVIDER\": \"SHARED\"}}"^^rdf:JSON ;
+    cm:fragment "{\"patch\": {\"commitments\": {\"termination_rule\": \"PRORATE\"}}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-001 a cm:Realization ;
+    rdfs:label "Hourly time and materials"@en ;
+    skos:notation "PM-001" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-001 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"TIME\", \"calculation_method\": \"TIME\", \"charge_cadence\": \"MONTHLY\", \"id\": \"time\", \"quantity_source\": \"scenario.hours\", \"role_rates\": [{\"rate\": \"<required: hourly rate>\", \"role\": \"delivery\"}]}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-020 a cm:Realization ;
+    rdfs:label "Capped time and materials"@en ;
+    skos:notation "PM-020" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-020 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"PROVIDER\", \"spend_variability\": \"BOUNDED\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"PROVIDER\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"adjustments\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"amount\": \"<required: fee cap per contract year>\", \"applies_to\": [\"time\"], \"id\": \"fee_cap\", \"type\": \"CAP\"}], \"components\": [{\"billing_basis\": \"TIME\", \"calculation_method\": \"TIME\", \"charge_cadence\": \"MONTHLY\", \"id\": \"time\", \"quantity_source\": \"scenario.hours\", \"role_rates\": [{\"rate\": \"<required: hourly rate>\", \"role\": \"delivery\"}]}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-004 a cm:Realization ;
+    rdfs:label "Dedicated team priced per FTE"@en ;
+    skos:notation "PM-004" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-004 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"PROVIDER\", \"spend_variability\": \"FIXED\", \"volume_excess\": \"PROVIDER\", \"volume_shortfall\": \"CLIENT\"}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"RESOURCE\", \"calculation_method\": \"DEDICATED_RESOURCE\", \"charge_cadence\": \"MONTHLY\", \"id\": \"team\", \"resources\": [{\"fte\": \"<required: number of FTE>\", \"rate_per_fte_month\": \"<required: rate per FTE-month>\", \"role\": \"delivery\"}]}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-007 a cm:Realization ;
+    rdfs:label "Fixed-fee managed service"@en ;
+    skos:notation "PM-007" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-007 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"PROVIDER\", \"spend_variability\": \"FIXED\", \"volume_excess\": \"PROVIDER\", \"volume_shortfall\": \"CLIENT\"}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"FIXED\", \"calculation_method\": \"FIXED_RECURRING\", \"charge_cadence\": \"MONTHLY\", \"fixed_amount\": \"<required: monthly fee>\", \"id\": \"base_fee\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-011 a cm:Realization ;
+    rdfs:label "Per-unit pricing"@en ;
+    skos:notation "PM-011" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-011 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:fragment "{\"per_unit\": {\"components\": [{\"billing_basis\": \"OUTPUT\", \"calculation_method\": \"UNIT_OUTPUT\", \"charge_cadence\": \"USAGE_TRIGGERED\", \"id\": \"price_{u}\", \"quantity_source\": \"scenario.{q}\", \"rate_schedule_id\": \"rate_{u}\", \"unit\": \"{u}\"}], \"rate_schedules\": [{\"id\": \"rate_{u}\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: unit rate{t}>\", \"to\": null}], \"unit\": \"{u}\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-014 a cm:Realization ;
+    rdfs:label "Volume-banded unit pricing"@en ;
+    skos:notation "PM-014" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-014 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:fragment "{\"per_unit\": {\"components\": [{\"billing_basis\": \"OUTPUT\", \"calculation_method\": \"UNIT_OUTPUT\", \"charge_cadence\": \"USAGE_TRIGGERED\", \"id\": \"price_{u}\", \"quantity_source\": \"scenario.{q}\", \"rate_schedule_id\": \"rate_{u}\", \"unit\": \"{u}\"}], \"rate_schedules\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"id\": \"rate_{u}\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: unit rate below the band boundary{t}>\", \"to\": \"<required: volume band boundary per contract year{t}>\"}, {\"from\": \"<required: volume band boundary per contract year{t}>\", \"rate\": \"<required: unit rate above the band boundary{t}>\", \"to\": null}], \"unit\": \"{u}\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-015 a cm:Realization ;
+    rdfs:label "Complexity-weighted unit pricing"@en ;
+    skos:notation "PM-015" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-015 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"OUTPUT\", \"calculation_method\": \"WEIGHTED_UNIT_OUTPUT\", \"charge_cadence\": \"USAGE_TRIGGERED\", \"id\": \"price_weighted\", \"quantity_source\": \"scenario.units\", \"rate_schedule_id\": \"rate_weighted\", \"unit\": \"weighted_units\", \"weight_table_id\": \"complexity\"}], \"rate_schedules\": [{\"id\": \"rate_weighted\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: rate per weighted unit>\", \"to\": null}], \"unit\": \"weighted_units\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
+
+pack-base:realization.PM-023 a cm:Realization ;
+    rdfs:label "Base fee with an allowance plus overage"@en ;
+    skos:notation "PM-023" ;
+    cm:pack pack-base:pack ;
+    cm:realizes pack-base:PM-023 ;
+    cm:kind "model" ;
+    cm:riskLabels "{\"mix\": \"PROVIDER\", \"spend_variability\": \"VARIABLE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"CLIENT\"}"^^rdf:JSON ;
+    cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"FIXED\", \"calculation_method\": \"FIXED_RECURRING\", \"charge_cadence\": \"MONTHLY\", \"fixed_amount\": \"<required: monthly base fee>\", \"id\": \"base_fee\"}, {\"billing_basis\": \"{volume_basis}\", \"calculation_method\": \"ALLOWANCE_OVERAGE\", \"charge_cadence\": \"MONTHLY\", \"depends_on\": [\"allowance\"], \"entitlement_id\": \"allowance\", \"id\": \"overage\", \"quantity_source\": \"scenario.{volume_q}\", \"rate_schedule_id\": \"overage_rate\", \"unit\": \"{volume_unit}\"}], \"entitlements\": [{\"accumulation_period\": \"MONTH\", \"granted_by\": \"base_fee\", \"id\": \"allowance\", \"included_quantity\": \"<required: included volume per month>\", \"overage_recognition\": \"PER_SEGMENT\", \"rollover\": {\"policy\": \"NONE\"}, \"unit\": \"{volume_unit}\"}], \"rate_schedules\": [{\"id\": \"overage_rate\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: overage rate per unit above the allowance>\", \"to\": null}], \"unit\": \"{volume_unit}\"}]}}"^^rdf:JSON ;
+    cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
+    cm:sourceRef "cometric:design" .
 
 pack-base:E020 a cm:Source ;
     skos:notation "E020" ;

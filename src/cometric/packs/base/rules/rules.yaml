@@ -519,3 +519,73 @@ rules:
     should be included before comparing total economics.
   evidence_class: C_INFERENCE
   source_ref: report:RULE-015
+# Composition rules (propose_structures spec A7.5): predicates over a proposed composition
+# {base_model, levers, keys, features, labels}. A rule that fires removes the composition.
+- id: COMP-001
+  kind: composition
+  assessment: ECONOMICALLY_CONFLICTING
+  evaluable: true
+  when:
+    all:
+    - {path: base_model, equals: PM-014}
+    - {path: 'levers[*]', in: [CL-V04, CL-V05]}
+  emit:
+    code: COMP_DOUBLE_VOLUME_REDUCTION
+    severity: INFO
+    message: Volume bands and a volume discount or rebate reduce the price for the same volume twice.
+    claims: []
+  explanation: >-
+    Banded unit prices already lower the price as volume grows; a discount or rebate on top
+    rewards the same volume a second time.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+- id: COMP-002
+  kind: composition
+  assessment: ECONOMICALLY_CONFLICTING
+  evaluable: true
+  when:
+    all:
+    - {path: 'levers[*]', equals: CL-V08}
+    - {path: 'levers[*]', equals: CL-R01}
+  emit:
+    code: COMP_DOUBLE_SHORTFALL_PROTECTION
+    severity: INFO
+    message: A volume collar and a minimum commitment both protect the provider against a shortfall; keep one.
+    claims: []
+  explanation: >-
+    Both terms move shortfall risk to the client; together they charge for the same missing
+    volume twice.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+- id: COMP-003
+  kind: composition
+  assessment: ECONOMICALLY_CONFLICTING
+  evaluable: true
+  when:
+    all:
+    - {path: 'levers[*]', equals: CL-V04}
+    - {path: 'levers[*]', equals: CL-V05}
+  emit:
+    code: COMP_DISCOUNT_AND_REBATE
+    severity: INFO
+    message: A volume discount and a volume rebate reward the same spend twice.
+    claims: []
+  explanation: Use one volume incentive per charge.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+- id: COMP-004
+  kind: composition
+  assessment: ECONOMICALLY_CONFLICTING
+  evaluable: true
+  when:
+    all:
+    - {path: 'keys[*]', equals: CL-P14.fee}
+    - {path: 'keys[*]', equals: CL-P14.prorated}
+  emit:
+    code: COMP_ALTERNATIVE_TERMINATION_TERMS
+    severity: INFO
+    message: A termination fee and a prorated minimum are alternative early-exit terms.
+    claims: []
+  explanation: Choose one early-exit term.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design

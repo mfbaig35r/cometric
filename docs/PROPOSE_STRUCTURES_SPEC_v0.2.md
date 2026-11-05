@@ -86,7 +86,7 @@ All bearer values reuse the core `RiskBearer` vocabulary, so labels can be compa
 | `packs` | Yes | Installed pack ids. `base` is always included. Packs contribute vocabulary, overlays, evidence, and templates; v1 models and levers come from `base`. |
 | `service_category` | Yes | From the declared packs' `service_categories`. Pack-qualify (`alsp:IMPLEMENTATION`) when the id exists in more than one declared pack. In v1 it selects overlays and evidence and is written to the skeleton; it does not filter models. |
 | `unit_of_work.kind` | Yes | Core `UnitKind`: `COUNT`, `HOURS`, `FTE_MONTHS`. (`WEIGHTED` arises from tiers; `METER` is not offered in v1.) |
-| `unit_of_work.tiers` | No | Complexity tiers, each a distinct unit type. Not volume bands (those are lever CL-V03). |
+| `unit_of_work.tiers` | No | Complexity tiers, each a distinct unit type. Not volume bands (those are model PM-014). |
 | `volume.certainty` | Yes | `KNOWN`, `RANGE`, `UNKNOWN`. `expected`, `low`, `high` are optional decimal strings. |
 | `volume.period` | With figures | `MONTH`, `YEAR`. |
 | `cost_profile.shape` | Yes | `MOSTLY_VARIABLE`, `MOSTLY_FIXED`, `MIXED`. Selects shortfall labels (A3) and the skeleton's cost components (A8). |
@@ -105,7 +105,7 @@ Validation follows 0.4.0 behavior: unknown fields and values are errors naming t
 
 1. **Eligible base models.** Models with a realization whose `unit_kinds` include `unit_of_work.kind` (and `requires_tiers` satisfied). Draft v1 set in A7.1.
 2. **Lever pool.** The union of levers suggested by the profile's signals (A7.3 priorities, A7.4 signals) and `include_levers`, minus `exclude_levers`.
-3. **Compositions.** For each eligible model, every subset of applicable pool levers of size 0 to 3 (applicability is the lever's `applies_to`). Compositions are canonical: levers sorted by id; a composition equivalent to a named model (for example PM-011 with CL-R02 equals PM-034) is reported once, under the named model.
+3. **Compositions.** For each eligible model, every subset of applicable pool levers of size 0 to 3 (applicability is the lever's `requires_features` and `excludes_features`, checked against the whole composition). Compositions are canonical: levers sorted by id. A lever that would duplicate a named model is not offered (overage on a fixed fee is PM-023, a cap on time and materials is PM-020, volume bands are PM-014), so each structure has one name.
 4. **Risk labels.** Start from the model's labels; apply each lever's `effects` (an explicit from-to map per axis) in lever-id order. No arithmetic.
 5. **Exclusion.** Drop compositions that break `provider_constraints.max_volume_risk`, a composition rule (A7.5), or an evaluable pack rule whose assessment is in the exclusion set (`ECONOMICALLY_CONFLICTING`, `NOT_ECONOMICALLY_DEFENSIBLE`, `NOT_VALID_FOR_RIGOROUS_MODELING`, `STRUCTURALLY_WEAK`) when run on the composition's skeleton. Rules at WARNING severity annotate instead. `excluded` reports each rule once with the count of compositions it removed and one example.
 6. **Fit.** For each profile priority, the priority's `fits` and `tension` predicates (A7.3) evaluate against the composition's labels and levers. Every candidate lists both `fits_priorities` and `tension_with_priorities`.
@@ -189,13 +189,13 @@ New directory `packs/base/realizations/`. Each realization names a concept, the 
 | PM-001 Hourly time and materials | `TIME` with role rates | HOURS | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | n/a |
 | PM-020 Capped time and materials | `TIME` + `CAP` adjustment | HOURS | PROVIDER / NONE_ADVERSE | PROVIDER | BOUNDED | n/a |
 | PM-004 Dedicated FTE | `DEDICATED_RESOURCE` | FTE_MONTHS, HOURS, COUNT | CLIENT | PROVIDER | FIXED | PROVIDER |
-| PM-009 Capacity reservation | `FIXED_RECURRING` + `RESERVED_CAPACITY` commitment | COUNT, HOURS | CLIENT | PROVIDER | FIXED | PROVIDER |
 | PM-007 Fixed-fee managed service | `FIXED_RECURRING` | COUNT, HOURS | CLIENT | PROVIDER | FIXED | PROVIDER |
 | PM-011 Per unit | `UNIT_OUTPUT`, one rate per unit type | COUNT | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | CLIENT with tiers |
 | PM-014 Tiered volume pricing | `UNIT_OUTPUT`, marginal volume tiers | COUNT | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | CLIENT with tiers |
 | PM-015 Complexity-weighted units | `WEIGHTED_UNIT_OUTPUT` + weight table (requires tiers) | COUNT | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | CLIENT |
 | PM-023 Hybrid fixed plus variable | `FIXED_RECURRING` + entitlement + `ALLOWANCE_OVERAGE` | COUNT, HOURS | CLIENT | NONE_ADVERSE | VARIABLE | PROVIDER below the allowance |
-| PM-031 Prepaid credits | `FIXED_RECURRING` + `PREPAID_CREDIT` commitment | COUNT, HOURS | CLIENT | NONE_ADVERSE | FIXED per block | CLIENT |
+
+Deferred because the engine records but does not compute their commitment kinds (`COMMITMENT_NOT_COMPUTED`): capacity reservation (PM-009, `RESERVED_CAPACITY`), prepaid credits (PM-031, `PREPAID_CREDIT`), and take-or-pay (PM-034 and lever CL-R02, `MINIMUM_VOLUME`). A proposal must never offer a term its figures ignore.
 
 Out of v1: outcome models (PM-024, 026, 027, 032; the non-evaluable rules COMPAT-007, 008, 014, 015 concern exactly these), project fees (PM-006, 016, 017, 018), cost-plus (PM-019; the engine does not implement it), and the rest.
 
@@ -204,14 +204,11 @@ Out of v1: outcome models (PM-024, 026, 027, 032; the non-evaluable rules COMPAT
 | Lever | Realization | Applies to | Effects |
 |---|---|---|---|
 | CL-R01 Minimum spend | `MINIMUM_SPEND` commitment, period-end true-up | variable models | shortfall PROVIDER→SHARED, NONE_ADVERSE→SHARED |
-| CL-R02 Take-or-pay | `MINIMUM_VOLUME` commitment | unit models | as CL-R01 |
 | CL-R06 Rollover | entitlement rollover `NEXT_PERIOD` | models with an entitlement | shortfall CLIENT→SHARED |
 | CL-R09 Setup fee | `ONE_TIME` fixed component | all | early_exit PROVIDER→SHARED |
-| CL-V02 Overage (with CL-V01 allowance) | entitlement + `ALLOWANCE_OVERAGE` on a fixed base | PM-007, PM-009 | excess PROVIDER→NONE_ADVERSE; spend FIXED→VARIABLE |
-| CL-V03 Tiered rate | marginal volume tiers on unit rates | PM-011 | none (price falls with volume) |
 | CL-V04 Volume discount | `DISCOUNT`, threshold, excess only | variable models | none |
 | CL-V05 Volume rebate | `REBATE`, threshold | variable models | none |
-| CL-V07 Consumption cap | `CAP` adjustment | variable models | spend VARIABLE→BOUNDED; excess NONE_ADVERSE→PROVIDER |
+| CL-V07 Annual fee cap | `CAP` adjustment | unit-priced models | spend VARIABLE→BOUNDED; excess NONE_ADVERSE→PROVIDER |
 | CL-V08 Collar | `COLLAR` with outside rate schedule | unit models | shortfall PROVIDER→SHARED; excess NONE_ADVERSE→SHARED |
 | CL-P01 SLA service credit | `SLA_CREDIT` with trigger | all | none |
 | CL-P02 Performance bonus | `BONUS` with trigger | all | none |
@@ -227,7 +224,7 @@ Levers without a realization never appear in a candidate.
 |---|---|---|---|---|
 | `budget_certainty` | spend is FIXED or BOUNDED | spend is VARIABLE | CL-V07 | SEL-007 |
 | `pay_for_use` | shortfall is not CLIENT and spend is not FIXED | shortfall is CLIENT | CL-R06 | SEL-008 |
-| `cost_reduction_over_time` | has CL-V03, CL-V04, or CL-V05 | none of them | CL-V03, CL-V04, CL-V05 | |
+| `cost_reduction_over_time` | base is PM-014, or has CL-V04 or CL-V05 | none of these | CL-V04, CL-V05 | |
 | `outcome_alignment` | has CL-P01 or CL-P02 | neither | CL-P01, CL-P02 | |
 | `simplicity` | at most one lever | three or more levers | | |
 
@@ -235,7 +232,7 @@ Levers without a realization never appear in a candidate.
 
 ### A7.4 Signals
 
-Each selection heuristic gains a `profile_signal` predicate over the deal profile, for example SEL-003 when `cost_profile.fixed_team` is true, SEL-006 when `unit_of_work.tiers` is non-empty, SEL-004 when certainty is `RANGE` or `UNKNOWN` and there is no fixed team. Other signals suggest levers: `max_volume_risk` of `SHARED` or `NONE` suggests CL-R01, CL-R02, CL-V08; certainty `RANGE` or `UNKNOWN` suggests CL-V08; `client_can_terminate_early` suggests both CL-P14 variants; `setup_investment` suggests CL-R09; `term.months` over 12 suggests CL-P12.
+Each selection heuristic gains a `profile_signal` predicate over the deal profile, for example SEL-003 when `cost_profile.fixed_team` is true, SEL-006 when `unit_of_work.tiers` is non-empty, SEL-004 when certainty is `RANGE` or `UNKNOWN` and there is no fixed team. Other signals suggest levers: `max_volume_risk` of `SHARED` or `NONE` suggests CL-R01 and CL-V08; certainty `RANGE` or `UNKNOWN` suggests CL-V08; `client_can_terminate_early` suggests both CL-P14 variants; `setup_investment` suggests CL-R09; `term.months` over 12 suggests CL-P12.
 
 ### A7.5 Composition rules (new rule kind `composition`)
 
@@ -243,11 +240,10 @@ Predicates over `{base_model, levers}`, each with an id, a one-line reason, and 
 
 | Rule | Excludes | Reason |
 |---|---|---|
-| COMP-001 | CL-V03 with CL-V04 | Two volume price reductions on the same charge. |
-| COMP-002 | CL-V08 with CL-R01 or CL-R02 | Two shortfall protections; keep one. |
+| COMP-001 | PM-014 with CL-V04 or CL-V05 | Volume bands plus a discount or rebate reduce the price for the same volume twice. |
+| COMP-002 | CL-V08 with CL-R01 | Two shortfall protections; keep one. |
 | COMP-003 | CL-V04 with CL-V05 | Discount and rebate reward the same volume twice. |
 | COMP-004 | both CL-P14 variants | Alternative termination terms. |
-| COMP-005 | CL-V07 with CL-R02 on PM-014 | A cap and a volume floor on tiered pricing fix the price band twice. |
 
 ### A7.6 Templates
 
@@ -275,7 +271,7 @@ Proposing any figure; ranking or recommending; market or competitor claims beyon
 | P06 | No monetary amount or percentage appears that the profile did not supply. |
 | P07 | A composition breaking a composition rule appears in `excluded` with its rule id. |
 | P08 | An excluded lever appears in no candidate; an included lever appears in every candidate it applies to, and `levers_not_applicable` explains the rest. |
-| P09 | Certainty `UNKNOWN` warns, stubs carry placeholders, and a candidate includes CL-V08 or CL-V03. |
+| P09 | Certainty `UNKNOWN` warns, stubs carry placeholders, and a candidate is banded (CL-V08 or PM-014). |
 | P10 | With early termination possible, every skeleton has an early-exit scenario and a CL-P14 candidate is considered. |
 | P11 | Every candidate shows evidence per concept; weak support is flagged. |
 | P12 | Unknown fields or values are errors naming the nearest valid value. |
@@ -309,7 +305,7 @@ Built in this repository by Claude, one commit per step, CI green at each.
 |---|---|---|
 | **B0. Prerequisites** | (a) `list_templates` lists core and pack templates with source and optional `pack` filter (core, MCP, CLI). (b) Labelled placeholders: `<required: label>` recognized by prefix, label carried in `REQUIRED_FIELD`; `search_structures` rejects placeholder bases with the list; tests P03, P18. Shippable alone. | Small |
 | **B1. Pack schema** | Loader and `validate-pack` support for `realizations/`, the `client_priorities` scheme, `profile_signal` on heuristics, `composition` rules, and template `composition`. A realization is checked by assembling a minimal skeleton and validating it. Ontology export picks up the new records (realizations as `cm:Realization`). Test P17. | Medium |
-| **B2. Pack content** | Author A7.1 to A7.5 in `base` 0.2.0 (10 models, 15 lever realizations, 5 priorities, 11 signals, 5 composition rules); add `composition` to the ALSP and consulting templates. Regenerate `docs/ontology/`. **Review gate: the label tables go to Fahad before B3 builds on them.** | Medium; judgment-heavy |
+| **B2. Pack content** | Author A7.1 to A7.5 in `base` 0.2.0 (8 models, 12 lever realizations, 5 priorities, 10 signals, 4 composition rules); add `composition` to the ALSP and consulting templates. Regenerate `docs/ontology/`. **Review gate: the label tables go to Fahad before B3 builds on them.** | Medium; judgment-heavy |
 | **B3. Engine** | `core/propose.py`: `DealProfile` model, eligibility, lever pool, canonical compositions, label propagation, exclusion, fit, grouped selection, annotation, evidence, fingerprint. Skeleton and scenario-stub assembly in `core/skeleton.py`. Tests P05 to P09, P12, P15. | Large |
 | **B4. Surfaces** | MCP tool `propose_structures`, CLI `cometric propose profile.json [--expand ID]`, `describe_schema("deal_profile")`, a runnable `quickstart` entry, glossary terms for the five risk axes, display precision and detail conventions. Tests P13, P14. | Small |
 | **B5. Verification** | Golden output for the A4 profile, hand-reviewed and committed; fixture fills for every expanded candidate; P01, P02, P04, P10, P11, P16. Run the full flow through the MCP server in Claude Desktop as a partner would. | Medium |

@@ -2,7 +2,7 @@
 
 # Pack: base
 
-Base commercial knowledge, version 0.1.0.
+Base commercial knowledge, version 0.2.0.
 
 Domain-neutral commercial-arrangement knowledge: billing bases, pricing models, levers, dimensions, metrics, cost categories, compatibility and reasoning rules, and cross-sector evidence.
 
@@ -12,6 +12,7 @@ Evidence classes: A_DIRECT (directly documented), B_CORROBORATED, C_INFERENCE, D
 
 - [Structures for automation-reduced effort](#scheme-automation-structures) (9)
 - [Normalized foundational billing bases](#scheme-billing-bases) (10)
+- [Client priorities for structure proposals](#scheme-client-priorities) (5)
 - [Cost categories and allocation guidance](#scheme-cost-categories) (23)
 - [Multidimensional commercial model](#scheme-dimensions) (16)
 - [AI pricing architecture components](#scheme-fee-components) (6)
@@ -25,7 +26,8 @@ Evidence classes: A_DIRECT (directly documented), B_CORROBORATED, C_INFERENCE, D
 - [Research entity classes and relationships mapped to the core schema](#scheme-schema-map) (54)
 - [Commercial model selection framework](#scheme-selection-framework) (12)
 - [Decision matrix heuristics](#scheme-selection-heuristics) (11)
-- [Rules](#rules) (29)
+- [Realizations](#realizations) (20)
+- [Rules](#rules) (33)
 - [Claims](#claims) (52)
 - [Sources](#sources) (14)
 
@@ -255,6 +257,61 @@ Billing basis whose economic object purchased is: defined result, savings or rec
 - Related: [PM-024](#pm-024) Value or outcome pricing, [PM-026](#pm-026) Gain-share or verified savings, [PM-027](#pm-027) Success or contingent fee
 - Claims: [CLM-B-0002](#clm-b-0002)
 - Attributes: core_basis: OUTCOME; cadence_note: any cadence; economic_object: Defined result, savings or recovery; calculation: Formula linked to outcome
+
+<a id="scheme-client-priorities"></a>
+
+## Client priorities for structure proposals
+
+Scheme `client_priorities`.
+
+<a id="budget_certainty"></a>
+
+**budget_certainty** Budget certainty (`D_PROPOSED`, `UNVERIFIED`)
+
+The client wants to know what it will spend. Served by structures whose spend is fixed or bounded.
+
+- Synonyms: predictable spend, cost certainty
+- Related: [SEL-007](#sel-007) Strong client budget-certainty preference
+- Attributes: fits: {"in": ["FIXED", "BOUNDED"], "path": "labels.spend_variability"}; tension: {"equals": "VARIABLE", "path": "labels.spend_variability"}; tension_note: Spend moves with volume.; suggests: CL-V07
+
+<a id="pay_for_use"></a>
+
+**pay_for_use** Pay for use (`D_PROPOSED`, `UNVERIFIED`)
+
+The client wants to pay for the work it sends and not for unused capacity. Served by structures where the client does not absorb a volume shortfall.
+
+- Synonyms: flexibility, pay as you go
+- Related: [SEL-008](#sel-008) Strong client flexibility preference
+- Attributes: fits: {"all": [{"not": {"equals": "CLIENT", "path": "labels.volume_shortfall"}}, {"not": {"equals": "FIXED", "path": "labels.spend_variability"}}]}; tension: {"equals": "CLIENT", "path": "labels.volume_shortfall"}; tension_note: The client pays for capacity it does not use.; suggests: CL-R06
+
+<a id="cost_reduction_over_time"></a>
+
+**cost_reduction_over_time** Cost reduction over time (`D_PROPOSED`, `UNVERIFIED`)
+
+The client wants its unit cost to fall as volume grows. Served by volume bands, discounts, or rebates.
+
+- Synonyms: savings with scale
+- Attributes: fits: {"any": [{"equals": "PM-014", "path": "base_model"}, {"in": ["CL-V04", "CL-V05"], "path": "levers[*]"}]}; tension: {"not": {"any": [{"equals": "PM-014", "path": "base_model"}, {"in": ["CL-V04", "CL-V05"], "path": "levers[*]"}]}}; tension_note: Nothing lowers the price as volume grows.; suggests: CL-V04, CL-V05
+
+<a id="outcome_alignment"></a>
+
+**outcome_alignment** Outcome alignment (`D_PROPOSED`, `UNVERIFIED`)
+
+The client wants the provider's fees to respond to service performance. Served by service credits or performance bonuses.
+
+- Synonyms: performance alignment
+- Attributes: fits: {"in": ["CL-P01", "CL-P02"], "path": "levers[*]"}; tension: {"not": {"in": ["CL-P01", "CL-P02"], "path": "levers[*]"}}; tension_note: Fees do not respond to service performance.; suggests: CL-P01, CL-P02
+- Caveat: Outcome-based fees (gain-share
+- Caveat: success fees) are not proposed in this version.
+
+<a id="simplicity"></a>
+
+**simplicity** Simplicity (`D_PROPOSED`, `UNVERIFIED`)
+
+The client wants a structure that is easy to understand and administer. Served by structures with at most one lever.
+
+- Synonyms: easy to administer
+- Attributes: fits: {"lte": 1, "path": "lever_count"}; tension: {"gte": 3, "path": "lever_count"}; tension_note: Several mechanisms to administer.
 
 <a id="scheme-cost-categories"></a>
 
@@ -3201,7 +3258,7 @@ Scheme `selection_heuristics`.
 Decision-matrix heuristic for engagements characterized by: highly uncertain scope.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Highly uncertain scope; favored: Time and materials, Capped time and materials, Phased fee, Cost-plus; caution: Unlimited fixed fee; favored_refs: PM-001, PM-020, PM-017, PM-019
+- Attributes: characteristic: Highly uncertain scope; favored: Time and materials, Capped time and materials, Phased fee, Cost-plus; caution: Unlimited fixed fee; favored_refs: PM-001, PM-020, PM-017, PM-019; profile_signal: {"equals": "UNKNOWN", "path": "volume.certainty"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-002"></a>
@@ -3211,7 +3268,7 @@ Decision-matrix heuristic for engagements characterized by: highly uncertain sco
 Decision-matrix heuristic for engagements characterized by: stable high-volume repetitive work.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Stable high-volume repetitive work; favored: Unit pricing, Fixed managed service, Subscription, Base plus variable; caution: Pure hourly if automation is expected to increase materially; favored_refs: PM-011, PM-007, PM-010, PM-023; caution_refs: PM-001
+- Attributes: characteristic: Stable high-volume repetitive work; favored: Unit pricing, Fixed managed service, Subscription, Base plus variable; caution: Pure hourly if automation is expected to increase materially; favored_refs: PM-011, PM-007, PM-010, PM-023; caution_refs: PM-001; profile_signal: {"all": [{"equals": "KNOWN", "path": "volume.certainty"}, {"equals": "COUNT", "path": "unit_of_work.kind"}]}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-003"></a>
@@ -3221,7 +3278,7 @@ Decision-matrix heuristic for engagements characterized by: stable high-volume r
 Decision-matrix heuristic for engagements characterized by: dedicated ongoing team required.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Dedicated ongoing team required; favored: FTE or capacity reservation, Fixed managed service; caution: Pure per-unit pricing without a minimum if staffing cannot flex; favored_refs: PM-004, PM-009, PM-007; caution_refs: PM-011
+- Attributes: characteristic: Dedicated ongoing team required; favored: FTE or capacity reservation, Fixed managed service; caution: Pure per-unit pricing without a minimum if staffing cannot flex; favored_refs: PM-004, PM-009, PM-007; caution_refs: PM-011; profile_signal: {"equals": true, "path": "cost_profile.fixed_team"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-004"></a>
@@ -3231,7 +3288,7 @@ Decision-matrix heuristic for engagements characterized by: dedicated ongoing te
 Decision-matrix heuristic for engagements characterized by: highly variable demand with pooled capacity.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Highly variable demand with pooled capacity; favored: Per-unit, Consumption, Base plus overage; caution: Large take-or-pay commitment without rollover or flexibility; favored_refs: PM-011, PM-013, PM-023; caution_refs: PM-034
+- Attributes: characteristic: Highly variable demand with pooled capacity; favored: Per-unit, Consumption, Base plus overage; caution: Large take-or-pay commitment without rollover or flexibility; favored_refs: PM-011, PM-013, PM-023; caution_refs: PM-034; profile_signal: {"all": [{"in": ["RANGE", "UNKNOWN"], "path": "volume.certainty"}, {"not": {"equals": true, "path": "cost_profile.fixed_team"}}]}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-005"></a>
@@ -3241,7 +3298,7 @@ Decision-matrix heuristic for engagements characterized by: highly variable dema
 Decision-matrix heuristic for engagements characterized by: material setup or engineering investment.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Material setup or engineering investment; favored: Implementation fee plus recurring, Multi-year commitment; caution: Month-to-month fee with no termination recovery; favored_refs: PM-029
+- Attributes: characteristic: Material setup or engineering investment; favored: Implementation fee plus recurring, Multi-year commitment; caution: Month-to-month fee with no termination recovery; favored_refs: PM-029; profile_signal: {"equals": true, "path": "cost_profile.setup_investment"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-006"></a>
@@ -3251,7 +3308,7 @@ Decision-matrix heuristic for engagements characterized by: material setup or en
 Decision-matrix heuristic for engagements characterized by: heterogeneous complexity.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Heterogeneous complexity; favored: Complexity-weighted units, Bands, Hourly for exceptions; caution: Single unadjusted unit price; favored_refs: PM-015, PM-001; caution_refs: PM-011
+- Attributes: characteristic: Heterogeneous complexity; favored: Complexity-weighted units, Bands, Hourly for exceptions; caution: Single unadjusted unit price; favored_refs: PM-015, PM-001; caution_refs: PM-011; profile_signal: {"exists": true, "path": "unit_of_work.tiers[*]"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-007"></a>
@@ -3261,7 +3318,7 @@ Decision-matrix heuristic for engagements characterized by: heterogeneous comple
 Decision-matrix heuristic for engagements characterized by: strong client budget-certainty preference.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Strong client budget-certainty preference; favored: Fixed fee, Subscription, Capped hybrid; caution: Pure uncapped usage; favored_refs: PM-006, PM-010; caution_refs: PM-013
+- Attributes: characteristic: Strong client budget-certainty preference; favored: Fixed fee, Subscription, Capped hybrid; caution: Pure uncapped usage; favored_refs: PM-006, PM-010; caution_refs: PM-013; profile_signal: {"equals": "budget_certainty", "path": "client_priorities[*]"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-008"></a>
@@ -3271,7 +3328,7 @@ Decision-matrix heuristic for engagements characterized by: strong client budget
 Decision-matrix heuristic for engagements characterized by: strong client flexibility preference.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Strong client flexibility preference; favored: Usage, Pooled unit pricing, Low base plus overage; caution: Dedicated FTE or high minimum commitment; favored_refs: PM-013, PM-011, PM-023; caution_refs: PM-004
+- Attributes: characteristic: Strong client flexibility preference; favored: Usage, Pooled unit pricing, Low base plus overage; caution: Dedicated FTE or high minimum commitment; favored_refs: PM-013, PM-011, PM-023; caution_refs: PM-004; profile_signal: {"equals": "pay_for_use", "path": "client_priorities[*]"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-009"></a>
@@ -3291,7 +3348,7 @@ Decision-matrix heuristic for engagements characterized by: measurable cost savi
 Decision-matrix heuristic for engagements characterized by: aI lowers human time sharply.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: AI lowers human time sharply; favored: Output, Fixed, Platform plus service, Outcome, Usage; caution: Hourly-only if value remains constant; favored_refs: PM-011, PM-006, PM-028, PM-024, PM-030; caution_refs: PM-001
+- Attributes: characteristic: AI lowers human time sharply; favored: Output, Fixed, Platform plus service, Outcome, Usage; caution: Hourly-only if value remains constant; favored_refs: PM-011, PM-006, PM-028, PM-024, PM-030; caution_refs: PM-001; profile_signal: {"equals": true, "path": "flags.automation_expected"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
 
 <a id="sel-011"></a>
@@ -3301,8 +3358,35 @@ Decision-matrix heuristic for engagements characterized by: aI lowers human time
 Decision-matrix heuristic for engagements characterized by: material regulatory continuity requirement.
 
 - Claims: [CLM-B-0004](#clm-b-0004)
-- Attributes: characteristic: Material regulatory continuity requirement; favored: Reserved capacity, Dedicated or hybrid delivery, Robust exit provisions; caution: Extremely lean on-demand pool without continuity guarantees; favored_refs: PM-009, PM-004
+- Attributes: characteristic: Material regulatory continuity requirement; favored: Reserved capacity, Dedicated or hybrid delivery, Robust exit provisions; caution: Extremely lean on-demand pool without continuity guarantees; favored_refs: PM-009, PM-004; profile_signal: {"equals": true, "path": "flags.continuity_required"}
 - Caveat: Advisory heuristic; never used to rank or choose structures.
+
+## Realizations
+
+How each pricing model and lever becomes engagement terms in a structure proposal. Labels say who absorbs a deviation (D_PROPOSED); effects say how a lever changes them.
+
+| Realization | Kind | Applies to | Labels or effects |
+|---|---|---|---|
+| [CL-R01](#cl-r01) `CL-R01` Minimum spend commitment | lever | variable | volume_shortfall: PROVIDER to SHARED, NONE_ADVERSE to SHARED |
+| [CL-R06](#cl-r06) `CL-R06` Rollover of unused allowance | lever | allowance | volume_shortfall: CLIENT to SHARED |
+| [CL-R09](#cl-r09) `CL-R09` Setup or onboarding fee | lever | any | early_exit: PROVIDER to SHARED |
+| [CL-V04](#cl-v04) `CL-V04` Volume discount above a threshold | lever | variable | none |
+| [CL-V05](#cl-v05) `CL-V05` Volume rebate | lever | variable | none |
+| [CL-V07](#cl-v07) `CL-V07` Annual fee cap | lever | unit_priced | spend_variability: VARIABLE to BOUNDED; volume_excess: NONE_ADVERSE to PROVIDER |
+| [CL-V08](#cl-v08) `CL-V08` Volume collar | lever | unit_priced | volume_shortfall: PROVIDER to SHARED, NONE_ADVERSE to SHARED; volume_excess: NONE_ADVERSE to SHARED |
+| [CL-P01](#cl-p01) `CL-P01` Service-level credit | lever | any | none |
+| [CL-P02](#cl-p02) `CL-P02` Performance bonus | lever | any | none |
+| [CL-P12](#cl-p12) `CL-P12` Annual indexation | lever | any | none |
+| [CL-P14](#cl-p14) `CL-P14.fee` Termination fee | lever | any | early_exit: PROVIDER to CLIENT, SHARED to CLIENT, NONE_ADVERSE to CLIENT |
+| [CL-P14](#cl-p14) `CL-P14.prorated` Prorated minimum on early exit | lever | minimum | early_exit: PROVIDER to SHARED, NONE_ADVERSE to SHARED |
+| [PM-001](#pm-001) `PM-001` Hourly time and materials | model | HOURS | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-020](#pm-020) `PM-020` Capped time and materials | model | HOURS | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: PROVIDER; spend_variability: BOUNDED; mix: PROVIDER |
+| [PM-004](#pm-004) `PM-004` Dedicated team priced per FTE | model | COUNT, HOURS, FTE_MONTHS | volume_shortfall: CLIENT; volume_excess: PROVIDER; spend_variability: FIXED; mix: PROVIDER |
+| [PM-007](#pm-007) `PM-007` Fixed-fee managed service | model | COUNT, HOURS | volume_shortfall: CLIENT; volume_excess: PROVIDER; spend_variability: FIXED; mix: PROVIDER |
+| [PM-011](#pm-011) `PM-011` Per-unit pricing | model | COUNT | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-014](#pm-014) `PM-014` Volume-banded unit pricing | model | COUNT | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-015](#pm-015) `PM-015` Complexity-weighted unit pricing | model | COUNT (needs tiers) | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-023](#pm-023) `PM-023` Base fee with an allowance plus overage | model | COUNT, HOURS | volume_shortfall: CLIENT; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: PROVIDER |
 
 ## Rules
 
@@ -4005,6 +4089,125 @@ A savings claim should include transition, technology, governance and QA costs b
 
 - Why: When a provider claims savings, transition, technology, governance and QA costs should be included before comparing total economics.
 - Evidence: `C_INFERENCE`
+
+<a id="comp-001"></a>
+
+**COMP-001** `COMP_DOUBLE_VOLUME_REDUCTION` (composition, INFO, evaluated)
+
+Volume bands and a volume discount or rebate reduce the price for the same volume twice.
+
+- Assessment: `ECONOMICALLY_CONFLICTING`
+- Why: Banded unit prices already lower the price as volume grows; a discount or rebate on top rewards the same volume a second time.
+- Evidence: `D_PROPOSED`
+
+<details><summary>Condition</summary>
+
+```json
+{
+ "all": [
+  {
+   "path": "base_model",
+   "equals": "PM-014"
+  },
+  {
+   "path": "levers[*]",
+   "in": [
+    "CL-V04",
+    "CL-V05"
+   ]
+  }
+ ]
+}
+```
+
+</details>
+
+<a id="comp-002"></a>
+
+**COMP-002** `COMP_DOUBLE_SHORTFALL_PROTECTION` (composition, INFO, evaluated)
+
+A volume collar and a minimum commitment both protect the provider against a shortfall; keep one.
+
+- Assessment: `ECONOMICALLY_CONFLICTING`
+- Why: Both terms move shortfall risk to the client; together they charge for the same missing volume twice.
+- Evidence: `D_PROPOSED`
+
+<details><summary>Condition</summary>
+
+```json
+{
+ "all": [
+  {
+   "path": "levers[*]",
+   "equals": "CL-V08"
+  },
+  {
+   "path": "levers[*]",
+   "equals": "CL-R01"
+  }
+ ]
+}
+```
+
+</details>
+
+<a id="comp-003"></a>
+
+**COMP-003** `COMP_DISCOUNT_AND_REBATE` (composition, INFO, evaluated)
+
+A volume discount and a volume rebate reward the same spend twice.
+
+- Assessment: `ECONOMICALLY_CONFLICTING`
+- Why: Use one volume incentive per charge.
+- Evidence: `D_PROPOSED`
+
+<details><summary>Condition</summary>
+
+```json
+{
+ "all": [
+  {
+   "path": "levers[*]",
+   "equals": "CL-V04"
+  },
+  {
+   "path": "levers[*]",
+   "equals": "CL-V05"
+  }
+ ]
+}
+```
+
+</details>
+
+<a id="comp-004"></a>
+
+**COMP-004** `COMP_ALTERNATIVE_TERMINATION_TERMS` (composition, INFO, evaluated)
+
+A termination fee and a prorated minimum are alternative early-exit terms.
+
+- Assessment: `ECONOMICALLY_CONFLICTING`
+- Why: Choose one early-exit term.
+- Evidence: `D_PROPOSED`
+
+<details><summary>Condition</summary>
+
+```json
+{
+ "all": [
+  {
+   "path": "keys[*]",
+   "equals": "CL-P14.fee"
+  },
+  {
+   "path": "keys[*]",
+   "equals": "CL-P14.prorated"
+  }
+ ]
+}
+```
+
+</details>
 
 ## Claims
 

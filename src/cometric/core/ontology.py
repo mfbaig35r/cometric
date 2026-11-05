@@ -351,6 +351,36 @@ _CORE_TERMS: list[tuple[str, str, str, str | None]] = [
     ("Claim", "owl:Class", "claim", "An atomic proposition with an evidence class and prevalence."),
     ("Source", "owl:Class", "source", "An external source that supports claims."),
     (
+        "Realization",
+        "owl:Class",
+        "realization",
+        "How a pricing model or lever becomes engagement terms, with the risk labels or label effects that structure proposals use.",
+    ),
+    (
+        "realizes",
+        "owl:ObjectProperty",
+        "realizes",
+        "The pricing model or lever a realization turns into engagement terms.",
+    ),
+    (
+        "riskLabels",
+        "owl:DatatypeProperty",
+        "risk labels",
+        "Who absorbs each deviation under a model, as a JSON object.",
+    ),
+    (
+        "riskEffects",
+        "owl:DatatypeProperty",
+        "risk effects",
+        "How a lever changes a model's risk labels, as a JSON object of from-to maps.",
+    ),
+    (
+        "fragment",
+        "owl:DatatypeProperty",
+        "fragment",
+        "The engagement terms a realization adds, with placeholders for every figure, as JSON.",
+    ),
+    (
         "pack",
         "owl:ObjectProperty",
         "pack",
@@ -652,6 +682,21 @@ def to_turtle() -> str:
                 ("cm:caveat", [_lit(x) for x in c.get("caveats") or []]),
                 ("cm:sourceRef", _lit(c["source_ref"], None) if c.get("source_ref") else None),
             )
+        for r in p.realizations:
+            t.add(
+                _pk(p.id, f"realization.{r['id']}"),
+                ("a", "cm:Realization"),
+                ("rdfs:label", _lit(r.get("label") or r["id"])),
+                ("skos:notation", _lit(r["id"], None)),
+                ("cm:pack", _pk(p.id, "pack")),
+                ("cm:realizes", ref(p.id, str(r.get("concept") or r["id"]))),
+                ("cm:kind", _lit(r.get("kind"), None)),
+                ("cm:riskLabels", _json(r["labels"]) if r.get("labels") else None),
+                ("cm:riskEffects", _json(r["effects"]) if r.get("effects") else None),
+                ("cm:fragment", _json(r.get("fragment") or {})),
+                ("cm:evidenceClass", _evidence(r.get("evidence_class"))),
+                ("cm:sourceRef", _lit(r["source_ref"], None) if r.get("source_ref") else None),
+            )
         for s in p.sources:
             t.add(
                 _pk(p.id, str(s["id"])),
@@ -950,6 +995,7 @@ def pack_md(p: Pack) -> str:
         out.append(f"- [{_cell(doc.get('title') or name)}](#scheme-{name.replace('_', '-')}) ({n})")
     for title, items in (
         ("Overlays", sum(len(v) for v in p.overlays.values())),
+        ("Realizations", len(p.realizations)),
         ("Rules", len(p.rules)),
         ("Claims", len(p.claims)),
         ("Sources", len(p.sources)),
@@ -1021,6 +1067,36 @@ def pack_md(p: Pack) -> str:
                     f"{o.get('evidence_class') or ''} | {claims} | "
                     f"{_cell(' '.join(o.get('caveats') or []))} |"
                 )
+        out.append("")
+    if p.realizations:
+        out += [
+            "## Realizations",
+            "",
+            "How each pricing model and lever becomes engagement terms in a structure proposal. Labels say who absorbs a deviation (D_PROPOSED); effects say how a lever changes them.",
+            "",
+            "| Realization | Kind | Applies to | Labels or effects |",
+            "|---|---|---|---|",
+        ]
+        for r in p.realizations:
+            concept = str(r.get("concept") or r["id"])
+            if r.get("kind") == "model":
+                where = ", ".join(r.get("unit_kinds") or []) + (
+                    " (needs tiers)" if r.get("requires_tiers") else ""
+                )
+                what = "; ".join(f"{k}: {v}" for k, v in (r.get("labels") or {}).items())
+            else:
+                where = ", ".join(r.get("requires_features") or []) or "any"
+                what = (
+                    "; ".join(
+                        f"{axis}: " + ", ".join(f"{a} to {b}" for a, b in m.items())
+                        for axis, m in (r.get("effects") or {}).items()
+                    )
+                    or "none"
+                )
+            out.append(
+                f"| {_link(concept, idx, p.id, False)} `{r['id']}` {_cell(r.get('label') or '')} | "
+                f"{r.get('kind')} | {_cell(where)} | {_cell(what)} |"
+            )
         out.append("")
     if p.rules:
         out += ["## Rules", ""]

@@ -5,6 +5,7 @@
 - `list_templates` lists core and pack templates, each labelled with its source; `pack` narrows it to one pack. The CLI's `cometric templates` lists all of them.
 - Labelled placeholders: `"<required: unit rate, tier high>"` works like `"<required>"` and the label is reported in `REQUIRED_FIELD` (`detail.required_input`). Placeholders in scenarios are now reported as `REQUIRED_FIELD` too.
 - `search_structures` rejects a spec whose engagement or scenarios still hold placeholders, except values a search parameter writes.
+- `base` pack 0.2.0: realizations (how 8 pricing models and 12 levers become engagement terms, with risk labels and label effects), a `client_priorities` scheme, `profile_signal` predicates on the selection heuristics, and composition rules (COMP-001 to COMP-004). `validate-pack` assembles every model, alone and with each lever that applies, fills the placeholders with sample values, and fails if any scenario does not calculate. The ontology export includes realizations.
 
 ## 0.5.0 (2026-11-05)
 

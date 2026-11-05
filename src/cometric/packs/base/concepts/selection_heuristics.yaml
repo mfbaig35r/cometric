@@ -25,6 +25,7 @@ concepts:
     favored_refs: [PM-001, PM-020, PM-017, PM-019]
     caution_refs: []
     row: 1
+    profile_signal: {path: volume.certainty, equals: UNKNOWN}
 - id: SEL-002
   label: Stable high-volume repetitive work
   synonyms: []
@@ -51,6 +52,7 @@ concepts:
     favored_refs: [PM-011, PM-007, PM-010, PM-023]
     caution_refs: [PM-001]
     row: 2
+    profile_signal: {all: [{path: volume.certainty, equals: KNOWN}, {path: unit_of_work.kind, equals: COUNT}]}
 - id: SEL-003
   label: Dedicated ongoing team required
   synonyms: []
@@ -77,6 +79,7 @@ concepts:
     favored_refs: [PM-004, PM-009, PM-007]
     caution_refs: [PM-011]
     row: 3
+    profile_signal: {path: cost_profile.fixed_team, equals: true}
 - id: SEL-004
   label: Highly variable demand with pooled capacity
   synonyms: []
@@ -103,6 +106,7 @@ concepts:
     favored_refs: [PM-011, PM-013, PM-023]
     caution_refs: [PM-034]
     row: 4
+    profile_signal: {all: [{path: volume.certainty, in: [RANGE, UNKNOWN]}, {not: {path: cost_profile.fixed_team, equals: true}}]}
 - id: SEL-005
   label: Material setup or engineering investment
   synonyms: []
@@ -129,6 +133,7 @@ concepts:
     favored_refs: [PM-029]
     caution_refs: []
     row: 5
+    profile_signal: {path: cost_profile.setup_investment, equals: true}
 - id: SEL-006
   label: Heterogeneous complexity
   synonyms: []
@@ -153,6 +158,7 @@ concepts:
     favored_refs: [PM-015, PM-001]
     caution_refs: [PM-011]
     row: 6
+    profile_signal: {path: 'unit_of_work.tiers[*]', exists: true}
 - id: SEL-007
   label: Strong client budget-certainty preference
   synonyms: []
@@ -178,6 +184,7 @@ concepts:
     favored_refs: [PM-006, PM-010]
     caution_refs: [PM-013]
     row: 7
+    profile_signal: {path: 'client_priorities[*]', equals: budget_certainty}
 - id: SEL-008
   label: Strong client flexibility preference
   synonyms: []
@@ -204,6 +211,7 @@ concepts:
     favored_refs: [PM-013, PM-011, PM-023]
     caution_refs: [PM-004]
     row: 8
+    profile_signal: {path: 'client_priorities[*]', equals: pay_for_use}
 - id: SEL-009
   label: Measurable cost savings
   synonyms: []
@@ -254,6 +262,7 @@ concepts:
     favored_refs: [PM-011, PM-006, PM-028, PM-024, PM-030]
     caution_refs: [PM-001]
     row: 10
+    profile_signal: {path: flags.automation_expected, equals: true}
 - id: SEL-011
   label: Material regulatory continuity requirement
   synonyms: []
@@ -283,3 +292,4 @@ concepts:
     favored_refs: [PM-009, PM-004]
     caution_refs: []
     row: 11
+    profile_signal: {path: flags.continuity_required, equals: true}

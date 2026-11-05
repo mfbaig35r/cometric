@@ -1,0 +1,249 @@
+# Lever realizations for propose_structures (spec A7.2). effects map a label value to the value
+# after the lever is added. suggested_when is a predicate over the deal profile.
+realizations:
+- id: CL-R01
+  kind: lever
+  label: Minimum spend commitment
+  requires_features: [variable]
+  excludes_features: [fixed]
+  not_applicable_reason: A minimum spend needs a charge that varies with volume
+  adds_features: [minimum]
+  effects:
+    volume_shortfall: {PROVIDER: SHARED, NONE_ADVERSE: SHARED}
+  suggested_when: {path: provider_constraints.max_volume_risk, in: [SHARED, NONE]}
+  tradeoffs:
+  - The provider is protected below the minimum; the client pays for unused volume up to it.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      commitments:
+      - id: minimum_spend
+        kind: MINIMUM_SPEND
+        amount: '<required: minimum spend per contract year>'
+        aggregation_scope: ENGAGEMENT
+        accumulation_period: CONTRACT_YEAR
+        tested_against: GROSS
+        shortfall_rule: PERIOD_END_TRUE_UP
+
+- id: CL-R06
+  kind: lever
+  label: Rollover of unused allowance
+  requires_features: [allowance]
+  not_applicable_reason: Rollover needs an allowance
+  effects:
+    volume_shortfall: {CLIENT: SHARED}
+  tradeoffs:
+  - Unused allowance carries into the next month, so the client loses less when volume dips.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    patch:
+      entitlements:
+        rollover: {policy: NEXT_PERIOD}
+
+- id: CL-R09
+  kind: lever
+  label: Setup or onboarding fee
+  effects:
+    early_exit: {PROVIDER: SHARED}
+  suggested_when: {path: cost_profile.setup_investment, equals: true}
+  tradeoffs:
+  - The client pays for setup up front, so the provider recovers it even if the engagement ends early.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: setup_fee
+        calculation_method: FIXED_RECURRING
+        billing_basis: FIXED
+        charge_cadence: ONE_TIME
+        fixed_amount: '<required: setup fee>'
+
+- id: CL-V04
+  kind: lever
+  label: Volume discount above a threshold
+  requires_features: [variable]
+  not_applicable_reason: A volume discount needs a charge that varies with volume
+  tradeoffs:
+  - The client's price falls once annual spend passes the threshold.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      adjustments:
+      - id: volume_discount
+        type: DISCOUNT
+        percent: '<required: discount on spend above the threshold, as a fraction>'
+        threshold: '<required: spend threshold per contract year>'
+        threshold_scope: EXCESS_ONLY
+        accumulation_period: CONTRACT_YEAR
+        applies_to: '{variable_ids}'
+
+- id: CL-V05
+  kind: lever
+  label: Volume rebate
+  requires_features: [variable]
+  not_applicable_reason: A volume rebate needs a charge that varies with volume
+  tradeoffs:
+  - The client earns a rebate on the year's spend once it passes the threshold.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      adjustments:
+      - id: volume_rebate
+        type: REBATE
+        percent: '<required: rebate on the year''s spend, as a fraction>'
+        threshold: '<required: spend threshold per contract year>'
+        threshold_scope: ENTIRE_SUBTOTAL
+        accumulation_period: CONTRACT_YEAR
+        applies_to: '{variable_ids}'
+
+- id: CL-V07
+  kind: lever
+  label: Annual fee cap
+  requires_features: [unit_priced]
+  not_applicable_reason: A consumption cap here applies to unit pricing (capped time and materials is its own model)
+  effects:
+    spend_variability: {VARIABLE: BOUNDED}
+    volume_excess: {NONE_ADVERSE: PROVIDER}
+  tradeoffs:
+  - The client's annual spend cannot exceed the cap; volume above it is the provider's cost.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      adjustments:
+      - id: fee_cap
+        type: CAP
+        amount: '<required: fee cap per contract year>'
+        accumulation_period: CONTRACT_YEAR
+        applies_to: '{variable_ids}'
+
+- id: CL-V08
+  kind: lever
+  label: Volume collar
+  requires_features: [unit_priced]
+  not_applicable_reason: A volume collar reprices units, so it needs unit pricing
+  effects:
+    volume_shortfall: {PROVIDER: SHARED, NONE_ADVERSE: SHARED}
+    volume_excess: {NONE_ADVERSE: SHARED}
+  suggested_when:
+    any:
+    - {path: volume.certainty, in: [RANGE, UNKNOWN]}
+    - {path: provider_constraints.max_volume_risk, in: [SHARED, NONE]}
+  tradeoffs:
+  - Volume outside an agreed monthly band is repriced, so both parties share large swings.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    per_variable:
+      adjustments:
+      - id: 'collar_{c}'
+        type: COLLAR
+        component_id: '{c}'
+        lower: '<required: lower volume bound per month{c_t}>'
+        upper: '<required: upper volume bound per month{c_t}>'
+        outside_rate_schedule_id: 'outside_rate_{c}'
+      rate_schedules:
+      - id: 'outside_rate_{c}'
+        unit: '{c_unit}'
+        tiers:
+        - {from: '0', to: null, rate: '<required: unit rate outside the volume band{c_t}>'}
+
+- id: CL-P01
+  kind: lever
+  label: Service-level credit
+  tradeoffs:
+  - The client receives a credit in months the service level is missed.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  scenario_assumptions:
+  - name: sla_missed
+    value: '<required: service level missed in a month: 1 if missed, 0 if met>'
+    unit: flag
+    time_period: TERM
+    basis: RATE
+    origin: ESTIMATED
+  fragment:
+    once:
+      adjustments:
+      - id: service_credit
+        type: SLA_CREDIT
+        percent: '<required: credit when the service level is missed, as a fraction of the month''s fees>'
+        cap_percent: '<required: maximum credit in a month, as a fraction of the month''s fees>'
+        trigger: scenario.sla_missed
+
+- id: CL-P02
+  kind: lever
+  label: Performance bonus
+  tradeoffs:
+  - The provider earns a bonus in months a performance target is met.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  scenario_assumptions:
+  - name: target_met
+    value: '<required: performance target met in a month: 1 if met, 0 if not>'
+    unit: flag
+    time_period: TERM
+    basis: RATE
+    origin: ESTIMATED
+  fragment:
+    once:
+      adjustments:
+      - id: performance_bonus
+        type: BONUS
+        percent: '<required: bonus when the target is met, as a fraction of the month''s fees>'
+        cap_percent: '<required: maximum bonus in a month, as a fraction of the month''s fees>'
+        trigger: scenario.target_met
+
+- id: CL-P12
+  kind: lever
+  label: Annual indexation
+  suggested_when: {path: term.months, gt: 12}
+  tradeoffs:
+  - Rates rise each contract year by an agreed index, protecting the provider against cost inflation.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      adjustments:
+      - id: indexation
+        type: INDEXATION
+        percent: '<required: annual indexation, as a fraction>'
+
+- id: CL-P14.fee
+  concept: CL-P14
+  kind: lever
+  label: Termination fee
+  effects:
+    early_exit: {PROVIDER: CLIENT, SHARED: CLIENT, NONE_ADVERSE: CLIENT}
+  suggested_when: {path: term.client_can_terminate_early, equals: true}
+  tradeoffs:
+  - A client that leaves early pays a fee that covers the provider's stranded cost.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    patch:
+      version:
+        termination_fee: '<required: termination fee>'
+
+- id: CL-P14.prorated
+  concept: CL-P14
+  kind: lever
+  label: Prorated minimum on early exit
+  requires_features: [minimum]
+  not_applicable_reason: Prorating on exit applies to a minimum commitment
+  effects:
+    early_exit: {PROVIDER: SHARED, NONE_ADVERSE: SHARED}
+  suggested_when: {path: term.client_can_terminate_early, equals: true}
+  tradeoffs:
+  - On early exit the client owes the minimum for the time served, so both share the cost of leaving.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    patch:
+      commitments:
+        termination_rule: PRORATE

@@ -32,6 +32,7 @@ class Pack:
     coverage: list[dict] = field(default_factory=list)
     excluded: list[dict] = field(default_factory=list)
     templates: dict[str, dict] = field(default_factory=dict)
+    realizations: list[dict] = field(default_factory=list)
     load_problems: list[str] = field(default_factory=list)
 
     @property
@@ -83,6 +84,10 @@ def load_pack(pack_id: str, root: str | None = None) -> Pack:
         pack.coverage = _read(path / "coverage.yaml", problems).get("areas", []) or []
     if (path / "excluded.yaml").exists():
         pack.excluded = _read(path / "excluded.yaml", problems).get("excluded", []) or []
+    for f in (
+        sorted((path / "realizations").glob("*.yaml")) if (path / "realizations").exists() else []
+    ):
+        pack.realizations += _read(f, problems).get("realizations", []) or []
     for f in sorted((path / "templates").glob("*.json")) if (path / "templates").exists() else []:
         import json
 
@@ -186,6 +191,31 @@ def validate_pack(pack_id: str, root: str | None = None) -> list[str]:
         for ref in (r.get("emit") or {}).get("claims", []) or []:
             if ref not in claim_ids:
                 problems.append(f"rules[{i}] {rid}: unknown claim {ref!r}")
+    if pack.realizations:
+        from .realizations import check_realizations
+
+        problems += check_realizations(pack)
+    keys = {str(r.get("id")) for q in chain for r in q.realizations}
+    concepts_and_keys = keys | all_ids
+    for c in pack.schemes.get("client_priorities", {}).get("concepts", []) or []:
+        attrs = c.get("attributes") or {}
+        for k in ("fits", "tension"):
+            if attrs.get(k) is None:
+                problems.append(f"client_priorities {c.get('id')}: {k} is required")
+            else:
+                problems += [
+                    f"client_priorities {c.get('id')}.{k}: {p}" for p in check_predicate(attrs[k])
+                ]
+        for ref in attrs.get("suggests") or []:
+            if ref not in concepts_and_keys:
+                problems.append(f"client_priorities {c.get('id')}: suggests unknown lever {ref!r}")
+    for c in pack.schemes.get("selection_heuristics", {}).get("concepts", []) or []:
+        signal = (c.get("attributes") or {}).get("profile_signal")
+        if signal is not None:
+            problems += [
+                f"selection_heuristics {c.get('id')}.profile_signal: {p}"
+                for p in check_predicate(signal)
+            ]
     seen_claims = set()
     for i, c in enumerate(pack.claims):
         if c.get("id") in seen_claims:
@@ -277,7 +307,7 @@ def evaluate_rules(e, issues: Issues) -> list[dict]:
     fired = []
     for p in _declared_chain(e):
         for r in p.rules:
-            if not r.get("evaluable") or r.get("when") is None:
+            if not r.get("evaluable") or r.get("when") is None or r.get("kind") == "composition":
                 continue
             try:
                 hit = evaluate(r["when"], doc)

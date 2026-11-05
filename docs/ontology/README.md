@@ -23,7 +23,7 @@ Cometric's ontology has three layers, all generated from the package so they mat
 | Pack | Version | Extends | Concept schemes | Concepts | Overlays | Rules | Claims | Sources |
 |---|---|---|---|---|---|---|---|---|
 | [alsp](pack-alsp.md) | 0.1.0 | base | 4 | 21 | 52 | 16 | 48 | 25 |
-| [base](pack-base.md) | 0.1.0 |  | 15 | 325 | 0 | 29 | 52 | 14 |
+| [base](pack-base.md) | 0.2.0 |  | 16 | 330 | 0 | 33 | 52 | 14 |
 | [consulting](pack-consulting.md) | 0.1.0 | base | 4 | 21 | 8 | 3 | 0 | 0 |
 
 ## Core model

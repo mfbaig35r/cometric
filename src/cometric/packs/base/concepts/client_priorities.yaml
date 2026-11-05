@@ -1,0 +1,123 @@
+scheme: client_priorities
+title: Client priorities for structure proposals
+concepts:
+- id: budget_certainty
+  label: Budget certainty
+  synonyms: [predictable spend, cost certainty]
+  definition: >-
+    The client wants to know what it will spend. Served by structures whose spend is fixed or
+    bounded.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [SEL-007]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: cometric:design
+  status: active
+  attributes:
+    fits: {path: labels.spend_variability, in: [FIXED, BOUNDED]}
+    tension: {path: labels.spend_variability, equals: VARIABLE}
+    tension_note: Spend moves with volume.
+    suggests: [CL-V07]
+- id: pay_for_use
+  label: Pay for use
+  synonyms: [flexibility, pay as you go]
+  definition: >-
+    The client wants to pay for the work it sends and not for unused capacity. Served by
+    structures where the client does not absorb a volume shortfall.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: [SEL-008]
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: cometric:design
+  status: active
+  attributes:
+    fits:
+      all:
+      - {not: {path: labels.volume_shortfall, equals: CLIENT}}
+      - {not: {path: labels.spend_variability, equals: FIXED}}
+    tension: {path: labels.volume_shortfall, equals: CLIENT}
+    tension_note: The client pays for capacity it does not use.
+    suggests: [CL-R06]
+- id: cost_reduction_over_time
+  label: Cost reduction over time
+  synonyms: [savings with scale]
+  definition: >-
+    The client wants its unit cost to fall as volume grows. Served by volume bands, discounts,
+    or rebates.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: cometric:design
+  status: active
+  attributes:
+    fits:
+      any:
+      - {path: base_model, equals: PM-014}
+      - {path: 'levers[*]', in: [CL-V04, CL-V05]}
+    tension:
+      not:
+        any:
+        - {path: base_model, equals: PM-014}
+        - {path: 'levers[*]', in: [CL-V04, CL-V05]}
+    tension_note: Nothing lowers the price as volume grows.
+    suggests: [CL-V04, CL-V05]
+- id: outcome_alignment
+  label: Outcome alignment
+  synonyms: [performance alignment]
+  definition: >-
+    The client wants the provider's fees to respond to service performance. Served by service
+    credits or performance bonuses.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: [Outcome-based fees (gain-share, success fees) are not proposed in this version.]
+  source_ref: cometric:design
+  status: active
+  attributes:
+    fits: {path: 'levers[*]', in: [CL-P01, CL-P02]}
+    tension: {not: {path: 'levers[*]', in: [CL-P01, CL-P02]}}
+    tension_note: Fees do not respond to service performance.
+    suggests: [CL-P01, CL-P02]
+- id: simplicity
+  label: Simplicity
+  synonyms: [easy to administer]
+  definition: >-
+    The client wants a structure that is easy to understand and administer. Served by
+    structures with at most one lever.
+  kind: null
+  bases: []
+  methods: []
+  broader: []
+  related: []
+  evidence_class: D_PROPOSED
+  prevalence: UNVERIFIED
+  claims: []
+  caveats: []
+  source_ref: cometric:design
+  status: active
+  attributes:
+    fits: {path: lever_count, lte: 1}
+    tension: {path: lever_count, gte: 3}
+    tension_note: Several mechanisms to administer.
+    suggests: []

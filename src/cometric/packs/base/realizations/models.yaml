@@ -1,0 +1,258 @@
+# Pricing-model realizations for propose_structures (spec A7.1). Labels are pack assertions
+# (D_PROPOSED): who absorbs a deviation when the provider carries fixed delivery cost.
+# variable_cost_shortfall replaces volume_shortfall when costs are mostly variable.
+realizations:
+- id: PM-001
+  kind: model
+  label: Hourly time and materials
+  unit_kinds: [HOURS]
+  pricing_unit: hours
+  features: [variable, time_priced]
+  labels:
+    volume_shortfall: PROVIDER
+    variable_cost_shortfall: NONE_ADVERSE
+    volume_excess: NONE_ADVERSE
+    spend_variability: VARIABLE
+    mix: CLIENT
+  tradeoffs:
+  - The client pays for effort, so its spend follows hours and it carries the risk of inefficiency.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: time
+        calculation_method: TIME
+        billing_basis: TIME
+        charge_cadence: MONTHLY
+        quantity_source: scenario.hours
+        role_rates:
+        - {role: delivery, rate: '<required: hourly rate>'}
+
+- id: PM-020
+  kind: model
+  label: Capped time and materials
+  unit_kinds: [HOURS]
+  pricing_unit: hours
+  features: [variable, time_priced, capped]
+  labels:
+    volume_shortfall: PROVIDER
+    variable_cost_shortfall: NONE_ADVERSE
+    volume_excess: PROVIDER
+    spend_variability: BOUNDED
+    mix: PROVIDER
+  tradeoffs:
+  - The client's spend is bounded; effort above the cap is the provider's cost.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: time
+        calculation_method: TIME
+        billing_basis: TIME
+        charge_cadence: MONTHLY
+        quantity_source: scenario.hours
+        role_rates:
+        - {role: delivery, rate: '<required: hourly rate>'}
+      adjustments:
+      - id: fee_cap
+        type: CAP
+        amount: '<required: fee cap per contract year>'
+        accumulation_period: CONTRACT_YEAR
+        applies_to: [time]
+
+- id: PM-004
+  kind: model
+  label: Dedicated team priced per FTE
+  unit_kinds: [COUNT, HOURS, FTE_MONTHS]
+  pricing_unit: total
+  features: [fixed, resource_priced]
+  labels:
+    volume_shortfall: CLIENT
+    volume_excess: PROVIDER
+    spend_variability: FIXED
+    mix: PROVIDER
+  tradeoffs:
+  - The client pays for the team whether or not volume arrives; volume above what the team can deliver needs a change.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: team
+        calculation_method: DEDICATED_RESOURCE
+        billing_basis: RESOURCE
+        charge_cadence: MONTHLY
+        resources:
+        - {role: delivery, fte: '<required: number of FTE>', rate_per_fte_month: '<required: rate per FTE-month>'}
+
+- id: PM-007
+  kind: model
+  label: Fixed-fee managed service
+  unit_kinds: [COUNT, HOURS]
+  pricing_unit: total
+  features: [fixed]
+  labels:
+    volume_shortfall: CLIENT
+    volume_excess: PROVIDER
+    spend_variability: FIXED
+    mix: PROVIDER
+  tradeoffs:
+  - The client's spend is fixed; the provider absorbs any volume above expected unless the scope is bounded.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: base_fee
+        calculation_method: FIXED_RECURRING
+        billing_basis: FIXED
+        charge_cadence: MONTHLY
+        fixed_amount: '<required: monthly fee>'
+
+- id: PM-011
+  kind: model
+  label: Per-unit pricing
+  unit_kinds: [COUNT]
+  pricing_unit: per_tier
+  features: [variable, unit_priced]
+  labels:
+    volume_shortfall: PROVIDER
+    variable_cost_shortfall: NONE_ADVERSE
+    volume_excess: NONE_ADVERSE
+    spend_variability: VARIABLE
+    mix: CLIENT
+  tradeoffs:
+  - The client pays only for what it uses; the provider carries its fixed cost if volume falls.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    per_unit:
+      components:
+      - id: 'price_{u}'
+        calculation_method: UNIT_OUTPUT
+        billing_basis: OUTPUT
+        charge_cadence: USAGE_TRIGGERED
+        quantity_source: 'scenario.{q}'
+        unit: '{u}'
+        rate_schedule_id: 'rate_{u}'
+      rate_schedules:
+      - id: 'rate_{u}'
+        unit: '{u}'
+        tiers:
+        - {from: '0', to: null, rate: '<required: unit rate{t}>'}
+
+- id: PM-014
+  kind: model
+  label: Volume-banded unit pricing
+  unit_kinds: [COUNT]
+  pricing_unit: per_tier
+  features: [variable, unit_priced, volume_bands]
+  labels:
+    volume_shortfall: PROVIDER
+    variable_cost_shortfall: NONE_ADVERSE
+    volume_excess: NONE_ADVERSE
+    spend_variability: VARIABLE
+    mix: CLIENT
+  tradeoffs:
+  - The unit price falls as volume grows within the contract year, so savings arrive with scale.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    per_unit:
+      components:
+      - id: 'price_{u}'
+        calculation_method: UNIT_OUTPUT
+        billing_basis: OUTPUT
+        charge_cadence: USAGE_TRIGGERED
+        quantity_source: 'scenario.{q}'
+        unit: '{u}'
+        rate_schedule_id: 'rate_{u}'
+      rate_schedules:
+      - id: 'rate_{u}'
+        unit: '{u}'
+        accumulation_period: CONTRACT_YEAR
+        tiers:
+        - {from: '0', to: '<required: volume band boundary per contract year{t}>', rate: '<required: unit rate below the band boundary{t}>'}
+        - {from: '<required: volume band boundary per contract year{t}>', to: null, rate: '<required: unit rate above the band boundary{t}>'}
+
+- id: PM-015
+  kind: model
+  label: Complexity-weighted unit pricing
+  unit_kinds: [COUNT]
+  requires_tiers: true
+  pricing_unit: weighted
+  features: [variable, unit_priced, weighted]
+  labels:
+    volume_shortfall: PROVIDER
+    variable_cost_shortfall: NONE_ADVERSE
+    volume_excess: NONE_ADVERSE
+    spend_variability: VARIABLE
+    mix: CLIENT
+  tradeoffs:
+  - One rate per weighted unit; the client pays more for complex work, and both parties must agree how items are classified.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: price_weighted
+        calculation_method: WEIGHTED_UNIT_OUTPUT
+        billing_basis: OUTPUT
+        charge_cadence: USAGE_TRIGGERED
+        quantity_source: scenario.units
+        unit: weighted_units
+        weight_table_id: complexity
+        rate_schedule_id: rate_weighted
+      rate_schedules:
+      - id: rate_weighted
+        unit: weighted_units
+        tiers:
+        - {from: '0', to: null, rate: '<required: rate per weighted unit>'}
+
+- id: PM-023
+  kind: model
+  label: Base fee with an allowance plus overage
+  unit_kinds: [COUNT, HOURS]
+  pricing_unit: total
+  features: [fixed, variable, allowance]
+  labels:
+    volume_shortfall: CLIENT
+    volume_excess: NONE_ADVERSE
+    spend_variability: VARIABLE
+    mix: PROVIDER
+  tradeoffs:
+  - The base fee buys an allowance the client pays for even if unused; volume above it is billed as overage.
+  evidence_class: D_PROPOSED
+  source_ref: cometric:design
+  fragment:
+    once:
+      components:
+      - id: base_fee
+        calculation_method: FIXED_RECURRING
+        billing_basis: FIXED
+        charge_cadence: MONTHLY
+        fixed_amount: '<required: monthly base fee>'
+      - id: overage
+        calculation_method: ALLOWANCE_OVERAGE
+        billing_basis: '{volume_basis}'
+        charge_cadence: MONTHLY
+        quantity_source: 'scenario.{volume_q}'
+        unit: '{volume_unit}'
+        depends_on: [allowance]
+        entitlement_id: allowance
+        rate_schedule_id: overage_rate
+      entitlements:
+      - id: allowance
+        granted_by: base_fee
+        unit: '{volume_unit}'
+        included_quantity: '<required: included volume per month>'
+        accumulation_period: MONTH
+        overage_recognition: PER_SEGMENT
+        rollover: {policy: NONE}
+      rate_schedules:
+      - id: overage_rate
+        unit: '{volume_unit}'
+        tiers:
+        - {from: '0', to: null, rate: '<required: overage rate per unit above the allowance>'}
