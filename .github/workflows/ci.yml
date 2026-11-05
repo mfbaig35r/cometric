@@ -43,6 +43,7 @@ jobs:
         run: |
           uv run cometric validate-pack base
           uv run cometric validate-pack alsp
+          uv run cometric validate-pack consulting
 
   build:
     runs-on: ubuntu-latest

@@ -514,7 +514,7 @@ concepts:
     formula: LaborRevenue / ProductiveHours
     unit_period: currency / hour
     limitation: For fixed fees, may be retrospective.
-    computed_by: null
+    computed_by: effective_billing_rate
     requires: null
     family: financial
 - id: FM-024
@@ -624,7 +624,7 @@ concepts:
     formula: BilledValue / StandardOrWorkedValue
     unit_period: '%'
     limitation: Definitions vary between organizations.
-    computed_by: null
+    computed_by: realization
     requires: null
     family: financial
 - id: FM-029

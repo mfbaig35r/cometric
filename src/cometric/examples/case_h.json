@@ -1,0 +1,271 @@
+{
+  "case": "H",
+  "title": "Consulting: phased fixed fee plus gain-share (illustrative, not from the research)",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CASE-H",
+    "name": "Procurement transformation with gain-share",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "packs": [
+      {
+        "id": "consulting"
+      }
+    ],
+    "money_policy": {
+      "rounding_mode": "HALF_UP",
+      "rounding_scale": 2,
+      "rounding_level": "LINE_ITEM"
+    },
+    "parties": [
+      {
+        "id": "client",
+        "role": "CLIENT"
+      },
+      {
+        "id": "provider",
+        "role": "PROVIDER",
+        "provider_type": "BOUTIQUE"
+      }
+    ],
+    "unit_definitions": [
+      {
+        "code": "accepted_deliverable",
+        "kind": "COUNT",
+        "counting_rule": "One phase deliverable accepted against its criteria",
+        "acceptance_rule": "Steering committee sign-off"
+      }
+    ],
+    "services": [
+      {
+        "id": "svc",
+        "unit_definition_id": "accepted_deliverable",
+        "service_category": "TRANSFORMATION"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "phases",
+            "service_id": "svc",
+            "calculation_method": "FIXED_PROJECT",
+            "billing_basis": "FIXED",
+            "charge_cadence": "EVENT",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "project_fee": "600000",
+            "payment_schedule": [
+              {
+                "month": "2027-03",
+                "amount": "150000"
+              },
+              {
+                "month": "2027-07",
+                "amount": "250000"
+              },
+              {
+                "month": "2027-12",
+                "amount": "200000"
+              }
+            ]
+          },
+          {
+            "id": "gain_share",
+            "service_id": "svc",
+            "calculation_method": "OUTCOME_ADJUSTMENT",
+            "billing_basis": "OUTCOME",
+            "charge_cadence": "EVENT",
+            "currency": "USD",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "outcome": {
+              "form": "SHARE",
+              "metric": "addressable_spend",
+              "unit": "USD",
+              "direction": "LOWER_IS_BETTER",
+              "baseline": "10000000",
+              "share_percent": "0.10",
+              "attribution_percent": "0.70",
+              "attribution_method": "Spend against the agreed 2026 baseline, adjusted for volume",
+              "cap_amount": "100000",
+              "accumulation_period": "YEAR",
+              "recognition": "PERIOD_END",
+              "approval_reference": null
+            }
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "standard_rate_card": [
+        {
+          "role": "partner",
+          "rate": "400"
+        },
+        {
+          "role": "consultant",
+          "rate": "175"
+        }
+      ],
+      "worked_hours_source": "worked",
+      "cost_components": [
+        {
+          "id": "team",
+          "category": "DEDICATED_LABOR",
+          "behavior": "VARIABLE",
+          "driver": "delivery_hours",
+          "rate": "90",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "id": "engagement_overhead",
+          "category": "ENGAGEMENT_OVERHEAD",
+          "behavior": "FIXED",
+          "amount": "30000",
+          "period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    "client_value_unit": "delivery_hours"
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "assumptions": [
+        {
+          "name": "addressable_spend",
+          "value": "9900000",
+          "unit": "USD",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "delivery_hours",
+          "value": "4000",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "worked.partner",
+          "value": "500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "worked.consultant",
+          "value": "3500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "addressable_spend",
+          "value": "9500000",
+          "unit": "USD",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "delivery_hours",
+          "value": "4000",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "worked.partner",
+          "value": "500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "worked.consultant",
+          "value": "3500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "assumptions": [
+        {
+          "name": "addressable_spend",
+          "value": "9000000",
+          "unit": "USD",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "delivery_hours",
+          "value": "4000",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "worked.partner",
+          "value": "500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "worked.consultant",
+          "value": "3500",
+          "unit": "hours",
+          "time_period": "TERM",
+          "origin": "ILLUSTRATIVE"
+        }
+      ]
+    }
+  ],
+  "cost_policies": {
+    "reference": "reference"
+  },
+  "expected": {
+    "reference": {
+      "low": {
+        "contractual_fee": "607000",
+        "outcome_fee": "7000",
+        "contribution_profit": "217000"
+      },
+      "base": {
+        "contractual_fee": "635000",
+        "outcome_fee": "35000",
+        "contribution_profit": "245000"
+      },
+      "high": {
+        "contractual_fee": "670000",
+        "outcome_fee": "70000",
+        "contribution_profit": "280000"
+      }
+    },
+    "standard_value": "812500"
+  }
+}

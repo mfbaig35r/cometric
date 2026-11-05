@@ -7,7 +7,7 @@ from conftest import D
 
 from cometric import break_even, calculate_periods, derive_risk_exposure, price_floor
 
-CASES = ["a", "b", "c", "d", "e", "f", "g"]
+CASES = ["a", "b", "c", "d", "e", "f", "g", "h"]
 
 
 @pytest.mark.parametrize("letter", CASES)
@@ -187,3 +187,11 @@ def test_transition_payback_month_incurred_view(case):
     r = calculate_periods(c["engagement"], c["scenarios"][1], "reference", detail="periods")
     # transition of 80,000 is incurred in January under the incurred view; payback when cumulative recovers
     assert r["term"]["transition_payback_month"] is not None
+
+
+def test_case_h_consulting_realization(case):
+    c = case("h")
+    for s in c["scenarios"]:
+        t = calculate_periods(c["engagement"], s, "reference")["term"]
+        assert D(t["standard_value"]) == D(c["expected"]["standard_value"])
+        assert D(t["realization"]) == D(t["contractual_fee"]) / D(t["standard_value"])

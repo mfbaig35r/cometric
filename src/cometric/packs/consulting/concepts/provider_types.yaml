@@ -1,0 +1,35 @@
+scheme: provider_types
+title: Consulting provider types
+concepts:
+- id: LARGE_ADVISORY_FIRM
+  label: Large advisory firm
+  definition: A multi-practice firm delivering advisory, implementation, and managed services, sometimes alongside audit or assurance work.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    commercial_implications: Where the firm also provides assurance to the client, independence rules may restrict contingent or outcome-based fees; review before proposing them.
+- id: BOUTIQUE
+  label: Boutique
+  definition: A specialist firm focused on a sector, function, or method.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    commercial_implications: Smaller teams make dedicated-resource pricing and capacity commitments a material utilization risk.
+- id: INDEPENDENT_PRACTITIONER
+  label: Independent practitioner
+  definition: An individual consultant or small partnership contracting directly.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    commercial_implications: Retainers and capped time and materials limit exposure to concentration and idle time.
+- id: TECHNOLOGY_INTEGRATOR
+  label: Technology integrator
+  definition: A firm delivering system implementation and support, often with platform or license components.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    commercial_implications: Implementation plus recurring support (PM-029) separates setup recovery from run economics.

@@ -1,0 +1,41 @@
+scheme: service_categories
+title: Consulting service categories
+concepts:
+- id: STRATEGY
+  label: Strategy
+  definition: Advisory work on direction, portfolio, market, or organizational choices, usually scoped by questions rather than volumes.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+- id: OPERATIONS_IMPROVEMENT
+  label: Operations improvement
+  definition: Diagnosis and redesign of processes, cost structures, or service levels, often with a measurable baseline.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+- id: TRANSFORMATION
+  label: Transformation
+  definition: Multi-phase change programs combining design, implementation, and adoption, with scope that evolves between phases.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+- id: IMPLEMENTATION
+  label: Implementation
+  definition: Delivery of a defined system, process, or operating model to an acceptance point.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+- id: ADVISORY_RETAINER
+  label: Advisory retainer
+  definition: Ongoing access to advisers for a periodic fee, typically drawn down against included hours.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [PM-008, CL-R04]
+  source_ref: "pack:consulting"
+- id: INTERIM_MANAGEMENT
+  label: Interim management
+  definition: Placement of an executive or specialist into a client role for a period, priced by time or by resource.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [PM-004, PM-005]
+  source_ref: "pack:consulting"

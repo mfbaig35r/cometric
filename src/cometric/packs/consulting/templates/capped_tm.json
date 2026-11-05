@@ -1,0 +1,132 @@
+{
+  "template_id": "capped_tm",
+  "description": "Hourly rates by role with a not-to-exceed amount over the term; the provider bears effort above the cap.",
+  "pack": "consulting",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CONSULTING-CAPPED-TM",
+    "name": "<required>",
+    "currency": "<required>",
+    "start_date": "<required>",
+    "end_date": "<required>",
+    "unit_definitions": [
+      {
+        "code": "hour",
+        "kind": "HOURS",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      }
+    ],
+    "services": [
+      {
+        "id": "service",
+        "unit_definition_id": "hour",
+        "service_category": "<required>"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "<required>",
+        "components": [
+          {
+            "id": "time",
+            "service_id": "service",
+            "calculation_method": "TIME",
+            "billing_basis": "TIME",
+            "charge_cadence": "MONTHLY",
+            "currency": "<required>",
+            "quantity_source": "scenario.worked",
+            "unit": null,
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "role_rates": [
+              {
+                "role": "partner",
+                "rate": "<required>"
+              },
+              {
+                "role": "consultant",
+                "rate": "<required>"
+              }
+            ]
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": [],
+        "adjustments": [
+          {
+            "id": "cap",
+            "type": "CAP",
+            "amount": "<required>",
+            "accumulation_period": "TERM"
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "standard_rate_card": [
+        {
+          "role": "partner",
+          "rate": "<required>"
+        },
+        {
+          "role": "consultant",
+          "rate": "<required>"
+        }
+      ],
+      "worked_hours_source": "worked",
+      "cost_components": []
+    },
+    "packs": [
+      {
+        "id": "consulting"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "base",
+    "assumptions": [
+      {
+        "name": "worked.partner",
+        "value": "<required>",
+        "unit": "hours",
+        "time_period": "<required>",
+        "origin": "<required>"
+      },
+      {
+        "name": "worked.consultant",
+        "value": "<required>",
+        "unit": "hours",
+        "time_period": "<required>",
+        "origin": "<required>"
+      }
+    ]
+  },
+  "examples": {
+    "/engagement/name": "Contract review managed service",
+    "/engagement/currency": "USD",
+    "/engagement/start_date": "2027-01-01",
+    "/engagement/end_date": "2027-12-31",
+    "/engagement/unit_definitions/0/counting_rule": "One completed review of one eligible contract",
+    "/engagement/unit_definitions/0/acceptance_rule": "Accepted on client sign-off",
+    "/engagement/arrangement_versions/0/effective_from": "2027-01-01",
+    "/scenario/assumptions/0/time_period": "TERM",
+    "/scenario/assumptions/0/origin": "ESTIMATED",
+    "/engagement/services/0/service_category": "TRANSFORMATION",
+    "/engagement/arrangement_versions/0/components/0/currency": "USD",
+    "/engagement/arrangement_versions/0/components/0/effective_period/from": "2027-01-01",
+    "/scenario/assumptions/0/value": "300",
+    "/scenario/assumptions/1/time_period": "TERM",
+    "/scenario/assumptions/1/origin": "ESTIMATED",
+    "/scenario/assumptions/1/value": "1700",
+    "/engagement/arrangement_versions/0/components/0/role_rates/0/rate": "380",
+    "/engagement/arrangement_versions/0/components/0/role_rates/1/rate": "165",
+    "/engagement/arrangement_versions/0/adjustments/0/amount": "350000",
+    "/engagement/delivery_plan/standard_rate_card/0/rate": "400",
+    "/engagement/delivery_plan/standard_rate_card/1/rate": "175"
+  }
+}

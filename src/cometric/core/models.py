@@ -26,6 +26,8 @@ from .enums import (
     Distribution,
     MarginLayer,
     Origin,
+    OutcomeDirection,
+    OutcomeForm,
     PartyRole,
     ProrationPolicy,
     Recognition,
@@ -160,6 +162,32 @@ class PaymentLine(Model):
     amount: Dec
 
 
+class OutcomeTerms(Model):
+    """Terms for OUTCOME_ADJUSTMENT components (spec 4.1; report RULE-003, RULE-004)."""
+
+    form: OutcomeForm
+    metric: str = Field(description="Scenario quantity holding the measured outcome per month")
+    unit: str
+    direction: OutcomeDirection = OutcomeDirection.HIGHER_IS_BETTER
+    baseline: Dec | None = Field(
+        default=None,
+        description="Outcome expected without the provider, per accumulation period (SHARE)",
+    )
+    target: Dec | None = Field(default=None, description="Threshold that triggers a SUCCESS fee")
+    share_percent: Dec | None = None
+    success_amount: Dec | None = None
+    attribution_percent: Dec | None = Field(
+        default=None, description="Share of the measured result attributed to the provider"
+    )
+    attribution_method: str | None = None
+    cap_amount: Dec | None = None
+    accumulation_period: AccumulationPeriod = AccumulationPeriod.YEAR
+    recognition: Recognition = Recognition.PERIOD_END
+    approval_reference: str | None = Field(
+        default=None, description="Reference to the human approval of this outcome fee"
+    )
+
+
 class FeeComponent(Model):
     id: str
     service_id: str
@@ -179,6 +207,7 @@ class FeeComponent(Model):
     resources: list[ResourceLine] = []
     project_fee: Dec | None = None
     payment_schedule: list[PaymentLine] = []
+    outcome: OutcomeTerms | None = None
 
 
 class Rollover(Model):
@@ -307,6 +336,11 @@ class DeliveryPlan(Model):
     roles: list[ResourceRole] = []
     production_standards: list[ProductionStandard] = []
     demand_hours_source: str | None = None
+    standard_rate_card: list[RoleRate] = []
+    worked_hours_source: str | None = Field(
+        default=None,
+        description="Base name of scenario quantities <name>.<role> holding hours worked",
+    )
     cost_components: list[CostComponent] = []
 
 

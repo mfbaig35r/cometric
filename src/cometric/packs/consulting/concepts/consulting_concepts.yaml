@@ -1,0 +1,82 @@
+scheme: consulting_concepts
+title: Realization, staffing, and fee concepts for consulting
+concepts:
+- id: CONS-001
+  label: Realization
+  synonyms: [realization rate]
+  definition: >
+    Billed or contractual value divided by the value of hours worked at standard rates. Below 1
+    means a write-down; above 1 means a write-up.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [FM-028, CONS-002, CONS-005]
+  caveats: ["Definitions vary by organization; record the convention used."]
+  source_ref: "report:FM-028"
+  attributes:
+    formula: contractual_fee / standard_value
+    computed_by: realization
+- id: CONS-002
+  label: Write-down
+  definition: Standard value of hours worked minus the contractual fee for those hours.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [CONS-001]
+  source_ref: "report:FM-028"
+  attributes:
+    formula: standard_value - contractual_fee
+    computed_by: write_down
+- id: CONS-003
+  label: Effective billing rate
+  definition: Contractual fee divided by hours worked. For fixed fees it is retrospective.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [FM-023]
+  source_ref: "report:FM-023"
+  attributes:
+    formula: contractual_fee / worked_hours
+    computed_by: effective_billing_rate
+- id: CONS-004
+  label: Staffing leverage
+  synonyms: [pyramid, seniority mix]
+  definition: >
+    The ratio of junior to senior effort on an engagement. It is a major direct-cost lever; a mix
+    that is too junior can damage quality.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [CL-D04, PM-002, PM-003]
+  source_ref: "report:CL-D04"
+- id: CONS-005
+  label: Standard rate card
+  definition: The rate per role used to value hours worked, independent of the contracted price.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [PM-003, CONS-001]
+  source_ref: "pack:consulting"
+  attributes:
+    engine_field: delivery_plan.standard_rate_card
+- id: CONS-006
+  label: Phased fixed fee
+  definition: A fixed fee per phase, with each phase repriced or confirmed at its checkpoint.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [PM-017, PM-006]
+  source_ref: "report:PM-017"
+- id: CONS-007
+  label: Hours-drawdown retainer
+  definition: A periodic fee that includes a number of hours, with overage above the allowance.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [CL-R04, PM-008, CL-V01, CL-V02]
+  source_ref: "report:CL-R04"
+- id: CONS-008
+  label: Success fee
+  definition: >
+    A fee contingent on a defined result. It needs a measurable metric, a baseline or target, an
+    attribution method, a cap, and approval.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [PM-025, PM-026, PM-027]
+  claims: [CLM-B-0006, CLM-B-0041]
+  source_ref: "report:PM-025"
+  attributes:
+    engine_method: OUTCOME_ADJUSTMENT

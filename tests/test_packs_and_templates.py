@@ -30,7 +30,7 @@ REPORT = Path(__file__).resolve().parents[1] / "docs" / "alsp-commercial-models-
 
 
 def test_t032_shipped_packs_validate():
-    for p in ("base", "alsp"):
+    for p in ("base", "alsp", "consulting"):
         assert packs_mod.validate_pack(p) == []
 
 
@@ -90,6 +90,24 @@ def test_t029_template_round_trip(tid):
     assert rep["valid"], rep["errors"]
     r = calculate_periods(filled["engagement"], filled["scenario"])
     assert r["status"] == "ok", r["issues"]
+
+
+@pytest.mark.parametrize("tid", sorted(packs_mod.load_pack("consulting").templates))
+def test_t029_consulting_template_round_trip(tid):
+    t = get_template(tid, "consulting")
+    assert any(
+        e["code"] == "REQUIRED_FIELD" for e in validate_engagement(t["engagement"])["errors"]
+    )
+    filled = fill_template(t, t["examples"])
+    assert validate_engagement(filled["engagement"])["valid"]
+    assert calculate_periods(filled["engagement"], filled["scenario"])["status"] == "ok"
+
+
+def test_consulting_rules_fire(case):
+    out = check_commercial_constraints(case("h")["engagement"])
+    fired = {f["rule"] for f in out["rules_fired"]}
+    assert {"CONS-R-001", "CONS-R-003"} <= fired
+    assert "CONSULTING_OUTCOME_FEE_REVIEW" in {a["code"] for a in out["approvals_required"]}
 
 
 def test_describe_schema():

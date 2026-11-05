@@ -1,0 +1,29 @@
+scheme: pricing_models
+overlays:
+- id: PM-001
+  prevalence: UNVERIFIED
+  caveats: ["Consulting-sector prevalence is not evidenced in the source research."]
+- id: PM-003
+  prevalence: UNVERIFIED
+  caveats: ["Role-based rate cards are the usual basis for valuing consulting effort; prevalence is not evidenced in the source research."]
+- id: PM-006
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0049]
+  caveats: ["Fixed project fees transfer execution and overrun risk to the provider; define scope assumptions and change control."]
+- id: PM-017
+  prevalence: UNVERIFIED
+  caveats: ["Phase-by-phase pricing contains scope risk where early discovery is uncertain."]
+- id: PM-020
+  prevalence: UNVERIFIED
+  caveats: ["Consulting-sector prevalence is not evidenced in the source research."]
+- id: PM-024
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006, CLM-B-0041]
+  caveats: ["Outcome pricing is less transferable where provider controllability is weak."]
+- id: PM-025
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006]
+- id: PM-026
+  prevalence: UNVERIFIED
+  claims: [CLM-B-0006, CLM-B-0036]
+  caveats: ["Baseline and attribution disputes can be severe; agree both before work starts."]

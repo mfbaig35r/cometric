@@ -11,11 +11,11 @@ Version `0.1.0.dev0`, built against `COMETRIC_SPEC_v0.2.md`. Date: 2026-11-03.
 | M2 compare, optimize, MCP | Done | Dominance comparison, structure search, risk exposure, stdio MCP with discovery, five core templates. |
 | M3 knowledge packs | Done, with evidence caveats | `base` and `alsp` packs validate; 29 of 39 sources verified (see Evidence). |
 | M4 release | Partly done | Stateless HTTP transport built and tested. Public on GitHub under Apache-2.0 with CI; not on PyPI; no practitioner reconciliation yet. |
-| M5 consulting pack | Not started | Needs core realization (standard rates) and outcome pricing first. |
+| M5 consulting pack | Done (pending reconciliation) | Core realization and `OUTCOME_ADJUSTMENT` built; `consulting` pack with 5 templates and illustrative Case H. Exit criterion still needs one real engagement reconciled. |
 
 ## Tests
 
-90 tests (`uv run pytest`): T-001 to T-035 plus property tests. T-033 (every report identifier captured) runs only when the private research report is present in `docs/`; it is gitignored and not shipped.
+110 tests (`uv run pytest`): T-001 to T-035, outcome and realization tests, and property tests. T-033 (every report identifier captured) runs only when the private research report is present in `docs/`; it is gitignored and not shipped.
 
 ## Clarifications made while implementing
 
@@ -37,6 +37,8 @@ These are decisions the specification left implicit. Each is a candidate for the
 14. **Break-even** brackets whole driver units and interpolates linearly between them; the result says so.
 15. **Proration policy** may be declared on either version at a mid-month boundary.
 16. **HTTP transport** keeps DNS-rebinding protection on. Allowed hosts default to localhost; set `COMETRIC_ALLOWED_HOSTS` for a deployment.
+17. **Realization** uses an engagement-level `delivery_plan.standard_rate_card` and worked hours per role (`<worked_hours_source>.<role>`), not a per-component standard schedule, so it applies to fixed and outcome fees as well as time.
+18. **Outcome fees** (`OUTCOME_ADJUSTMENT`) support SHARE, SUCCESS, and PERCENT_OF_OUTCOME, are charged at the end of their accumulation period only (v1), apply attribution to SHARE and PERCENT forms, and always raise an approval requirement until `approval_reference` is recorded.
 
 ## Evidence
 
@@ -56,12 +58,12 @@ Many report statements cite sources that are not in its evidence register. The p
 
 ## Not built yet
 
-- Consulting pack (M5) and its core prerequisites: standard-rate realization and `OUTCOME_ADJUSTMENT`.
 - Health indicators that need actuals over time (CHI-004, 005, 006, 008, 009, 010, 012).
 - Pack-level engagement templates (the report's three offers and automation structures exist as concepts only).
 - SKOS / JSON-LD export of packs.
 - Monte Carlo and Margin-at-Risk.
 - `COST_PLUS`, `GRADUATED_BLOCK` tiers, component-level version coexistence.
+- Cumulative recognition for outcome fees.
 
 ## Open questions
 

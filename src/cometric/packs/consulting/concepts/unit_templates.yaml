@@ -1,0 +1,36 @@
+scheme: unit_templates
+title: Consulting unit templates
+concepts:
+- id: consultant_day
+  label: Consultant day
+  definition: One day of consultant effort.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    kind: HOURS
+    counting_rule_prompt: How many hours make a billable day, and are partial days rounded?
+    acceptance_rule_prompt: Who approves timesheets, and within what period?
+    complexity_note: Day rates often differ by seniority; record a rate per role.
+- id: accepted_deliverable
+  label: Accepted deliverable
+  definition: One deliverable accepted by the client against defined acceptance criteria.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: Which deliverables are in scope, and what makes each one distinct?
+    acceptance_rule_prompt: What are the acceptance criteria, who signs off, and what happens on silence?
+    complexity_note: Acceptance ambiguity is a common source of disputes on deliverable-based fees.
+- id: workstream_month
+  label: Workstream month
+  definition: One month of an agreed workstream with a defined team and objective.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  source_ref: "pack:consulting"
+  attributes:
+    kind: COUNT
+    counting_rule_prompt: What team and scope define one workstream?
+    acceptance_rule_prompt: What evidence closes out a workstream month?
+    complexity_note: Equivalent to a capacity reservation if the team is held for the client.

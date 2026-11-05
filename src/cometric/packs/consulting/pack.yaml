@@ -1,0 +1,11 @@
+id: consulting
+version: 0.1.0
+title: Consulting and advisory services
+description: >
+  Consulting-sector pack: service categories, unit templates, provider types, realization and
+  staffing concepts, review rules for outcome-based fees, and engagement templates for role-based
+  time and materials, capped time and materials, phased fixed fees, hours-drawdown retainers, and
+  fixed fees with a success component.
+license: Apache-2.0
+core_version: ">=0.1,<0.2"
+extends: base

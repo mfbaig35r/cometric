@@ -72,7 +72,8 @@ The HTTP transport keeps no session state, answers `GET /mcp` with 405, keeps DN
 | Concept | Meaning |
 |---|---|
 | Engagement | Parties, units, services, effective-dated arrangement versions, delivery plan |
-| Fee component | One charge computed by one method: fixed recurring, time, dedicated resource, unit output, weighted unit output, allowance plus overage, fixed project |
+| Fee component | One charge computed by one method: fixed recurring, time, dedicated resource, unit output, weighted unit output, allowance plus overage, fixed project, outcome adjustment (gain-share, success fee, percent of outcome) |
+| Realization | Contractual fee against hours worked at a standard rate card, with write-down and effective billing rate |
 | Accumulation period | Allowances, minimums, tiers, and capacity accumulate over a declared period independent of the monthly grain |
 | Evaluation order | Resolve, measure, consume allowances, price, collar, discount, minimum, performance, cap |
 | Cost policy | Maps each cost category to exactly one margin layer; `reference` is shipped and must be named |
@@ -82,11 +83,12 @@ The HTTP transport keeps no session state, answers `GET /mcp` with 405, keeps DN
 
 ## Packs
 
-Packs are YAML only, with no executable code. `base` holds domain-neutral commercial knowledge: billing bases, 34 pricing models, 61 levers, 16 commercial dimensions, 49 metrics and indicators, cost categories, compatibility and reasoning rules, selection heuristics, mechanisms, and negotiation exchanges. `alsp` extends it for alternative legal services with service categories, unit templates, provider types, regulatory review rules, sector prevalence overlays, and evidence.
+Packs are YAML only, with no executable code. `base` holds domain-neutral commercial knowledge: billing bases, 34 pricing models, 61 levers, 16 commercial dimensions, 49 metrics and indicators, cost categories, compatibility and reasoning rules, selection heuristics, mechanisms, and negotiation exchanges. `alsp` extends it for alternative legal services with service categories, unit templates, provider types, regulatory review rules, sector prevalence overlays, and evidence. `consulting` extends it for advisory work with realization and staffing concepts, outcome-fee review rules, and five templates: role-based time and materials, capped time and materials, phased fixed fee, hours-drawdown retainer, and fixed fee plus success fee.
 
 ```bash
 cometric packs
 cometric validate-pack alsp
+cometric validate-pack consulting
 ```
 
 ## Development

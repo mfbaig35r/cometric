@@ -18,6 +18,7 @@ from .enums import (
     ClassificationAuthority,
     CommitmentKind,
     CostBehavior,
+    OutcomeForm,
     Recognition,
     ShortfallRule,
     TierMethod,
@@ -369,6 +370,8 @@ def _validate_version(e: Engagement, v, vp, units, services, tables, issues: Iss
         elif m == CalculationMethod.DEDICATED_RESOURCE:
             if not c.resources:
                 issues.error("METHOD_FIELDS", "DEDICATED_RESOURCE needs resources", cp("resources"))
+        elif m == CalculationMethod.OUTCOME_ADJUSTMENT:
+            _validate_outcome(c, cp, issues)
         elif m == CalculationMethod.FIXED_PROJECT:
             if c.project_fee is None or not c.payment_schedule:
                 issues.error(
@@ -599,6 +602,70 @@ def _validate_version(e: Engagement, v, vp, units, services, tables, issues: Iss
             "UNBOUNDED_FIXED_FEE_VOLUME",
             "fixed recurring fee with no allowance, overage, cap, collar, or capacity limit: provider volume exposure is unbounded",
             vp("components"),
+        )
+
+
+def _validate_outcome(c, cp, issues: Issues) -> None:
+    """Outcome fees need a measurable metric, baseline or target, attribution, cap, and approval."""
+    o = c.outcome
+    if o is None:
+        issues.error("METHOD_FIELDS", "OUTCOME_ADJUSTMENT needs an outcome block", cp("outcome"))
+        return
+    for name in ("share_percent", "attribution_percent"):
+        v = getattr(o, name)
+        if v is not None and not (0 < v <= 1):
+            issues.error("RANGE", f"{name} must be in (0, 1]", cp("outcome", name))
+    if o.form == OutcomeForm.SHARE:
+        if o.baseline is None:
+            issues.error(
+                "BASELINE_REQUIRED",
+                "a shared-savings or gain-share fee needs an agreed baseline",
+                cp("outcome", "baseline"),
+            )
+        if o.share_percent is None:
+            issues.error(
+                "METHOD_FIELDS", "SHARE needs share_percent", cp("outcome", "share_percent")
+            )
+    if o.form == OutcomeForm.SUCCESS and (o.target is None or o.success_amount is None):
+        issues.error(
+            "METHOD_FIELDS", "SUCCESS needs target and success_amount", cp("outcome", "target")
+        )
+    if o.form == OutcomeForm.PERCENT_OF_OUTCOME and o.share_percent is None:
+        issues.error(
+            "METHOD_FIELDS",
+            "PERCENT_OF_OUTCOME needs share_percent",
+            cp("outcome", "share_percent"),
+        )
+    if (
+        o.form in (OutcomeForm.SHARE, OutcomeForm.PERCENT_OF_OUTCOME)
+        and o.attribution_percent is None
+    ):
+        issues.error(
+            "ATTRIBUTION_REQUIRED",
+            "declare the share of the result attributed to the provider",
+            cp("outcome", "attribution_percent"),
+        )
+    if o.attribution_percent is not None and not o.attribution_method:
+        issues.warn(
+            "ATTRIBUTION_METHOD",
+            "describe how attribution is measured",
+            cp("outcome", "attribution_method"),
+        )
+    if o.recognition != Recognition.PERIOD_END:
+        issues.error(
+            "RECOGNITION_PERIOD",
+            "outcome fees are measured and charged at period end in v1",
+            cp("outcome", "recognition"),
+        )
+    if o.cap_amount is None and o.form != OutcomeForm.SUCCESS:
+        issues.approval(
+            "UNCAPPED_OUTCOME_FEE", "outcome fee has no cap_amount", cp("outcome", "cap_amount")
+        )
+    if not o.approval_reference:
+        issues.approval(
+            "OUTCOME_FEE_APPROVAL",
+            "outcome-based consideration needs recorded human approval and, for legal or regulated work, legal review",
+            cp("outcome", "approval_reference"),
         )
 
 

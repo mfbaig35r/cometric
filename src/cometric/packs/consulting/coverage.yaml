@@ -1,0 +1,17 @@
+areas:
+- area: Consulting pricing-model prevalence
+  strength: WEAK
+  readiness: Concepts only; the source research does not evidence consulting-sector prevalence.
+  source_ref: "pack:consulting"
+- area: Realization and write-down definitions
+  strength: MODERATE
+  readiness: Ready as definitions; conventions vary by organization.
+  source_ref: "report:FM-028"
+- area: Outcome and success fees
+  strength: MODERATE
+  readiness: Prerequisites ready (baseline, attribution, cap, approval); evidence is mostly from adjacent outsourcing.
+  source_ref: "report:PM-024"
+- area: Consulting margin and rate benchmarks
+  strength: WEAK
+  readiness: Do not formalize without internal data.
+  source_ref: "pack:consulting"

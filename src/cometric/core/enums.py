@@ -37,7 +37,7 @@ class CalculationMethod(StrEnum):
     OUTCOME_ADJUSTMENT = "OUTCOME_ADJUSTMENT"
 
 
-POST_V1_METHODS = {CalculationMethod.COST_PLUS, CalculationMethod.OUTCOME_ADJUSTMENT}
+POST_V1_METHODS = {CalculationMethod.COST_PLUS}
 
 METHOD_BASES: dict[CalculationMethod, set[BillingBasis]] = {
     CalculationMethod.FIXED_RECURRING: {BillingBasis.FIXED, BillingBasis.CAPACITY},
@@ -260,3 +260,14 @@ class Prevalence(StrEnum):
     DOCUMENTED_SPECIALIZED = "DOCUMENTED_SPECIALIZED"
     EMERGING = "EMERGING"
     UNVERIFIED = "UNVERIFIED"
+
+
+class OutcomeForm(StrEnum):
+    SHARE = "SHARE"  # share of measured improvement against a baseline
+    SUCCESS = "SUCCESS"  # fixed amount when a target is met
+    PERCENT_OF_OUTCOME = "PERCENT_OF_OUTCOME"  # share of a measured result such as a recovery
+
+
+class OutcomeDirection(StrEnum):
+    HIGHER_IS_BETTER = "HIGHER_IS_BETTER"
+    LOWER_IS_BETTER = "LOWER_IS_BETTER"

@@ -17,6 +17,8 @@ from .enums import (
     CostBehavior,
     CostPeriod,
     MarginLayer,
+    OutcomeDirection,
+    OutcomeForm,
     ProrationPolicy,
     Recognition,
     RoundingLevel,
@@ -310,6 +312,18 @@ class Calculator:
         if self.issues.has_errors:
             raise CometricError(self.issues)
         self.quantities = quantities
+        plan = self.e.delivery_plan
+        if plan is not None and plan.standard_rate_card:
+            base = (plan.worked_hours_source or "").removeprefix("scenario.")
+            if not base or not any(
+                quantities.has(f"{base}.{rr.role}") for rr in plan.standard_rate_card
+            ):
+                self.issues.error(
+                    "MISSING_ASSUMPTION",
+                    f"a standard rate card needs worked hours as scenario quantities {base or '<worked_hours_source>'}.<role>",
+                    pointer("engagement", "delivery_plan", "worked_hours_source"),
+                )
+                raise CometricError(self.issues)
         self._derive_demand_hours(quantities)
         per_month: dict[Month, dict] = {}
         for m in self.months:
@@ -357,6 +371,7 @@ class Calculator:
             share = (lambda q, _i=idx: self._split(q, priced, _i)) if split else (lambda q: q)
             self._price_segment(m, seg, share, quantities, first=idx == 0)
         self._period_end_overage(m, last_version)
+        self._period_end_outcome(m, last_version)
         self._adjustments(m, last_version)
 
     def _split(self, q: Decimal, priced: list[Segment], idx: int) -> Decimal:
@@ -479,6 +494,12 @@ class Calculator:
                     self.pending_overage[c.id] = self.pending_overage.get(c.id, ZERO) + excess
                     continue
                 self._price_overage(m, c, sched, excess, elig_before + in_allow, **kw)
+            elif meth == CalculationMethod.OUTCOME_ADJUSTMENT:
+                o = c.outcome
+                measured = share(self.qty(quantities, o.metric, m, path + "/outcome/metric"))
+                self.acc_add(
+                    ("outcome", c.id, period_key(o.accumulation_period, m, self.anchor)), measured
+                )
             else:
                 self.issues.error(
                     "METHOD_NOT_SUPPORTED", f"{meth} is post-v1", path + "/calculation_method"
@@ -528,6 +549,44 @@ class Calculator:
             amt = incremental(elig_position, excess, sched.tiers, sched.tier_method)
             formula = f"{excess} excess units priced at eligible positions {elig_position}..{elig_position + excess}"
         self.fee(m, 4, c.id, c.id, "overage", amt, formula, quantity=excess, unit=c.unit, **kw)
+
+    def _period_end_outcome(self, m: Month, v: ArrangementVersion) -> None:
+        """Outcome fees are measured over the accumulation period and charged at its end."""
+        for c in v.components:
+            if c.calculation_method != CalculationMethod.OUTCOME_ADJUSTMENT or c.outcome is None:
+                continue
+            o = c.outcome
+            if period_truncated(o.accumulation_period, m, self.anchor, self.last, self.eng_last):
+                self.issues.warn(
+                    "TRUE_UP_OUTSIDE_HORIZON",
+                    f"outcome fee for {c.id} is measured after the horizon",
+                )
+                continue
+            if not is_period_end(o.accumulation_period, m, self.anchor, self.eng_last):
+                continue
+            total = self.acc.get(
+                ("outcome", c.id, period_key(o.accumulation_period, m, self.anchor)), ZERO
+            )
+            higher = o.direction == OutcomeDirection.HIGHER_IS_BETTER
+            if o.form == OutcomeForm.SHARE:
+                improvement = (total - o.baseline) if higher else (o.baseline - total)
+                fee = o.share_percent * o.attribution_percent * max(ZERO, improvement)
+                formula = f"{o.share_percent} share x {o.attribution_percent} attributed x max(0, improvement {improvement} vs baseline {o.baseline})"
+            elif o.form == OutcomeForm.SUCCESS:
+                met = total >= o.target if higher else total <= o.target
+                fee = o.success_amount if met else ZERO
+                formula = f"success amount {o.success_amount} if {o.metric} {total} {'>=' if higher else '<='} target {o.target}: {'met' if met else 'not met'}"
+            else:
+                fee = o.share_percent * o.attribution_percent * max(ZERO, total)
+                formula = (
+                    f"{o.share_percent} x {o.attribution_percent} attributed x outcome {total}"
+                )
+            if o.cap_amount is not None and fee > o.cap_amount:
+                formula += f"; capped at {o.cap_amount}"
+                fee = o.cap_amount
+            self.fee(
+                m, 4, c.id, c.id, "outcome", fee, formula, quantity=total, unit=o.unit, version=v.id
+            )
 
     def _period_end_overage(self, m: Month, v: ArrangementVersion) -> None:
         schedules = {r.id: r for r in v.rate_schedules}
@@ -1054,10 +1113,14 @@ class Calculator:
         incurred_adj = sum(
             ((c.incurred - c.rounded) for c in costs if c.incurred is not None), ZERO
         )
+        worked, standard = self._worked_and_standard(m)
         return {
             "period": ps,
             "contractual_fee": tot(f.rounded for f in fees),
             "overage_fee": tot(f.rounded for f in fees if f.kind == "overage"),
+            "outcome_fee": tot(f.rounded for f in fees if f.kind == "outcome"),
+            "worked_hours": worked,
+            "standard_value": standard,
             "commitment_shortfall": tot(f.rounded for f in fees if f.kind == "minimum_shortfall"),
             "layers": layers,
             "unavoidable_direct_cost": tot(
@@ -1066,6 +1129,20 @@ class Calculator:
             "by_category": _group(costs),
             "incurred_adjustment": incurred_adj,
         }
+
+    def _worked_and_standard(self, m: Month) -> tuple[Decimal, Decimal]:
+        """Hours worked and their value at standard rates (spec 3.4 realization prerequisite)."""
+        plan = self.e.delivery_plan
+        if plan is None or not plan.standard_rate_card or not plan.worked_hours_source:
+            return ZERO, ZERO
+        base = plan.worked_hours_source.removeprefix("scenario.")
+        hours = ZERO
+        value = ZERO
+        for rr in plan.standard_rate_card:
+            h = self.quantities.get(f"{base}.{rr.role}", m) or ZERO
+            hours += h
+            value += h * rr.rate
+        return hours, quantize(value, self.scale, str(self.money.rounding_mode))
 
     def _aggregate(self, per_month: dict[Month, dict], quantities: Quantities) -> dict:
         periods = []
@@ -1246,7 +1323,10 @@ def _metrics(t: dict) -> dict:
         "period": t.get("period"),
         "contractual_fee": fee,
         "overage_fee": t["overage_fee"],
+        "outcome_fee": t["outcome_fee"],
         "commitment_shortfall": t["commitment_shortfall"],
+        "worked_hours": t["worked_hours"],
+        "standard_value": t["standard_value"],
         "direct_delivery_cost": direct,
         "engagement_avoidable_cost": avoid,
         "portfolio_shared_cost": L[MarginLayer.PORTFOLIO_SHARED],
@@ -1267,6 +1347,9 @@ def _metrics(t: dict) -> dict:
 SUM_KEYS = [
     "contractual_fee",
     "overage_fee",
+    "outcome_fee",
+    "worked_hours",
+    "standard_value",
     "commitment_shortfall",
     "direct_delivery_cost",
     "engagement_avoidable_cost",
@@ -1288,6 +1371,15 @@ def _sum_metrics(periods: list[dict]) -> dict:
     out["costs_by_category"] = cats
     out["gross_margin"] = safe_ratio(out["gross_profit"], out["contractual_fee"])
     out["contribution_margin"] = safe_ratio(out["contribution_profit"], out["contractual_fee"])
+    if out["standard_value"] > 0:
+        out["realization"] = safe_ratio(out["contractual_fee"], out["standard_value"])
+        out["write_down"] = out["standard_value"] - out["contractual_fee"]
+    else:
+        out["realization"] = None
+        out["write_down"] = None
+    out["effective_billing_rate"] = (
+        safe_ratio(out["contractual_fee"], out["worked_hours"]) if out["worked_hours"] > 0 else None
+    )
     out["months"] = len(periods)
     if out["contractual_fee"] == 0:
         out["margin_note"] = "Contractual fee is zero, so margins are undefined."

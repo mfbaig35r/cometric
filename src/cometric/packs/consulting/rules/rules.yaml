@@ -1,0 +1,45 @@
+rules:
+- id: CONS-R-001
+  kind: constraint
+  evaluable: true
+  when:
+    path: "arrangement_versions[*].components[*].billing_basis"
+    equals: OUTCOME
+  emit:
+    code: CONSULTING_OUTCOME_FEE_REVIEW
+    severity: APPROVAL_REQUIRED
+    message: Outcome-based consideration needs review; independence and professional rules may restrict contingent fees for some advisory work, for example where the provider also gives assurance to the client.
+    claims: [CLM-B-0041]
+  explanation: Outcome fees need a baseline, attribution, cap, and approval, and some advisory relationships restrict contingent compensation.
+  evidence_class: C_INFERENCE
+  source_ref: "report:RULE-003"
+- id: CONS-R-002
+  kind: reasoning
+  evaluable: true
+  when:
+    all:
+    - {path: "arrangement_versions[*].components[*].calculation_method", equals: TIME}
+    - {path: "services[*].service_category", in: [STRATEGY, TRANSFORMATION]}
+    - not: {path: "arrangement_versions[*].adjustments[*].type", equals: CAP}
+  emit:
+    code: CONSULTING_UNCAPPED_TIME_ON_UNCERTAIN_SCOPE
+    severity: INFO
+    message: Uncapped time and materials on strategy or transformation scope leaves the client with duration risk; consider a cap or a phased fixed fee.
+    claims: []
+  explanation: Selection heuristic for highly uncertain scope; an inference, not a rule.
+  evidence_class: C_INFERENCE
+  source_ref: "report:decision-matrix"
+- id: CONS-R-003
+  kind: reasoning
+  evaluable: true
+  when:
+    path: "arrangement_versions[*].components[*].calculation_method"
+    equals: FIXED_PROJECT
+  emit:
+    code: CONSULTING_FIXED_FEE_SCOPE_CONTROL
+    severity: INFO
+    message: A fixed project fee needs scope assumptions, exclusions, and change-order triggers to bound the provider's effort risk.
+    claims: [CLM-B-0049]
+  explanation: Fixed project fees transfer execution and overrun risk to the provider.
+  evidence_class: C_INFERENCE
+  source_ref: "report:PM-006"

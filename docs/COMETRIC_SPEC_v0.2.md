@@ -210,10 +210,10 @@ A domain pack is a versioned bundle of vocabulary, rules, and data for one secto
 
 **Consulting pack prerequisites in the core.** The consulting pack depends on two core capabilities that v1 does not include:
 
-- **Realization.** TIME components gain an optional `standard_rate_schedule` so the engine can value worked hours at standard rates and report realization (billed value / standard value [R, FM-028]) and write-downs.
-- **Outcome pricing.** `OUTCOME_ADJUSTMENT` (§4.1) is promoted from post-v1, with its baseline, attribution, cap, and approval requirements, so the success-fee template can be computed.
+- **Realization.** The delivery plan gains a `standard_rate_card` and a `worked_hours_source`, so the engine can value hours worked at standard rates under any billing method and report realization (contractual fee / standard value [R, FM-028]), write-down, and effective billing rate. Built.
+- **Outcome pricing.** `OUTCOME_ADJUSTMENT` (§4.1) is promoted from post-v1, with its baseline, attribution, cap, and approval requirements, so the success-fee template can be computed. Built.
 
-Until both exist, the consulting pack ships without the success-fee template and without realization metrics.
+Both prerequisites are built; the consulting pack ships all five templates.
 
 Rules:
 
@@ -357,7 +357,7 @@ Each fee component MUST declare: `id`, `service_id`, `calculation_method`, `bill
 | `ALLOWANCE_OVERAGE` | fee_t = rate_schedule(excess_quantity_t), where excess comes from the referenced entitlement ledger (§4.4) | entitlement_id, rate_schedule | OUTPUT, USAGE | Yes |
 | `FIXED_PROJECT` | fee_t = payment_schedule_t, Σ_t payment_schedule_t = project_fee | project_fee, payment schedule (dates or events) | FIXED | Yes |
 | `COST_PLUS` | fee_t = eligible_cost_t × (1 + markup) | cost eligibility policy, markup | COST | Post-v1 |
-| `OUTCOME_ADJUSTMENT` | fee_t = base_t + incentive(outcome_t) | baseline, attribution, cap, approval | OUTCOME | Post-v1 |
+| `OUTCOME_ADJUSTMENT` | fee_t = incentive(outcome over the accumulation period), charged at period end; the base is a separate component | outcome terms: form (SHARE, SUCCESS, PERCENT_OF_OUTCOME), metric, baseline or target, attribution, cap, approval | OUTCOME | Yes (consulting prerequisite) |
 
 `ALLOWANCE_OVERAGE` components MUST list their entitlement in `depends_on`. The entitlement's `granted_by` names the component that grants it (typically a `FIXED_RECURRING` base).
 

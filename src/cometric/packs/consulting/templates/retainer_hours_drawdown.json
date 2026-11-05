@@ -1,0 +1,144 @@
+{
+  "template_id": "retainer_hours_drawdown",
+  "description": "Monthly retainer including hours, unused hours rolling forward up to a ceiling, extra hours at an hourly rate.",
+  "pack": "consulting",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CONSULTING-RETAINER",
+    "name": "<required>",
+    "currency": "<required>",
+    "start_date": "<required>",
+    "end_date": "<required>",
+    "unit_definitions": [
+      {
+        "code": "hour",
+        "kind": "HOURS",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      }
+    ],
+    "services": [
+      {
+        "id": "service",
+        "unit_definition_id": "hour",
+        "service_category": "<required>"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "<required>",
+        "components": [
+          {
+            "id": "retainer",
+            "service_id": "service",
+            "calculation_method": "FIXED_RECURRING",
+            "billing_basis": "FIXED",
+            "charge_cadence": "MONTHLY",
+            "currency": "<required>",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "fixed_amount": "<required>"
+          },
+          {
+            "id": "extra_hours",
+            "service_id": "service",
+            "calculation_method": "ALLOWANCE_OVERAGE",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "MONTHLY",
+            "currency": "<required>",
+            "quantity_source": "scenario.hours",
+            "unit": "hour",
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [
+              "included_hours"
+            ],
+            "entitlement_id": "included_hours",
+            "rate_schedule_id": "hourly"
+          }
+        ],
+        "entitlements": [
+          {
+            "id": "included_hours",
+            "granted_by": "retainer",
+            "unit": "hour",
+            "included_quantity": "<required>",
+            "accumulation_period": "MONTH",
+            "overage_recognition": "PER_SEGMENT",
+            "rollover": {
+              "policy": "NEXT_PERIOD",
+              "ceiling": "<required>"
+            }
+          }
+        ],
+        "rate_schedules": [
+          {
+            "id": "hourly",
+            "currency": "<required>",
+            "unit": "hour",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "MONTH",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "<required>"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "delivery_plan": {
+      "cost_components": []
+    },
+    "packs": [
+      {
+        "id": "consulting"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "base",
+    "assumptions": [
+      {
+        "name": "hours",
+        "value": "<required>",
+        "unit": "hour",
+        "time_period": "<required>",
+        "origin": "<required>"
+      }
+    ]
+  },
+  "examples": {
+    "/engagement/name": "Contract review managed service",
+    "/engagement/currency": "USD",
+    "/engagement/start_date": "2027-01-01",
+    "/engagement/end_date": "2027-12-31",
+    "/engagement/unit_definitions/0/counting_rule": "One completed review of one eligible contract",
+    "/engagement/unit_definitions/0/acceptance_rule": "Accepted on client sign-off",
+    "/engagement/arrangement_versions/0/effective_from": "2027-01-01",
+    "/scenario/assumptions/0/time_period": "TERM",
+    "/scenario/assumptions/0/origin": "ESTIMATED",
+    "/engagement/services/0/service_category": "ADVISORY_RETAINER",
+    "/engagement/arrangement_versions/0/components/0/currency": "USD",
+    "/engagement/arrangement_versions/0/components/0/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/components/1/currency": "USD",
+    "/engagement/arrangement_versions/0/components/1/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/rate_schedules/0/currency": "USD",
+    "/engagement/arrangement_versions/0/components/0/fixed_amount": "20000",
+    "/engagement/arrangement_versions/0/entitlements/0/included_quantity": "80",
+    "/engagement/arrangement_versions/0/entitlements/0/rollover/ceiling": "20",
+    "/engagement/arrangement_versions/0/rate_schedules/0/tiers/0/rate": "275",
+    "/scenario/assumptions/0/value": "1100"
+  }
+}

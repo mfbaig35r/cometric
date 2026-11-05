@@ -548,7 +548,7 @@ def test_unbounded_fixed_fee_needs_approval():
 
 
 def test_post_v1_method_rejected():
-    e = engagement([comp("x", "OUTCOME_ADJUSTMENT", "OUTCOME")])
+    e = engagement([comp("x", "COST_PLUS", "COST")])
     assert "METHOD_NOT_SUPPORTED" in [x["code"] for x in validate_engagement(e)["errors"]]
 
 

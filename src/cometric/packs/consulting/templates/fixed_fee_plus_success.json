@@ -1,0 +1,163 @@
+{
+  "template_id": "fixed_fee_plus_success",
+  "description": "Fixed project fee plus a success fee when a measured result meets its target; needs a target, attribution method, and recorded approval.",
+  "pack": "consulting",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "CONSULTING-FIXED-SUCCESS",
+    "name": "<required>",
+    "currency": "<required>",
+    "start_date": "<required>",
+    "end_date": "<required>",
+    "unit_definitions": [
+      {
+        "code": "accepted_deliverable",
+        "kind": "COUNT",
+        "counting_rule": "<required>",
+        "acceptance_rule": "<required>"
+      }
+    ],
+    "services": [
+      {
+        "id": "service",
+        "unit_definition_id": "accepted_deliverable",
+        "service_category": "<required>"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "<required>",
+        "components": [
+          {
+            "id": "project",
+            "service_id": "service",
+            "calculation_method": "FIXED_PROJECT",
+            "billing_basis": "FIXED",
+            "charge_cadence": "EVENT",
+            "currency": "<required>",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "project_fee": "<required>",
+            "payment_schedule": [
+              {
+                "month": "<required>",
+                "amount": "<required>"
+              }
+            ]
+          },
+          {
+            "id": "success",
+            "service_id": "service",
+            "calculation_method": "OUTCOME_ADJUSTMENT",
+            "billing_basis": "OUTCOME",
+            "charge_cadence": "EVENT",
+            "currency": "<required>",
+            "quantity_source": null,
+            "unit": null,
+            "effective_period": {
+              "from": "<required>",
+              "to": null
+            },
+            "depends_on": [],
+            "outcome": {
+              "form": "SUCCESS",
+              "metric": "annual_savings",
+              "unit": "USD",
+              "direction": "HIGHER_IS_BETTER",
+              "target": "<required>",
+              "success_amount": "<required>",
+              "attribution_method": "<required>",
+              "accumulation_period": "YEAR",
+              "recognition": "PERIOD_END",
+              "approval_reference": null
+            }
+          }
+        ],
+        "entitlements": [],
+        "rate_schedules": []
+      }
+    ],
+    "delivery_plan": {
+      "standard_rate_card": [
+        {
+          "role": "partner",
+          "rate": "<required>"
+        },
+        {
+          "role": "consultant",
+          "rate": "<required>"
+        }
+      ],
+      "worked_hours_source": "worked",
+      "cost_components": []
+    },
+    "packs": [
+      {
+        "id": "consulting"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "base",
+    "assumptions": [
+      {
+        "name": "annual_savings",
+        "value": "<required>",
+        "unit": "USD",
+        "time_period": "<required>",
+        "origin": "<required>"
+      },
+      {
+        "name": "worked.partner",
+        "value": "<required>",
+        "unit": "hours",
+        "time_period": "<required>",
+        "origin": "<required>"
+      },
+      {
+        "name": "worked.consultant",
+        "value": "<required>",
+        "unit": "hours",
+        "time_period": "<required>",
+        "origin": "<required>"
+      }
+    ]
+  },
+  "examples": {
+    "/engagement/name": "Contract review managed service",
+    "/engagement/currency": "USD",
+    "/engagement/start_date": "2027-01-01",
+    "/engagement/end_date": "2027-12-31",
+    "/engagement/unit_definitions/0/counting_rule": "One completed review of one eligible contract",
+    "/engagement/unit_definitions/0/acceptance_rule": "Accepted on client sign-off",
+    "/engagement/arrangement_versions/0/effective_from": "2027-01-01",
+    "/scenario/assumptions/0/time_period": "TERM",
+    "/scenario/assumptions/0/origin": "ESTIMATED",
+    "/engagement/services/0/service_category": "OPERATIONS_IMPROVEMENT",
+    "/engagement/arrangement_versions/0/components/0/currency": "USD",
+    "/engagement/arrangement_versions/0/components/0/effective_period/from": "2027-01-01",
+    "/engagement/arrangement_versions/0/components/1/currency": "USD",
+    "/engagement/arrangement_versions/0/components/1/effective_period/from": "2027-01-01",
+    "/scenario/assumptions/1/time_period": "TERM",
+    "/scenario/assumptions/1/origin": "ESTIMATED",
+    "/scenario/assumptions/1/value": "300",
+    "/scenario/assumptions/2/time_period": "TERM",
+    "/scenario/assumptions/2/origin": "ESTIMATED",
+    "/scenario/assumptions/2/value": "1700",
+    "/engagement/arrangement_versions/0/components/0/project_fee": "400000",
+    "/engagement/arrangement_versions/0/components/0/payment_schedule/0/month": "2027-06",
+    "/engagement/arrangement_versions/0/components/0/payment_schedule/0/amount": "400000",
+    "/engagement/arrangement_versions/0/components/1/outcome/target": "2000000",
+    "/engagement/arrangement_versions/0/components/1/outcome/success_amount": "100000",
+    "/engagement/arrangement_versions/0/components/1/outcome/attribution_method": "Savings measured against the agreed spend baseline by the client's finance team",
+    "/scenario/assumptions/0/value": "2400000",
+    "/engagement/delivery_plan/standard_rate_card/0/rate": "400",
+    "/engagement/delivery_plan/standard_rate_card/1/rate": "175"
+  }
+}
