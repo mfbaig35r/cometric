@@ -168,7 +168,7 @@ sources:
   url: https://www.fca.org.uk/firms/outsourcing-and-operational-resilience
   publication_date: '2026-07-14'
   date_unknown: false
-  retrieved_date: '2026-11-03'
+  retrieved_date: '2026-11-04'
   source_type: REGULATORY_GUIDANCE
   applicability:
     jurisdictions:
@@ -177,14 +177,14 @@ sources:
     - financial_services
     provider_types: []
     date_range: null
-  verified: false
+  verified: true
   notes:
   - Register class A UK regulatory. Financial-services outsourcing; updated July 14, 2026.
   verification:
-    verdict: PARTIAL
-    retrieved_date: '2026-11-03'
-    note: The July 2026 update concerns critical third parties; the data-security and lifecycle-governance
-      emphasis was not found.
+    verdict: VERIFIED_AFTER_CORRECTION
+    retrieved_date: '2026-11-04'
+    note: 'Claim narrowed: firms remain responsible for third-party risk; the July 2026 update concerns
+      critical third parties.'
 - id: E033
   title: Reporting material third-party arrangements rules (UK financial conduct regulator)
   url: https://www.fca.org.uk/firms/outsourcing-and-operational-resilience/reporting-material-third-party-arrangements
@@ -211,7 +211,7 @@ sources:
   url: https://www.bankofengland.co.uk/prudential-regulation/publication/2021/march/outsourcing-and-third-party-risk-management-ss
   publication_date: March 2026
   date_unknown: false
-  retrieved_date: '2026-11-03'
+  retrieved_date: '2026-11-04'
   source_type: REGULATORY_GUIDANCE
   applicability:
     jurisdictions:
@@ -220,14 +220,15 @@ sources:
     - financial_services
     provider_types: []
     date_range: null
-  verified: false
+  verified: true
   notes:
   - Register class A. Outsourcing, audit and exit obligations; version effective March 18, 2027.
   verification:
-    verdict: PARTIAL
-    retrieved_date: '2026-11-03'
-    note: Confirms publication on 18 March 2026 and effect from 18 March 2027; audit and access-rights
-      detail was not on the landing page.
+    verdict: VERIFIED
+    retrieved_date: '2026-11-04'
+    note: 'Verified against the full statement (PS7/26 version): effective 18 March 2027; Chapter 8 access,
+      audit, and information rights; Chapter 10 business continuity and exit plans.'
+    verified_at: https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/supervisory-statement/2026/ss221-march-2026-update.pdf
 - id: E035
   title: AI contracts and third parties audit toolkit (UK data protection regulator)
   url: https://ico.org.uk/for-organisations/advice-and-services/audits/data-protection-audit-framework/toolkits/artificial-intelligence/contracts-and-third-parties/

@@ -3,370 +3,378 @@ claims:
   statement: Publisher research estimated the 2023 ALSP market at $28.5 billion.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E001, E002]
+  sources:
+  - E002
+  - E001
   caveats: []
   source_ref: report:landscape
 - id: CLM-A-0002
-  statement: >-
-    The same research estimated an 18% compound annual growth rate for the ALSP market
-    from 2021 to 2023, based on research conducted during 2024.
+  statement: The same research estimated an 18% compound annual growth rate for the ALSP market from 2021
+    to 2023.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E001, E002]
+  sources:
+  - E002
+  - E001
   caveats: []
   source_ref: report:landscape
 - id: CLM-A-0003
-  statement: >-
-    The reported ALSP service mix included software, legal advice, consultancy or
-    advisory, flexible resource and legal support.
+  statement: The reported ALSP service mix included software, legal advice, consultancy or advisory, flexible
+    resource and legal support.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E001]
-  caveats: []
+  sources:
+  - E001
+  caveats:
+  - Detail is in the full report behind a registration form and was not checked on 2026-11-03.
   source_ref: report:landscape
 - id: CLM-A-0004
-  statement: >-
-    Corporate law departments increasingly use ALSPs for high-volume work, specialized
-    expertise, flexible resourcing, managed services and technology-enabled delivery.
+  statement: Corporate law departments increasingly use ALSPs for high-volume work, specialized expertise,
+    flexible resourcing, managed services and technology-enabled delivery.
   classification: B_CORROBORATED
   prevalence: ESTABLISHED_COMMON
-  sources: [E001]
-  caveats: []
+  sources:
+  - E001
+  caveats:
+  - Detail is in the full report behind a registration form and was not checked on 2026-11-03.
   source_ref: report:landscape
 - id: CLM-A-0005
-  statement: >-
-    A 2025 corporate legal-department benchmarking report treats fee structures as
-    heterogeneous across practice areas.
+  statement: A 2025 corporate legal-department benchmarking report treats fee structures as heterogeneous
+    across practice areas.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E003]
+  sources:
+  - E003
   caveats: []
   source_ref: report:executive-synthesis
 - id: CLM-A-0006
-  statement: >-
-    2025 corporate law-department research found 77% of external legal spend billed
-    hourly, 18% through value-based arrangements and 5% through monthly or annual
-    retainers; these figures concern law-firm spend and are not ALSP prevalence benchmarks.
+  statement: 2025 corporate law-department research found 77% of external legal spend billed hourly, 18%
+    through value-based arrangements and 5% through monthly or annual retainers; these figures concern
+    law-firm spend and are not ALSP prevalence benchmarks.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E004]
+  sources:
+  - E004
   caveats: []
   source_ref: report:executive-synthesis
 - id: CLM-A-0007
-  statement: >-
-    A 2025 legal-operations survey reported that 83% of responding departments expected
-    demand to increase, 30% already used AI and 54% planned adoption within two years;
-    the figures describe the surveyed population only.
+  statement: A 2025 legal-operations survey reported that 83% of responding departments expected demand
+    to increase, 30% already used AI and 54% planned adoption within two years; the figures describe the
+    surveyed population only.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E005]
+  sources:
+  - E005
   caveats: []
   source_ref: report:landscape
 - id: CLM-A-0008
-  statement: >-
-    A 2025 legal-operations survey found ALSP use expanding beyond eDiscovery into
-    contract management and legal staffing.
+  statement: A 2025 legal-operations survey found ALSP use expanding beyond eDiscovery into contract management
+    and legal staffing.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E005]
+  sources:
+  - E005
   caveats: []
   source_ref: report:landscape
 - id: CLM-A-0009
-  statement: >-
-    At least one flexible-talent provider publicly documents hourly, daily, weekly
-    and monthly resource pricing.
+  statement: At least one flexible-talent provider publicly documents hourly, daily, weekly and monthly
+    resource pricing.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E006]
+  sources:
+  - E006
   caveats: []
   source_ref: report:PM-001
 - id: CLM-A-0010
-  statement: >-
-    At least one flexible-talent provider offers reserved engagements at a flat fee
-    for full-time or part-time capacity, alongside variable hourly arrangements.
+  statement: At least one flexible-talent provider offers reserved engagements at a flat fee for full-time
+    or part-time capacity, alongside variable hourly arrangements.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E006, E007]
+  sources:
+  - E006
+  - E007
   caveats: []
   source_ref: report:PM-004
 - id: CLM-A-0011
-  statement: >-
-    One flexible-talent provider's published FAQ describes typical US hourly rates
-    of $150 to $350; this is a provider-specific marketing disclosure, not a market
-    benchmark.
+  statement: One flexible-talent provider's published FAQ describes typical US hourly rates of $150 to
+    $350; this is a provider-specific marketing disclosure, not a market benchmark.
   classification: A_DIRECT
   prevalence: UNVERIFIED
-  sources: [E006]
+  sources:
+  - E006
   caveats: []
   source_ref: report:landscape
 - id: CLM-A-0012
-  statement: >-
-    At least one flexible-talent provider differentiates rates by experience, skill,
-    geography and practice.
+  statement: At least one flexible-talent provider differentiates rates by experience, skill, geography
+    and practice.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E006]
+  sources:
+  - E006
   caveats: []
   source_ref: report:PM-003
 - id: CLM-A-0013
-  statement: >-
-    At least one flexible-talent provider states that it is not a law firm and that
-    its legal talent must be appropriately supervised where applicable.
+  statement: At least one flexible-talent provider states that it is not a law firm and that its legal
+    talent must be appropriately supervised where applicable.
   classification: A_DIRECT
   prevalence: UNVERIFIED
-  sources: [E007]
+  sources:
+  - E007
   caveats: []
   source_ref: report:provider-type-matrix
 - id: CLM-A-0014
-  statement: >-
-    At least one flexible-talent provider offered an AI-enabled legal-talent configuration
-    with a separate $250 per user monthly technology charge.
+  statement: At least one flexible-talent provider offered an AI-enabled legal-talent configuration with
+    a separate $250 monthly technology charge.
   classification: A_DIRECT
   prevalence: EMERGING
-  sources: [E008]
-  caveats: []
+  sources:
+  - E008
+  caveats:
+  - The source states a monthly fee; it does not state that the fee is per user.
   source_ref: report:ai-pricing-architecture
 - id: CLM-A-0015
-  statement: >-
-    At least one legal managed-services provider distinguishes managed legal services
-    from alternative legal resourcing and states that managed-service pricing commonly
-    uses fixed, volume-based or output-referenced approaches.
+  statement: At least one legal managed-services provider distinguishes managed legal services from alternative
+    legal resourcing and states that managed-service pricing commonly uses fixed, volume-based or output-referenced
+    approaches.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E009]
+  sources:
+  - E009
   caveats: []
   source_ref: report:PM-007
 - id: CLM-A-0016
-  statement: >-
-    A published legal-sector case study documents tiered flat-fee subpoena services
-    for one client.
+  statement: A published legal-sector case study documents tiered flat-fee subpoena services for one client.
   classification: A_DIRECT
   prevalence: DOCUMENTED_SPECIALIZED
-  sources: [E010]
+  sources:
+  - E010
   caveats: []
   source_ref: report:landscape
 - id: CLM-A-0017
-  statement: >-
-    At least one legal managed-services provider distinguishes dedicated-team managed
-    services from pooled consumption pricing based on documents, hours and matters.
+  statement: At least one legal managed-services provider distinguishes dedicated-team managed services
+    from pooled consumption pricing based on documents, hours and matters.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E011]
+  sources:
+  - E011
   caveats: []
   source_ref: report:PM-004
 - id: CLM-A-0018
-  statement: >-
-    A 2026 legal-sector procurement guide recommends comparing per-contract, per-hour,
-    subscription or FTE-equivalent and hybrid models.
+  statement: A 2026 legal-sector procurement guide recommends comparing per-contract, per-hour, subscription
+    or FTE-equivalent and hybrid models.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E012]
+  sources:
+  - E012
   caveats: []
   source_ref: report:PM-012
 - id: CLM-A-0019
-  statement: >-
-    The same procurement guide calls attention to base-price inclusions, change-order
-    triggers and SLA remedies.
+  statement: The same procurement guide calls attention to base-price inclusions, change-order triggers
+    and SLA remedies.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E012]
+  sources:
+  - E012
   caveats: []
   source_ref: report:CL-D10
 - id: CLM-A-0020
-  statement: >-
-    At least one legal managed-services provider describes a multi-year review credit
-    subscription exchangeable across services.
+  statement: At least one legal managed-services provider describes a multi-year review credit subscription
+    exchangeable across services.
   classification: A_DIRECT
   prevalence: DOCUMENTED_SPECIALIZED
-  sources: [E013]
+  sources:
+  - E013
   caveats: []
   source_ref: report:PM-031
 - id: CLM-A-0021
-  statement: >-
-    At least one eDiscovery provider publicly documents all-inclusive fixed cost per
-    document and per custodian pricing.
+  statement: At least one eDiscovery provider publicly documents all-inclusive fixed cost per document
+    and per custodian pricing.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E014]
+  sources:
+  - E014
   caveats: []
   source_ref: report:PM-012
 - id: CLM-A-0022
-  statement: >-
-    At least one eDiscovery provider documented a fixed monthly managed-services subscription
+  statement: At least one eDiscovery provider documented a fixed monthly managed-services subscription
     (2016).
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E015]
+  sources:
+  - E015
   caveats: []
   source_ref: report:PM-010
 - id: CLM-A-0023
-  statement: >-
-    At least one legal-services provider offers a fixed fee for responsive-document
-    coding within an AI-enabled review offering that still involves attorneys and
-    expert workflow management.
+  statement: At least one legal-services provider offers a fixed fee for responsive-document coding within
+    an AI-enabled review offering that still involves attorneys and expert workflow management.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E016]
+  sources:
+  - E016
   caveats: []
   source_ref: report:PM-028
 - id: CLM-A-0024
-  statement: >-
-    A corporate legal-department association handbook documents fixed fees, collars,
-    success fees, value-based billing and performance holdbacks.
+  statement: A corporate legal-department association handbook documents fixed fees, collars, success
+    fees, value-based billing and performance holdbacks.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E018]
+  sources:
+  - E018
   caveats: []
   source_ref: report:PM-033
 - id: CLM-A-0025
-  statement: >-
-    Corporate legal-department association materials document fee caps, savings sharing,
-    retainers for continuing expertise and phase-by-phase repricing structures.
+  statement: Corporate legal-department association materials document fee caps, savings sharing, retainers
+    for continuing expertise and phase-by-phase repricing structures.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E019]
+  sources:
+  - E019
   caveats: []
   source_ref: report:PM-017
 - id: CLM-A-0026
-  statement: >-
-    Corporate legal-department association materials document preferred-provider practices.
+  statement: Corporate legal-department association materials document preferred-provider practices.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E019]
+  sources:
+  - E019
   caveats: []
   source_ref: report:CL-R12
 - id: CLM-A-0027
-  statement: >-
-    US Model Rule 1.5 requires reasonable legal fees and regulates contingent fees,
-    prohibiting them in certain domestic-relations matters and in criminal defense.
+  statement: US Model Rule 1.5 requires reasonable legal fees and regulates contingent fees, prohibiting
+    them in certain domestic-relations matters and in criminal defense.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E028]
+  sources:
+  - E028
   caveats: []
   source_ref: report:RULE-012
 - id: CLM-A-0028
-  statement: >-
-    US Model Rule 5.4 generally bars lawyers and law firms from sharing legal fees
-    with nonlawyers and restricts nonlawyer ownership and control.
+  statement: US Model Rule 5.4 generally bars lawyers and law firms from sharing legal fees with nonlawyers
+    and restricts nonlawyer ownership and control.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E029]
+  sources:
+  - E029
   caveats: []
   source_ref: report:us-constraints
 - id: CLM-A-0029
-  statement: >-
-    State adoption of the US model rules of professional conduct varies materially,
-    so the model rules are not uniform state law.
+  statement: State adoption of the US model rules of professional conduct varies materially, so the model
+    rules are not uniform state law.
   classification: A_DIRECT
   prevalence: UNVERIFIED
-  sources: [E028, E029]
+  sources:
+  - E028
+  - E029
   caveats: []
   source_ref: report:us-constraints
 - id: CLM-A-0030
-  statement: >-
-    The Legal Services Act 2007 permits licensed bodies, commonly described as alternative
-    business structures, subject to authorization rules.
+  statement: The Legal Services Act 2007 permits licensed bodies, commonly described as alternative business
+    structures, subject to authorization rules.
   classification: A_DIRECT
   prevalence: UNVERIFIED
-  sources: [E031]
+  sources:
+  - E031
   caveats: []
   source_ref: report:uk-constraints
 - id: CLM-A-0031
-  statement: >-
-    Solicitor conduct rules in England and Wales require disclosure of relevant fee-sharing
-    arrangements and financial interests in referrals.
+  statement: Solicitor conduct rules in England and Wales require disclosure of relevant fee-sharing arrangements
+    and financial interests in referrals.
   classification: A_DIRECT
   prevalence: UNVERIFIED
-  sources: [E030]
+  sources:
+  - E030
   caveats: []
   source_ref: report:uk-constraints
 - id: CLM-A-0032
-  statement: >-
-    In October 2026 an eDiscovery provider explicitly contrasted per-gigabyte and
-    per-prompt pricing with predictable outcome pricing for AI-enabled work.
+  statement: In October 2026 an eDiscovery provider explicitly contrasted per-gigabyte and per-prompt
+    pricing with predictable outcome pricing for AI-enabled work.
   classification: A_DIRECT
   prevalence: EMERGING
-  sources: [E037]
+  sources:
+  - E037
   caveats: []
   source_ref: report:PM-030
 - id: CLM-A-0033
-  statement: >-
-    Law-firm KPI definitions describe realization as billable work that gets invoiced;
-    other organizations use revenue or labor-value variants.
+  statement: Law-firm KPI definitions describe realization as billable work that gets invoiced; other
+    organizations use revenue or labor-value variants.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E039]
+  sources:
+  - E039
   caveats: []
   source_ref: report:FM-028
 - id: CLM-A-0034
-  statement: >-
-    2026 legal-market research documents increasing integration of ALSPs into the
-    legal market.
+  statement: 2026 legal-market research documents increasing integration of ALSPs into the legal market.
   classification: B_CORROBORATED
   prevalence: UNVERIFIED
-  sources: [E040]
-  caveats: []
+  sources:
+  - E040
+  caveats:
+  - Not found on the publicly accessible landing page. Detail is in the full report behind a registration
+    form and was not checked on 2026-11-03.
   source_ref: report:evidence-register
 - id: CLM-A-0035
-  statement: >-
-    Hourly and resource pricing, fixed fees, subscriptions, per-unit charges and hybrids
-    coexist among ALSPs.
+  statement: Hourly and resource pricing, fixed fees, subscriptions, per-unit charges and hybrids coexist
+    among ALSPs.
   classification: B_CORROBORATED
   prevalence: ESTABLISHED_COMMON
-  sources: [E006, E009, E011, E014, E015, E016]
+  sources:
+  - E006
+  - E009
+  - E011
+  - E014
+  - E015
+  - E016
   caveats: []
   source_ref: report:executive-synthesis
 - id: CLM-A-0036
-  statement: >-
-    Public evidence does not support the proposition that ALSPs have converged on
-    a single new pricing paradigm.
+  statement: Public evidence does not support the proposition that ALSPs have converged on a single new
+    pricing paradigm.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
-  sources: [E006, E009, E011]
+  sources:
+  - E006
+  - E009
+  - E011
   caveats: []
   source_ref: report:executive-synthesis
 - id: CLM-A-0037
-  statement: >-
-    Flexible-resource and eDiscovery providers disclose substantially more public
-    pricing detail than large bespoke managed-services providers.
+  statement: Flexible-resource and eDiscovery providers disclose substantially more public pricing detail
+    than large bespoke managed-services providers.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
   sources: []
   caveats: []
   source_ref: report:methodology
 - id: CLM-A-0038
-  statement: >-
-    Public ALSP evidence is stronger for types of fee arrangement than for commercial
-    details; providers rarely disclose minimum commitments, floors, collars, margin
-    targets, overage rates, escalation formulas or risk-premium methodology.
+  statement: Public ALSP evidence is stronger for types of fee arrangement than for commercial details;
+    providers rarely disclose minimum commitments, floors, collars, margin targets, overage rates, escalation
+    formulas or risk-premium methodology.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
   sources: []
   caveats: []
   source_ref: report:research-gaps
 - id: CLM-A-0039
-  statement: >-
-    There is limited public evidence on actual ALSP gross margins or cost structures,
-    so public pricing cannot support an external industry target margin.
+  statement: There is limited public evidence on actual ALSP gross margins or cost structures, so public
+    pricing cannot support an external industry target margin.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
   sources: []
   caveats: []
   source_ref: report:research-gaps
 - id: CLM-A-0040
-  statement: >-
-    Client-savings claims in ALSP case studies often do not reveal whether transition,
-    internal governance, technology licenses, retained oversight or exit costs were
-    included, so they cannot be converted into market benchmarks.
+  statement: Client-savings claims in ALSP case studies often do not reveal whether transition, internal
+    governance, technology licenses, retained oversight or exit costs were included, so they cannot be
+    converted into market benchmarks.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
   sources: []
   caveats: []
   source_ref: report:research-gaps
 - id: CLM-A-0041
-  statement: >-
-    No public longitudinal dataset was found connecting specific pricing structures
-    to ALSP renewal rates.
+  statement: No public longitudinal dataset was found connecting specific pricing structures to ALSP renewal
+    rates.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
   sources: []
@@ -376,56 +384,61 @@ claims:
   statement: Legal AI delivery commonly retains both human and technology components.
   classification: B_CORROBORATED
   prevalence: EMERGING
-  sources: [E008, E016]
+  sources:
+  - E008
+  - E016
   caveats: []
   source_ref: report:ai-economics
 - id: CLM-A-0043
   statement: Legal-sector providers publish fixed-fee project examples.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E010, E016]
+  sources:
+  - E010
+  - E016
   caveats: []
   source_ref: report:PM-006
 - id: CLM-A-0044
   statement: Legal-sector providers document fixed recurring managed-service fees.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E009, E015]
+  sources:
+  - E009
+  - E015
   caveats: []
   source_ref: report:PM-007
 - id: CLM-A-0045
-  statement: >-
-    At least one flexible-talent provider documents secondment and reserved or ad
-    hoc engagement models.
+  statement: At least one flexible-talent provider documents secondment and reserved or ad hoc engagement
+    models.
   classification: A_DIRECT
   prevalence: ESTABLISHED_COMMON
-  sources: [E007]
+  sources:
+  - E007
   caveats: []
   source_ref: report:PM-005
 - id: CLM-A-0046
-  statement: >-
-    AI pricing in legal services is evolving quickly; current examples include separate
-    technology fees, fixed AI-enabled outcomes and consumption alternatives, without
-    a converged standard architecture.
+  statement: AI pricing in legal services is evolving quickly; current examples include separate technology
+    fees, fixed AI-enabled outcomes and consumption alternatives, without a converged standard architecture.
   classification: C_INFERENCE
   prevalence: EMERGING
-  sources: [E008, E037]
+  sources:
+  - E008
+  - E037
   caveats: []
   source_ref: report:research-gaps
 - id: CLM-A-0047
-  statement: >-
-    Provider status is economically and ontologically material: a staffing provider,
-    regulated law firm, law-firm affiliate and technology vendor may face different
-    permissible scopes and compensation structures.
+  statement: 'Provider status is economically and ontologically material: a staffing provider, regulated
+    law firm, law-firm affiliate and technology vendor may face different permissible scopes and compensation
+    structures.'
   classification: C_INFERENCE
   prevalence: UNVERIFIED
-  sources: [E007]
+  sources:
+  - E007
   caveats: []
   source_ref: report:provider-type-matrix
 - id: CLM-A-0048
-  statement: >-
-    Legal-counsel review is required before treating any contingent, success-based,
-    fee-sharing, regulated-work or cross-border outsourcing structure as permissible.
+  statement: Legal-counsel review is required before treating any contingent, success-based, fee-sharing,
+    regulated-work or cross-border outsourcing structure as permissible.
   classification: C_INFERENCE
   prevalence: UNVERIFIED
   sources: []

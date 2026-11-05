@@ -153,7 +153,7 @@ sources:
   url: https://www.axiomlaw.com/hubfs/Content_Marketing/Bylined%20PDFS%20%28Media%29/GenAI%20in%20Action%20-%20Insights%20from%20Axiom%E2%80%99s%20Pilot_2.13.pdf
   publication_date: '2025'
   date_unknown: false
-  retrieved_date: '2026-11-03'
+  retrieved_date: '2026-11-04'
   source_type: PROVIDER_DISCLOSURE
   applicability:
     jurisdictions:
@@ -163,14 +163,14 @@ sources:
     provider_types:
     - FLEXIBLE_TALENT
     date_range: null
-  verified: false
+  verified: true
   notes:
   - Register class A, provider-specific and historically current. Separate $250 per month technology fee.
   verification:
-    verdict: PARTIAL
-    retrieved_date: '2026-11-03'
-    note: Confirms a separate monthly technology fee of $250; the page does not state that the fee is
-      per user.
+    verdict: VERIFIED_AFTER_CORRECTION
+    retrieved_date: '2026-11-04'
+    note: 'Claim narrowed to what the source states: a separate $250 monthly technology fee (no per-user
+      basis).'
 - id: E009
   title: Managed legal services versus alternative legal resourcing guide
   url: https://elevate.law/expertise/which-to-use-managed-legal-services-versus-alternative-legal-resourcing/
@@ -328,7 +328,7 @@ sources:
   url: https://unitedlex.com/litigation-and-investigations/litigation-rapid-review/
   publication_date: null
   date_unknown: true
-  retrieved_date: '2026-11-03'
+  retrieved_date: '2026-11-04'
   source_type: PROVIDER_DISCLOSURE
   applicability:
     jurisdictions: []
@@ -337,15 +337,14 @@ sources:
     provider_types:
     - MANAGED_SERVICES_PROVIDER
     date_range: null
-  verified: false
+  verified: true
   notes:
   - Register class A. Fixed fee for responsive-document coding. Current page; no original publication
     date.
   verification:
-    verdict: PARTIAL
-    retrieved_date: '2026-11-03'
-    note: Confirms fixed-fee review; a guaranteed fixed fee is not described (the page offers a quality
-      guarantee instead).
+    verdict: VERIFIED_AFTER_CORRECTION
+    retrieved_date: '2026-11-04'
+    note: Supports fixed-fee review; no claim relies on a guaranteed fixed fee.
 - id: E018
   title: Handbook for value-based billing engagements
   url: https://www.acc.com/sites/default/files/2019-04/Handbook-for-Value-Based-Billing-Engagements.pdf

@@ -40,16 +40,17 @@ These are decisions the specification left implicit. Each is a candidate for the
 
 ## Evidence
 
-Each source was fetched on 2026-11-03 and checked against the claims the research uses it for. Results are recorded on the source records (`verification` field).
+Each source was fetched on 2026-11-03 and checked against the claims the research uses it for; a second pass on 2026-11-04 corrected claims and checked full documents. Results are recorded on each source record (`verification` field).
 
-| Verdict | Count |
-|---|---|
-| Verified | 26 |
-| Moved (verified at a new URL, which the record now uses) | 3 |
-| Partial (some claims not found on the page) | 6 |
-| Unreachable (publisher refused automated access) | 4 |
+| State | Count | Sources |
+|---|---|---|
+| Verified as cited | 27 | includes E034, checked against the full supervisory statement |
+| Verified at a new URL | 3 | E013, E019, E027 |
+| Verified after narrowing the claim to what the source says | 3 | E008 (no "per user"), E016 (no "guaranteed"), E032 (July 2026 update concerns critical third parties) |
+| Partial: detail behind a registration form | 2 | E001, E040; affected claims carry a caveat |
+| Not yet checked: publisher blocks automated access | 4 | E028, E029 (US model rules 1.5 and 5.4), E035 (UK data-protection AI contracting guidance), E039 (law-firm KPI definitions) |
 
-Partial: E001, E008, E016, E032, E034, E040. Unreachable: E028, E029, E035, E039. These remain `verified: false` until checked by hand.
+The six unverified sources stay `verified: false`. The four blocked ones need a manual check in a browser; the two registration-walled ones need someone to download the full reports.
 
 Many report statements cite sources that are not in its evidence register. The pack agent made no A or B claims for them; the affected concepts carry caveats, and the group is listed in `packs/base/excluded.yaml`.
 
