@@ -128,6 +128,9 @@ def main(argv: list[str] | None = None) -> int:
     lk.add_argument("query")
     lk.add_argument("--pack")
 
+    on = sub.add_parser("ontology", help="the ontology as Turtle, or write the full reference")
+    on.add_argument("--out", help="directory to write cometric.ttl and the Markdown reference into")
+
     tl = sub.add_parser("templates", help="list templates")
     tl.add_argument("--pack", help="list a pack's templates instead of the core ones")
     t = sub.add_parser("template", help="print a template")
@@ -232,6 +235,18 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if not problems else 1
     if a.cmd == "lookup":
         _print(packs.lookup_concept(a.query, a.pack))
+        return 0
+    if a.cmd == "ontology":
+        from .core import ontology
+
+        if not a.out:
+            sys.stdout.write(ontology.to_turtle())
+            return 0
+        out_dir = Path(a.out)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for name, text in ontology.ontology_files().items():
+            (out_dir / name).write_text(text)
+            print(out_dir / name)
         return 0
     if a.cmd == "templates":
         if a.pack:

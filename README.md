@@ -88,12 +88,21 @@ The HTTP transport keeps no session state, answers `GET /mcp` with 405, keeps DN
 
 ## Packs
 
-Packs are YAML only, with no executable code. `base` holds domain-neutral commercial knowledge: billing bases, 34 pricing models, 61 levers, 16 commercial dimensions, 49 metrics and indicators, cost categories, compatibility and reasoning rules, selection heuristics, mechanisms, and negotiation exchanges. `alsp` extends it for alternative legal services with service categories, unit templates, provider types, regulatory review rules, sector prevalence overlays, and evidence. `consulting` extends it for advisory work with realization and staffing concepts, outcome-fee review rules, and five templates: role-based time and materials, capped time and materials, phased fixed fee, hours-drawdown retainer, and fixed fee plus success fee.
+Packs are YAML only, with no executable code. `base` holds domain-neutral commercial knowledge: billing bases, 34 pricing models, 70 levers, 16 commercial dimensions, 49 metrics and indicators, cost categories, compatibility and reasoning rules, selection heuristics, mechanisms, and negotiation exchanges. `alsp` extends it for alternative legal services with service categories, unit templates, provider types, regulatory review rules, sector prevalence overlays, and evidence. `consulting` extends it for advisory work with realization and staffing concepts, outcome-fee review rules, and five templates: role-based time and materials, capped time and materials, phased fixed fee, hours-drawdown retainer, and fixed fee plus success fee.
 
 ```bash
 cometric packs
 cometric validate-pack alsp
 cometric validate-pack consulting
+```
+
+## Ontology
+
+The ontology is published in [`docs/ontology/`](docs/ontology/README.md): a class diagram of the core model, every field and controlled vocabulary, and a page per pack with each concept's definition, evidence class, relations, rules, claims, and sources. [`cometric.ttl`](docs/ontology/cometric.ttl) holds the same content in Turtle (OWL classes for the core model, SKOS concept schemes for vocabularies and packs), for Protégé, rdflib, or any SPARQL store. Both are generated from the package, and a test fails when the committed copy is out of date.
+
+```bash
+cometric ontology > cometric.ttl          # Turtle to stdout
+cometric ontology --out docs/ontology     # regenerate the reference
 ```
 
 ## Development
@@ -105,7 +114,7 @@ uv run ruff check src tests scripts && uv run ruff format --check src tests scri
 uv run python scripts/build_fixtures.py   # regenerate casebook fixtures
 ```
 
-The specification is `docs/COMETRIC_SPEC_v0.3.md` (normative for 0.1.0). Implementation status is in `docs/STATUS.md`; worked commercial patterns (tiered minimums, transition credits, partial billing, cost from hours, early termination) are in `docs/PATTERNS.md`; reconciling a real engagement is described in `docs/RECONCILIATION.md`.
+The specification is `docs/COMETRIC_SPEC_v0.3.md`; the ontology reference is `docs/ontology/`. Implementation status is in `docs/STATUS.md`; worked commercial patterns (tiered minimums, transition credits, partial billing, cost from hours, early termination) are in `docs/PATTERNS.md`; reconciling a real engagement is described in `docs/RECONCILIATION.md`.
 
 ## License
 

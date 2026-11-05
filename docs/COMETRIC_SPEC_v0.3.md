@@ -58,6 +58,7 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (0.2.0). |
 | V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (0.2.0). |
 | V3-30 | 6.1, 6.4, 9 | Counting rules through RATE assumptions and derived quantities; search parameters can set a named assumption (0.4.0). |
+| V3-31 | 3.7, 9 | Ontology export: Turtle (OWL and SKOS) and a Markdown reference generated from the models, core vocabularies, and packs; committed in `docs/ontology/` (unreleased). |
 | V3-28 | 4.4, 6.1, 9 | Termination scenarios: `termination_date` on a scenario, `termination_rule` on minimums, `termination_fee` on a version (0.3.0). |
 | V3-29 | 3.4, 6.3, App. C | ALSP template `tiered_units_annual_minimum` and five worked patterns (`docs/PATTERNS.md`); "pending human review" defined (0.3.0). |
 | V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (0.3.0). |
@@ -338,6 +339,18 @@ The research report itself is not shipped as prose (§11, Q-3). It is decomposed
 - Knowledge records are advisory and explanatory. The engine computes only from core vocabulary, methods, and caller policies. It never reads selection heuristics, negotiation exchanges, mechanisms, or compatibility classes to compute, rank, or choose (P-03).
 - Every record keeps its evidence class. A class C or D record is always returned labeled as inference or proposal.
 - Capture is auditable: every report identifier, and every row of the unnumbered tables above, appears in a pack or in `packs/base/excluded.yaml` with a reason (T-033).
+
+### 3.7 Ontology export `[V3-31]`
+
+The ontology is a generated view of what the engine accepts, never a separate source of truth. `cometric ontology` emits it as Turtle:
+
+| Layer | Representation | Namespace |
+|---|---|---|
+| Core model (every class reachable from Engagement, Scenario, CostPolicy, TolerancePolicy) | `owl:Class`; each field an `owl:ObjectProperty` or `owl:DatatypeProperty` with domain, range, required, multiple, and default. Fields that hold another object's id are object properties marked `cm:referencedById`. | `cm:` |
+| Core vocabularies and the glossary | `skos:ConceptScheme` (also an `owl:Class`) with one `skos:Concept` per value | `cmv:` |
+| Packs | One `skos:ConceptScheme` per concept file; concepts carry `skos:broader`, `skos:related`, billing bases, methods, evidence class, prevalence, claims, and caveats. Overlays, rules, claims, and sources are `cm:Overlay`, `cm:Rule`, `cm:Claim`, `cm:Source`. | `pack-<id>:` |
+
+Concept ids are unique within a pack chain, not across packs, so a reference resolves through the referring pack's chain. `cometric ontology --out DIR` also writes a Markdown reference (class diagram, field tables, one page per pack). The copy in `docs/ontology/` is committed; a test regenerates it and fails on any difference, and fails on any reference to an undeclared resource.
 
 ## 4. Contract and fee semantics
 
@@ -1051,6 +1064,7 @@ The test suite MUST include:
 | T-044 | LLM-feedback fixes `[V3-26]` | Threshold discount and rebate: EXCESS_ONLY 3,175,000 and ENTIRE_SUBTOTAL 2,925,000 on a 3,250,000 gross with a 2,500,000 threshold; the excess discount starts in the crossing month; missing scope or period is an error with an example; several unit types give a null unit price with a warning, and `client_value_unit` with `+` sums them; bare-engagement candidates work and bad ones get a pointer; the constraint `op` alias works; no tool returns an unstructured error; every quickstart payload runs through the MCP server |
 | T-045 | Termination `[V3-28]` | PRORATE charges the shortfall against 150,000 x 181/365 at a 30 June termination; REMAINDER_DUE charges 90,000 for one year and 240,000 with a second year, and owes later years at a period-end termination; WAIVED charges none; the fee posts; quantities spread over the original term; unamortized transition is written off; a cut-short outcome fee is not charged; a missing rule, an out-of-range date, and a mid-month date without proration are errors |
 | T-046 | Patterns `[V3-29]` | Every pattern file matches figures computed by hand in `scripts/build_alsp.py`; the ALSP template round-trips |
+| T-048 | Ontology export `[V3-31]` | The Turtle parses; every pack concept, rule, claim, and source is typed; no reference points to an undeclared resource; every model field is a property; the README's example query returns rows; the committed `docs/ontology/` matches the generator |
 | T-047 | Counting rules `[V3-30]` | A RATE assumption applies each month; a derived billable quantity prices correctly; rounding is required for COUNT units and applied per month; bad expressions, unknown references, cycles, division by zero, negative results, and name clashes are errors with paths; search can vary an assumption; the counting-rules pattern matches its hand-computed fee |
 | T-042 | Reconciliation `[V3-24]` | Actuals equal to computed figures reconcile; a changed July invoice is reported at month 7 with the mechanism that priced it; the publishable summary contains no amounts, dates, or names; relative tolerance and unknown metrics are honored |
 
