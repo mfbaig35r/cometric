@@ -1,7 +1,8 @@
 # Pricing-model realizations for propose_structures (spec A7.1). Labels are pack assertions
 # (D_PROPOSED) with the meaning derive_risk_exposure uses: the provider is adverse when its
 # contribution falls, the client when its effective unit price rises. label_assumes states what
-# a label depends on in the figures.
+# a label depends on in the figures. A trade-off tagged with an axis is dropped when a lever
+# changes that axis's label.
 realizations:
 - id: PM-001
   kind: model
@@ -73,7 +74,8 @@ realizations:
     spend_variability: FIXED
     mix: PROVIDER
   tradeoffs:
-  - The client pays for the team whether or not volume arrives; volume above what the team can deliver needs a change.
+  - axis: volume_shortfall
+    text: The client pays for the team whether or not volume arrives; volume above what the team can deliver needs a change.
   evidence_class: D_PROPOSED
   source_ref: cometric:design
   fragment:
@@ -98,7 +100,8 @@ realizations:
     spend_variability: FIXED
     mix: PROVIDER
   tradeoffs:
-  - The client's spend is fixed; the provider absorbs any volume above expected unless the scope is bounded.
+  - axis: volume_excess
+    text: The client's spend is fixed; the provider absorbs any volume above expected unless the scope is bounded.
   evidence_class: D_PROPOSED
   source_ref: cometric:design
   fragment:
@@ -123,7 +126,8 @@ realizations:
     spend_variability: VARIABLE
     mix: CLIENT
   tradeoffs:
-  - The client pays only for what it uses; the provider carries its fixed cost if volume falls.
+  - axis: volume_shortfall
+    text: The client pays only for what it uses; the provider carries its fixed cost if volume falls.
   evidence_class: D_PROPOSED
   source_ref: cometric:design
   fragment:
@@ -223,7 +227,8 @@ realizations:
     spend_variability: VARIABLE
     mix: PROVIDER
   tradeoffs:
-  - The base fee buys an allowance the client pays for even if unused; volume above it is billed as overage.
+  - axis: volume_shortfall
+    text: The base fee buys an allowance the client pays for even if unused; volume above it is billed as overage.
   evidence_class: D_PROPOSED
   source_ref: cometric:design
   fragment:

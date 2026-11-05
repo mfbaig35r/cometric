@@ -722,7 +722,14 @@ def _candidate(
         if lever_names
         else ""
     )
-    tradeoffs = list(comp.model.data.get("tradeoffs") or [])
+    base_labels = comp.model.data.get("labels") or {}
+    tradeoffs = []
+    for t in comp.model.data.get("tradeoffs") or []:
+        if isinstance(t, dict):
+            if comp.labels.get(t.get("axis")) != base_labels.get(t.get("axis")):
+                continue  # a lever changed what this trade-off describes
+            t = t.get("text")
+        tradeoffs.append(t)
     for lv in comp.levers:
         tradeoffs += list(lv.data.get("tradeoffs") or [])
     if comp.labels.get("early_exit") == "PROVIDER":

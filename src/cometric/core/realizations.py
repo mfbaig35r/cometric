@@ -612,6 +612,9 @@ def check_realizations(pack: Pack) -> list[str]:
         keys.add(key)
         concept = str(r.get("concept") or key)
         kind = r.get("kind")
+        for t in r.get("tradeoffs") or []:
+            if isinstance(t, dict) and (t.get("axis") not in AXES or not t.get("text")):
+                problems.append(f"{where}: a tagged trade-off needs an axis in {AXES} and text")
         for ref in (r.get("mitigates") or []) + (r.get("mitigates_when_tiers") or []):
             if ref not in heuristics:
                 problems.append(f"{where}: mitigates unknown heuristic {ref!r}")

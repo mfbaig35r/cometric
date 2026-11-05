@@ -1,0 +1,295 @@
+{
+ "approval_state": "PENDING_HUMAN_REVIEW",
+ "candidates": [
+  {
+   "composition": {
+    "base_model": "base:PM-004",
+    "levers": []
+   },
+   "evidence": [
+    {
+     "claims": 3,
+     "class": "A_DIRECT",
+     "concept": "base:PM-004",
+     "in": "alsp",
+     "prevalence": "ESTABLISHED_COMMON",
+     "verified": 3
+    }
+   ],
+   "fits_priorities": [
+    "budget_certainty"
+   ],
+   "id": "PM-004",
+   "label": "Dedicated team priced per FTE",
+   "notes": [
+    "base:SEL-003 favors this for: Dedicated ongoing team required",
+    "base:SEL-008 (Strong client flexibility preference) cautions: Dedicated FTE or high minimum commitment"
+   ],
+   "requires_inputs": [
+    "number of FTE",
+    "rate per FTE-month"
+   ],
+   "risk_allocation": {
+    "early_exit": "PROVIDER",
+    "mix": "PROVIDER",
+    "spend_variability": "FIXED",
+    "volume_excess": "PROVIDER",
+    "volume_shortfall": "CLIENT"
+   },
+   "rules": [],
+   "similar_template": null,
+   "skeleton": null,
+   "tension_with_priorities": [
+    {
+     "note": "The client pays for capacity it does not use.",
+     "priority": "pay_for_use"
+    }
+   ],
+   "tradeoffs": [
+    "The client pays for the team whether or not volume arrives; volume above what the team can deliver needs a change.",
+    "Early exit strands the provider's cost; a termination fee (CL-P14) shifts it."
+   ]
+  },
+  {
+   "composition": {
+    "base_model": "base:PM-007",
+    "levers": []
+   },
+   "evidence": [
+    {
+     "claims": 4,
+     "class": "A_DIRECT",
+     "concept": "base:PM-007",
+     "in": "alsp",
+     "prevalence": "ESTABLISHED_COMMON",
+     "verified": 3
+    }
+   ],
+   "fits_priorities": [
+    "budget_certainty"
+   ],
+   "id": "PM-007",
+   "label": "Fixed-fee managed service",
+   "notes": [
+    "base:SEL-003 favors this for: Dedicated ongoing team required"
+   ],
+   "requires_inputs": [
+    "monthly fee"
+   ],
+   "risk_allocation": {
+    "early_exit": "PROVIDER",
+    "mix": "PROVIDER",
+    "spend_variability": "FIXED",
+    "volume_excess": "PROVIDER",
+    "volume_shortfall": "CLIENT"
+   },
+   "rules": [
+    {
+     "message": "A fixed fee has no overage or collar and no declared fixed scope; review whether demand is bounded.",
+     "rule": "base:RULE-005",
+     "severity": "WARNING"
+    },
+    {
+     "message": "fixed recurring fee with no allowance, overage, cap, collar, or capacity limit: provider volume exposure is unbounded",
+     "rule": "validation:UNBOUNDED_FIXED_FEE_VOLUME",
+     "severity": "APPROVAL_REQUIRED"
+    }
+   ],
+   "similar_template": null,
+   "skeleton": null,
+   "tension_with_priorities": [
+    {
+     "note": "The client pays for capacity it does not use.",
+     "priority": "pay_for_use"
+    }
+   ],
+   "tradeoffs": [
+    "The client's spend is fixed; the provider absorbs any volume above expected unless the scope is bounded.",
+    "Early exit strands the provider's cost; a termination fee (CL-P14) shifts it."
+   ]
+  },
+  {
+   "composition": {
+    "base_model": "base:PM-011",
+    "levers": [
+     "base:CL-R01",
+     "base:CL-V07"
+    ]
+   },
+   "evidence": [
+    {
+     "claims": 4,
+     "class": "A_DIRECT",
+     "concept": "base:PM-011",
+     "in": "alsp",
+     "prevalence": "ESTABLISHED_COMMON",
+     "verified": 3
+    },
+    {
+     "claims": 3,
+     "class": "B_CORROBORATED",
+     "concept": "base:CL-R01",
+     "flag": "WEAK",
+     "prevalence": "UNVERIFIED",
+     "verified": 2
+    },
+    {
+     "claims": 0,
+     "class": "C_INFERENCE",
+     "concept": "base:CL-V07",
+     "flag": "WEAK",
+     "prevalence": "UNVERIFIED",
+     "verified": 0
+    }
+   ],
+   "fits_priorities": [
+    "budget_certainty",
+    "pay_for_use"
+   ],
+   "id": "PM-011+CL-R01+CL-V07",
+   "label": "Per-unit pricing with minimum spend commitment and annual fee cap",
+   "label_assumes": [
+    "The minimum is below expected spend."
+   ],
+   "notes": [
+    "base:SEL-008 favors this for: Strong client flexibility preference"
+   ],
+   "requires_inputs": [
+    "unit rate (each tier)",
+    "minimum spend per contract year",
+    "what the minimum owes on early exit: PRORATE, REMAINDER_DUE, or WAIVED",
+    "fee cap per contract year"
+   ],
+   "risk_allocation": {
+    "early_exit": "PROVIDER",
+    "mix": "CLIENT",
+    "spend_variability": "BOUNDED",
+    "volume_excess": "PROVIDER",
+    "volume_shortfall": "SHARED"
+   },
+   "rules": [],
+   "similar_template": null,
+   "skeleton": null,
+   "tension_with_priorities": [],
+   "tradeoffs": [
+    "The provider is protected below the minimum; the client pays for unused volume up to it.",
+    "The client's annual spend cannot exceed the cap; volume above it is the provider's cost.",
+    "Early exit strands the provider's cost; a termination fee (CL-P14) shifts it."
+   ]
+  },
+  {
+   "composition": {
+    "base_model": "base:PM-014",
+    "levers": [
+     "base:CL-V07"
+    ]
+   },
+   "evidence": [
+    {
+     "claims": 2,
+     "class": "B_CORROBORATED",
+     "concept": "base:PM-014",
+     "in": "alsp",
+     "prevalence": "ESTABLISHED_COMMON",
+     "verified": 1
+    },
+    {
+     "claims": 0,
+     "class": "C_INFERENCE",
+     "concept": "base:CL-V07",
+     "flag": "WEAK",
+     "prevalence": "UNVERIFIED",
+     "verified": 0
+    }
+   ],
+   "fits_priorities": [
+    "budget_certainty",
+    "pay_for_use"
+   ],
+   "id": "PM-014+CL-V07",
+   "label": "Volume-banded unit pricing with annual fee cap",
+   "label_assumes": [
+    "Expected volume reaches the cheaper band."
+   ],
+   "notes": [],
+   "requires_inputs": [
+    "volume band boundary per contract year (each tier)",
+    "unit rate below the band boundary (each tier)",
+    "unit rate above the band boundary (each tier)",
+    "fee cap per contract year"
+   ],
+   "risk_allocation": {
+    "early_exit": "PROVIDER",
+    "mix": "CLIENT",
+    "spend_variability": "BOUNDED",
+    "volume_excess": "PROVIDER",
+    "volume_shortfall": "SHARED"
+   },
+   "rules": [],
+   "similar_template": null,
+   "skeleton": null,
+   "tension_with_priorities": [],
+   "tradeoffs": [
+    "The unit price falls as volume grows within the contract year; if volume falls, the client loses the cheaper band and the provider loses revenue.",
+    "The client's annual spend cannot exceed the cap; volume above it is the provider's cost.",
+    "Early exit strands the provider's cost; a termination fee (CL-P14) shifts it."
+   ]
+  }
+ ],
+ "common_inputs": [
+  "engagement name",
+  "currency (ISO code)",
+  "start date",
+  "end date",
+  "counting rule for each unit",
+  "acceptance rule for each unit",
+  "delivery team cost per month",
+  "delivery cost per unit",
+  "share of volume as a fraction (each tier)",
+  "early-exit date (term midpoint suggested)"
+ ],
+ "definitions": {
+  "early_exit": "Who absorbs stranded cost if the client leaves early.",
+  "evidence": "class A to D and prevalence as stored; WEAK when class C or D, UNVERIFIED, or no verified source.",
+  "mix": "Who absorbs a shift toward complex work.",
+  "scenario volumes": "Term totals: the profile's yearly figures times 24/12, rounded to whole units.",
+  "spend_variability": "How the client's spend moves with volume: FIXED, BOUNDED, or VARIABLE.",
+  "volume_excess": "Who absorbs volume above expected (PROVIDER works more for a fixed or capped fee; NONE_ADVERSE is paid per unit).",
+  "volume_shortfall": "Who absorbs volume below expected (CLIENT pays for unused capacity; PROVIDER keeps its cost; SHARED up to a limit)."
+ },
+ "excluded": [
+  {
+   "compositions": 15,
+   "example": "PM-011+CL-P12+CL-R01+CL-V08",
+   "reason": "A volume collar and a minimum commitment both protect the provider against a shortfall; keep one.",
+   "rule": "base:COMP-002"
+  },
+  {
+   "compositions": 3,
+   "example": "PM-011+CL-P14.fee+CL-P14.prorated+CL-R01",
+   "reason": "A termination fee and a prorated minimum are alternative early-exit terms.",
+   "rule": "base:COMP-004"
+  },
+  {
+   "compositions": 16,
+   "example": "PM-011",
+   "reason": "The provider accepts at most SHARED volume risk.",
+   "rule": "provider_constraints.max_volume_risk"
+  }
+ ],
+ "fingerprint": "sha256:4a5601c97908a0ae848036408335628b53120177d342a167524b4229af641c4a",
+ "levers_not_applicable": [],
+ "next_step": {
+  "note": "Expand the candidates to compare (options.expand), fill their requires_inputs and common_inputs, then run compare_arrangements on the skeleton scenarios.",
+  "tool": "propose_structures"
+ },
+ "order_note": "Candidates are grouped by who absorbs a volume shortfall, not ordered by preference.",
+ "record_type": "StructureProposal",
+ "status": "ok",
+ "warnings": [
+  {
+   "code": "LABELS_ARE_PROPOSED",
+   "message": "Risk labels are pack assertions (D_PROPOSED). Fill a skeleton and run derive_risk_exposure to check them."
+  }
+ ]
+}
