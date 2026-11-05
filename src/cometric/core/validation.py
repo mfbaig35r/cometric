@@ -306,18 +306,28 @@ def _validate_version(e: Engagement, v, vp, units, services, tables, issues: Iss
                 vp("rate_schedules", ri, "tier_method"),
             )
         if r.tier_method == TierMethod.ALL_UNITS:
+            by_threshold: dict = {}
             for cliff in all_units_cliffs(r.tiers):
-                lo, hi = cliff["band_lower"], cliff["band_upper_exclusive"]
-                lo_text = (
-                    f"from {lo} (inclusive)" if cliff["band_lower_inclusive"] else f"above {lo}"
+                by_threshold.setdefault(cliff["threshold"], []).append(cliff)
+            for threshold, cliffs in by_threshold.items():
+                bands = [
+                    {
+                        "lower": str(c["band_lower"]),
+                        "lower_inclusive": c["band_lower_inclusive"],
+                        "upper_exclusive": str(c["band_upper_exclusive"]),
+                    }
+                    for c in sorted(cliffs, key=lambda c: c["band_lower"])
+                ]
+                text = "; ".join(
+                    f"{'from' if b['lower_inclusive'] else 'above'} {b['lower']} to below {b['upper_exclusive']}"
+                    for b in bands
                 )
                 issues.warn(
                     "TIER_CLIFF",
-                    f"under ALL_UNITS, quantities {lo_text} and below {hi} cost more than {cliff['threshold']} units",
+                    f"under ALL_UNITS, these quantities cost more than {threshold} units: {text}",
                     vp("rate_schedules", ri, "tiers"),
-                    threshold=str(cliff["threshold"]),
-                    band=[str(lo), str(hi)],
-                    lower_inclusive=cliff["band_lower_inclusive"],
+                    threshold=str(threshold),
+                    bands=bands,
                 )
 
     for ci, c in enumerate(v.components):

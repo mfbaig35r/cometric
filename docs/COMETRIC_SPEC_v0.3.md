@@ -385,7 +385,7 @@ Tier rules:
 - Tiered overage (`ALLOWANCE_OVERAGE`) with `tier_scope = ALL_ELIGIBLE` must use `MARGINAL` tiers and non-`PERIOD_END` recognition in v1; other combinations fail with `UNSUPPORTED_COMBINATION`. `[V3-07]`
 - Tier calculations MUST be tested at `threshold - 1`, `threshold`, and `threshold + 1`.
 
-**ALL_UNITS cliff detection [D].** For each threshold *t* (rate *r_t*) and each earlier tier *i* with a higher rate *r_i*, every quantity *q* in tier *i* with *q × r_i > t × r_t* costs more than *t* units. The band is `(t × r_t / r_i, min(to_i, t))` within tier *i*, with an inclusive lower bound when the tier's own start already exceeds `t × r_t / r_i`. Comparing every earlier tier, not only the adjacent one, catches jumps across several tiers. `[V3-23]` Example: $10 below 1,000 and $9 from 1,000 gives 999 units = $9,990 and 1,000 units = $9,000; quantities 901 to 999 all cost more than 1,000. Validation MUST emit `TIER_CLIFF` with the band for each such threshold. The cliff is a property of the contract, not an error; the warning lets reviewers see the incentive it creates.
+**ALL_UNITS cliff detection [D].** For each threshold *t* (rate *r_t*) and each earlier tier *i* with a higher rate *r_i*, every quantity *q* in tier *i* with *q × r_i > t × r_t* costs more than *t* units. The band is `(t × r_t / r_i, min(to_i, t))` within tier *i*, with an inclusive lower bound when the tier's own start already exceeds `t × r_t / r_i`. Comparing every earlier tier, not only the adjacent one, catches jumps across several tiers. `[V3-23]` Example: $10 below 1,000 and $9 from 1,000 gives 999 units = $9,990 and 1,000 units = $9,000; quantities 901 to 999 all cost more than 1,000. Validation MUST emit one `TIER_CLIFF` per threshold, listing every band with its lower bound, whether that bound is inclusive, and its exclusive upper bound. The cliff is a property of the contract, not an error; the warning lets reviewers see the incentive it creates.
 
 The same tier machinery applies to tiered **cost** schedules (§5.2).
 
@@ -902,7 +902,7 @@ The CLI, Python API, and MCP server expose the same operations. Every operation 
 
 **Reconciliation** `[V3-24]`:
 
-- `reconcile(engagement, scenario, cost_policy, actuals, tolerance_absolute?, tolerance_relative?) -> reconciliation_result`. `actuals` holds recorded figures by month and for the term. Each compared figure passes within either tolerance. Failing monthly rows carry that month's fee line items. `publishable_summary` carries only metric, month number, relative difference, direction, and the mechanisms priced that month; no amounts, dates, or names.
+- `reconcile(engagement, scenario, cost_policy, actuals, tolerance_absolute?, tolerance_relative?) -> reconciliation_result`. `actuals` holds recorded figures by month and for the term, as decimal strings or integers. Each compared figure passes within either tolerance (both non-negative). Unknown metrics, malformed months, floats, nulls, and negative tolerances are errors with JSON Pointer paths, never silently skipped. A metric the engine did not compute (costs without a cost policy, realization without a rate card) is reported as not computed, never as zero. Status is `reconciled`, `discrepancies`, `infeasible` (the scenario breaches capacity, so matching figures do not reconcile it), `nothing_compared`, or `invalid`. Failing monthly rows carry that month's fee line items. The result carries its own fingerprint over the inputs, actuals, and tolerances, plus the underlying calculation's fingerprint. `publishable_summary` carries only metric, month of the engagement term (1 = first month of the engagement), relative difference, direction, and the mechanisms priced that month; no amounts, dates, or names.
 
 The MCP server exposes 18 tools: the operations above plus `describe_schema`, `list_packs`, `describe_pack`, `list_templates`, `get_template`, `list_vocabulary`, and `lookup_concept`; `reconcile` is the 18th. `[V3-17]`
 
@@ -989,7 +989,7 @@ The test suite MUST include:
 | T-014 | Margin versus markup | $75 cost, $100 price → 25% margin and 33.33% markup |
 | T-015 | Annual versus monthly | Annual totals equal the sum of monthly fees and costs |
 | T-016 | Casebook | Fixtures A to G reproduce the report's published results, and Case H its stated results, under Appendix C rules |
-| T-017 | ALL_UNITS cliff | $10 below 1,000 / $9 from 1,000 emits `TIER_CLIFF` with band (900, 1000) |
+| T-017 | ALL_UNITS cliff | $10 below 1,000 / $9 from 1,000 emits one `TIER_CLIFF` per threshold with bands [(900 exclusive, 1000)]; a three-tier schedule reports a band in each earlier tier, with an inclusive edge where needed |
 | T-018 | Proration | A version effective 2027-03-16 under `CALENDAR_DAYS` charges 15/31 and 16/31 of the two fixed amounts; omitting `proration_policy` fails validation |
 | T-019 | Fingerprint normalization | `"100000"` and `"100000.00"` inputs yield the same fingerprint; reordering components yields the same fingerprint |
 | T-020 | Dependency graph | A cycle in `depends_on` fails validation; an `ALLOWANCE_OVERAGE` component without its entitlement in `depends_on` fails validation |

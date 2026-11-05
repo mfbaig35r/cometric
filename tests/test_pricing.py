@@ -298,8 +298,38 @@ def test_t017_all_units_cliff_warning():
         ],
     )
     rep = validate_engagement(e)
-    cliff = next(w for w in rep["warnings"] if w["code"] == "TIER_CLIFF")
-    assert cliff["detail"]["band"] == ["900", "1000"]
+    cliffs = [w for w in rep["warnings"] if w["code"] == "TIER_CLIFF"]
+    assert len(cliffs) == 1
+    assert cliffs[0]["detail"]["bands"] == [
+        {"lower": "900", "lower_inclusive": False, "upper_exclusive": "1000"}
+    ]
+
+
+def test_tier_cliff_one_warning_per_threshold_across_tiers():
+    tiers = [
+        {"from": "0", "to": "2", "rate": "4"},
+        {"from": "2", "to": "3", "rate": "3"},
+        {"from": "3", "to": None, "rate": "0.1"},
+    ]
+    e = engagement(
+        [
+            comp(
+                "u", "UNIT_OUTPUT", "OUTPUT", quantity_source="q", unit="unit", rate_schedule_id="r"
+            )
+        ],
+        schedules=[schedule("r", tiers=tiers, method="ALL_UNITS")],
+    )
+    cliffs = {
+        w["detail"]["threshold"]: w["detail"]["bands"]
+        for w in validate_engagement(e)["warnings"]
+        if w["code"] == "TIER_CLIFF"
+    }
+    assert set(cliffs) == {"2", "3"}
+    # threshold 3 (price 0.3) is undercut by every quantity in both earlier tiers, inclusive of tier 2's edge
+    assert {(b["lower"], b["lower_inclusive"], b["upper_exclusive"]) for b in cliffs["3"]} == {
+        ("0.075", False, "2"),
+        ("2", True, "3"),
+    }
 
 
 def test_t018_proration_calendar_days():

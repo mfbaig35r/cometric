@@ -208,7 +208,14 @@ def main(argv: list[str] | None = None) -> int:
             a.tolerance_relative,
         )
         _print(
-            {k: out.get(k) for k in ("status", "compared", "discrepancies", "publishable_summary")}
+            {
+                k: out.get(k)
+                for k in ("status", "feasible", "compared", "discrepancies", "publishable_summary")
+            }
+            | {
+                "errors": out.get("issues", {}).get("errors", []),
+                "warnings": out.get("issues", {}).get("warnings", []),
+            }
             if a.summary_only
             else out
         )

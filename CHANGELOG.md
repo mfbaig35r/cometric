@@ -5,6 +5,8 @@
 - `reconcile`: compare computed figures with recorded actuals by month and term, with a publishable summary that carries no amounts, dates, or names (API, CLI, MCP tool). Guide in `docs/RECONCILIATION.md`.
 - Fix: ALL_UNITS cliff detection now reports bands across non-adjacent tiers, with an inclusive lower bound where a band starts at a tier edge. Found by property testing.
 - MCP resource `cometric://packs/{pack}/templates/{id}`; CLI `templates --pack` and `template --pack`.
+- `TIER_CLIFF` warnings: one per threshold with a `bands` list (lower, lower_inclusive, upper_exclusive), replacing the single `band` pair.
+- Fixed from code review of `reconcile`: uncalculated costs are reported as not computed instead of zero (decided once in the shared calculation step); invalid actuals and tolerances return issues instead of raising; infeasible scenarios never report `reconciled`; unknown metrics are errors; the result has its own fingerprint over actuals and tolerances; month numbers count from the engagement start; repeated scans removed.
 - Spec v0.3.
 
 ## 0.1.0 (2026-11-04)

@@ -11,8 +11,9 @@ from .engine import ENGINE_VERSION, CalculationResult, Calculator, effective_mon
 from .enums import RiskBearer
 from .fingerprint import fingerprint, to_jsonable
 from .issues import CometricError, Issues
-from .models import SCHEMA_VERSION, CostPolicy, Engagement, Scenario, TolerancePolicy
+from .models import MONTH_RE, SCHEMA_VERSION, CostPolicy, Engagement, Scenario, TolerancePolicy
 from .money import ZERO, safe_ratio, to_decimal
+from .periods import month_index, month_of, parse_month
 from .predicates import PredicateError, evaluate, leaves, resolve
 from .validation import (
     parse_cost_policy,
@@ -95,7 +96,28 @@ def run_calculation(
         result = Calculator(e, s, cp, issues).run()
     except CometricError as exc:
         return None, exc.issues, e, s, cp
+    _apply_costs_evaluated(result, e, cp, issues)
     return result, issues, e, s, cp
+
+
+def _apply_costs_evaluated(
+    result: CalculationResult, e: Engagement, cp: CostPolicy | None, issues: Issues
+) -> None:
+    """Costs that were not calculated are None, never zero (P-07), for every consumer."""
+    evaluated = (
+        cp is not None and e.delivery_plan is not None and bool(e.delivery_plan.cost_components)
+    )
+    result.extras["costs_evaluated"] = evaluated
+    if evaluated:
+        return
+    reason = (
+        "no cost_policy supplied"
+        if cp is None
+        else "the engagement has no delivery_plan cost section"
+    )
+    issues.info("COSTS_NOT_EVALUATED", f"margin and contribution metrics are unavailable: {reason}")
+    for block in [result.data["term"], *result.data["years"].values(), *result.data["periods"]]:
+        _blank_costs(block)
 
 
 def _blank_costs(block: dict) -> None:
@@ -123,20 +145,7 @@ def calculate_periods(
         return to_jsonable(out)
     assert e is not None and s is not None
     data = copy.deepcopy(result.data)
-    costs_evaluated = (
-        cp is not None and e.delivery_plan is not None and bool(e.delivery_plan.cost_components)
-    )
-    if not costs_evaluated:
-        reason = (
-            "no cost_policy supplied"
-            if cp is None
-            else "the engagement has no delivery_plan cost section"
-        )
-        issues.info(
-            "COSTS_NOT_EVALUATED", f"margin and contribution metrics are unavailable: {reason}"
-        )
-        for block in [data["term"], *data["years"].values(), *data["periods"]]:
-            _blank_costs(block)
+    costs_evaluated = result.extras["costs_evaluated"]
     out: dict[str, Any] = {
         "status": "ok" if result.feasible else "infeasible",
         "feasible": result.feasible,
@@ -855,88 +864,67 @@ def reconcile(
     engagement: Any,
     scenario: Any,
     cost_policy: Any,
-    actuals: dict,
+    actuals: Any,
     tolerance_absolute: Any = "0.01",
     tolerance_relative: Any = "0",
 ) -> dict:
     """Compare Cometric's figures with recorded actuals (spec 10, M6).
 
     `actuals` = {"periods": {"YYYY-MM": {metric: amount}}, "term": {metric: amount}}; any subset
-    of the reconcilable metrics. A difference passes when it is within the absolute tolerance or
-    the relative tolerance. The `publishable_summary` carries no amounts, dates, or names: only
-    metric, month number, relative difference, and the mechanisms priced that month.
+    of the reconcilable metrics, amounts as decimal strings or integers. A difference passes when
+    it is within the absolute tolerance or the relative tolerance. The `publishable_summary`
+    carries no amounts, dates, or names: only metric, month of the engagement term (1 = the
+    engagement's first month), relative difference, direction, and the mechanisms priced.
     """
-    tol_abs = to_decimal(tolerance_absolute)
-    tol_rel = to_decimal(tolerance_relative)
-    result, issues, e, s, cp = run_calculation(engagement, scenario, cost_policy)
+    issues = Issues()
+    tol_abs = _decimal_input(tolerance_absolute, "/tolerance_absolute", issues, nonnegative=True)
+    tol_rel = _decimal_input(tolerance_relative, "/tolerance_relative", issues, nonnegative=True)
+    parsed = _parse_actuals(actuals, issues)
+    if issues.has_errors:
+        return to_jsonable({"status": "invalid", "issues": report(issues)})
+    result, calc_issues, e, s, cp = run_calculation(engagement, scenario, cost_policy)
+    issues.extend(calc_issues)
     if result is None:
         return to_jsonable({"status": status_for(issues), "issues": report(issues)})
+    assert e is not None and s is not None
+
     periods = {p["period"]: p for p in result.data["periods"]}
-    month_numbers = {ps: i + 1 for i, ps in enumerate(sorted(periods))}
-    unknown = sorted(
-        {k for row in (actuals.get("periods") or {}).values() for k in row}
-        | set((actuals.get("term") or {}).keys())
-    )
-    unknown = [k for k in unknown if k not in RECONCILABLE]
+    anchor = month_index(month_of(e.start_date))
+    lines_by_period: dict[str, list] = {}
+    for ln in result.fee_lines:
+        lines_by_period.setdefault(ln.period, []).append(ln)
+    all_kinds = sorted({ln.kind for ln in result.fee_lines})
+
     rows: list[dict] = []
-
-    def compare(scope: str, computed: Any, actual: Any, metric: str) -> dict:
-        c = _d(computed) if computed is not None else None
-        a = to_decimal(actual)
-        if c is None:
-            return {
-                "scope": scope,
-                "metric": metric,
-                "computed": None,
-                "actual": a,
-                "difference": None,
-                "relative_difference": None,
-                "within_tolerance": False,
-                "note": "metric not computed for this engagement",
-            }
-        diff = c - a
-        rel = safe_ratio(diff, abs(a))
-        ok = abs(diff) <= tol_abs or (rel is not None and abs(rel) <= tol_rel)
-        return {
-            "scope": scope,
-            "metric": metric,
-            "computed": c,
-            "actual": a,
-            "difference": diff,
-            "relative_difference": rel,
-            "within_tolerance": ok,
-        }
-
-    for ps, row in sorted((actuals.get("periods") or {}).items()):
-        if ps not in periods:
+    for ps, metric, actual in parsed:
+        if ps == "term":
+            computed = result.data["term"].get(metric)
+        elif ps not in periods:
             issues.warn(
                 "ACTUAL_OUTSIDE_HORIZON",
                 f"actuals for {ps} fall outside the calculated months",
                 f"/actuals/periods/{ps}",
             )
             continue
-        for metric, actual in row.items():
-            if metric in RECONCILABLE:
-                rows.append(compare(ps, periods[ps].get(metric), actual, metric))
-    term = result.data["term"]
-    for metric, actual in (actuals.get("term") or {}).items():
-        if metric in RECONCILABLE:
-            rows.append(compare("term", term.get(metric), actual, metric))
+        else:
+            computed = periods[ps].get(metric)
+        rows.append(_compare_row(ps, metric, computed, actual, tol_abs, tol_rel))
 
     failing = [r for r in rows if not r["within_tolerance"]]
-    for r in failing:
-        if r["scope"] != "term":
-            lines = [ln for ln in result.fee_lines if ln.period == r["scope"]]
-            r["fee_line_items"] = [ln.as_dict() for ln in lines]
     summary = []
     for r in failing:
-        mechanisms = sorted(
-            {ln.kind for ln in result.fee_lines if r["scope"] == "term" or ln.period == r["scope"]}
-        )
+        if r["scope"] == "term":
+            month: Any = "term"
+            mechanisms = all_kinds
+        else:
+            month = month_index(parse_month(r["scope"])) - anchor + 1
+            period_lines = lines_by_period.get(r["scope"], [])
+            r["fee_line_items"] = [ln.as_dict() for ln in period_lines]
+            mechanisms = sorted({ln.kind for ln in period_lines})
         summary.append(
             {
                 "metric": r["metric"],
-                "month": month_numbers.get(r["scope"]) if r["scope"] != "term" else "term",
+                "month": month,
                 "relative_difference": r["relative_difference"],
                 "direction": None
                 if r["difference"] is None
@@ -944,18 +932,118 @@ def reconcile(
                 "mechanisms_priced": mechanisms,
             }
         )
+
+    if not result.feasible:
+        status = "infeasible"
+        issues.warn(
+            "SCENARIO_INFEASIBLE",
+            "the scenario is infeasible under the engagement's capacity terms; matching figures do not reconcile it",
+        )
+    elif failing:
+        status = "discrepancies"
+    elif rows:
+        status = "reconciled"
+    else:
+        status = "nothing_compared"
+    tolerance = {"absolute": tol_abs, "relative": tol_rel}
     return to_jsonable(
         {
-            "status": "reconciled"
-            if rows and not failing
-            else ("discrepancies" if failing else "nothing_compared"),
-            "input_fingerprint": input_fingerprint("calculate_periods", e, s, cp),
-            "tolerance": {"absolute": tol_abs, "relative": tol_rel},
+            "status": status,
+            "feasible": result.feasible,
+            "engine_version": ENGINE_VERSION,
+            "schema_version": SCHEMA_VERSION,
+            "input_fingerprint": input_fingerprint(
+                "reconcile", e, s, cp, {"actuals": actuals, "tolerance": tolerance}
+            ),
+            "calculation_fingerprint": input_fingerprint("calculate_periods", e, s, cp),
+            "money_policy": effective_money_policy(e),
+            "packs": e.packs,
+            "costs_evaluated": result.extras["costs_evaluated"],
+            "tolerance": tolerance,
             "compared": len(rows),
             "discrepancies": len(failing),
             "rows": rows,
-            "unknown_metrics": unknown,
             "publishable_summary": summary,
             "issues": report(issues),
         }
     )
+
+
+def _decimal_input(
+    value: Any, path: str, issues: Issues, nonnegative: bool = False
+) -> Decimal | None:
+    try:
+        d = to_decimal(value)
+    except ValueError as exc:
+        issues.error("SCHEMA", f'{exc}; pass amounts as decimal strings such as "1234.50"', path)
+        return None
+    if nonnegative and d < 0:
+        issues.error("RANGE", "must not be negative", path)
+        return None
+    return d
+
+
+def _parse_actuals(actuals: Any, issues: Issues) -> list[tuple[str, str, Decimal]]:
+    """Validate the actuals document; every problem is an issue with a JSON Pointer path."""
+    if not isinstance(actuals, dict):
+        issues.error("SCHEMA", "actuals must be an object with 'periods' and/or 'term'", "/actuals")
+        return []
+    extra = sorted(set(actuals) - {"periods", "term"})
+    if extra:
+        issues.error("SCHEMA", f"unexpected keys {extra}; use 'periods' and 'term'", "/actuals")
+    out: list[tuple[str, str, Decimal]] = []
+    blocks: list[tuple[str, Any]] = []
+    for ps, row in sorted((actuals.get("periods") or {}).items()):
+        if not MONTH_RE.match(str(ps)):
+            issues.error("SCHEMA", f"period key {ps!r} is not YYYY-MM", f"/actuals/periods/{ps}")
+            continue
+        blocks.append((ps, row))
+    if actuals.get("term") is not None:
+        blocks.append(("term", actuals["term"]))
+    for scope, row in blocks:
+        base = "/actuals/term" if scope == "term" else f"/actuals/periods/{scope}"
+        if not isinstance(row, dict):
+            issues.error("SCHEMA", "expected an object of metric: amount", base)
+            continue
+        for metric, value in row.items():
+            path = f"{base}/{metric}"
+            if metric not in RECONCILABLE:
+                issues.error(
+                    "UNKNOWN_METRIC",
+                    f"{metric!r} is not reconcilable; use one of {list(RECONCILABLE)}",
+                    path,
+                )
+                continue
+            d = _decimal_input(value, path, issues)
+            if d is not None:
+                out.append((scope, metric, d))
+    return out
+
+
+def _compare_row(
+    scope: str, metric: str, computed: Any, actual: Decimal, tol_abs: Decimal, tol_rel: Decimal
+) -> dict:
+    c = _d(computed)
+    if c is None:
+        return {
+            "scope": scope,
+            "metric": metric,
+            "computed": None,
+            "actual": actual,
+            "difference": None,
+            "relative_difference": None,
+            "within_tolerance": False,
+            "note": "metric not computed for this engagement (for costs and margins: no cost policy or no cost section; for realization: no standard rate card)",
+        }
+    diff = c - actual
+    rel = safe_ratio(diff, abs(actual))
+    ok = abs(diff) <= tol_abs or (rel is not None and abs(rel) <= tol_rel)
+    return {
+        "scope": scope,
+        "metric": metric,
+        "computed": c,
+        "actual": actual,
+        "difference": diff,
+        "relative_difference": rel,
+        "within_tolerance": ok,
+    }
