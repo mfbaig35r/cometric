@@ -1,6 +1,6 @@
 # Cometric implementation status
 
-Version `0.4.0` (0.1.0 released 2026-11-04; 0.4.0 adds counting rules through rate assumptions and derived quantities; 0.2.0 added reconciliation and the fixes from two code reviews; 0.3.0 adds termination scenarios, the ALSP tiered-minimum template and patterns, and the fixes from an LLM-driven pricing analysis). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below. The ontology reference (Markdown and Turtle) is generated into `ontology/`.
+Version `0.5.0` (0.1.0 released 2026-11-04; 0.5.0 adds the ontology export (`docs/ontology/`); 0.4.0 adds counting rules through rate assumptions and derived quantities; 0.2.0 added reconciliation and the fixes from two code reviews; 0.3.0 adds termination scenarios, the ALSP tiered-minimum template and patterns, and the fixes from an LLM-driven pricing analysis). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below. The ontology reference (Markdown and Turtle) is generated into `ontology/`.
 
 ## Milestones
 

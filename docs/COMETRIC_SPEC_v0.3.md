@@ -1,6 +1,6 @@
 # Cometric | Commercial Intelligence Engine
 
-**Engineering Requirements v0.3 (as built for 0.4.0)**
+**Engineering Requirements v0.3 (as built for 0.5.0)**
 
 Cometric does three things:
 
@@ -13,7 +13,7 @@ It is built for any service relationship priced through a composite arrangement:
 | | |
 |---|---|
 | Project | Cometric (`cometric` on PyPI; CLI and MCP server `cometric`) |
-| Status | Normative for `cometric` 0.4.0 (0.1.0 released 2026-11-04; 0.2.0, 0.3.0, and 0.4.0 on 2026-11-05). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
+| Status | Normative for `cometric` 0.5.0 (0.1.0 released 2026-11-04; 0.2.0 to 0.5.0 on 2026-11-05). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
 | License | Apache-2.0 |
 | Date | November 4, 2026 |
 | Supersedes | `COMETRIC_SPEC_v0.2.md` (kept for history, with the v0.1 to v0.2 change log) |
@@ -58,7 +58,7 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (0.2.0). |
 | V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (0.2.0). |
 | V3-30 | 6.1, 6.4, 9 | Counting rules through RATE assumptions and derived quantities; search parameters can set a named assumption (0.4.0). |
-| V3-31 | 3.7, 9 | Ontology export: Turtle (OWL and SKOS) and a Markdown reference generated from the models, core vocabularies, and packs; committed in `docs/ontology/` (unreleased). |
+| V3-31 | 3.7, 9 | Ontology export: Turtle (OWL and SKOS) and a Markdown reference generated from the models, core vocabularies, and packs; committed in `docs/ontology/` (0.5.0). |
 | V3-28 | 4.4, 6.1, 9 | Termination scenarios: `termination_date` on a scenario, `termination_rule` on minimums, `termination_fee` on a version (0.3.0). |
 | V3-29 | 3.4, 6.3, App. C | ALSP template `tiered_units_annual_minimum` and five worked patterns (`docs/PATTERNS.md`); "pending human review" defined (0.3.0). |
 | V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (0.3.0). |

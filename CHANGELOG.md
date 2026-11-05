@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 (2026-11-05)
+
+Additive; no breaking changes. `ENGINE_VERSION` stays 0.3.0: no calculation or fingerprint changed.
 
 - Ontology export: `cometric ontology` prints the ontology as Turtle (OWL classes and properties for the input model, SKOS concept schemes for the core vocabularies and every pack, with overlays, rules, claims, and sources as typed resources). `cometric ontology --out DIR` also writes a Markdown reference. The generated reference is committed in `docs/ontology/`, and a test fails when it is stale.
 - The glossary moved from the MCP server to `cometric.core.glossary`, so the ontology can use it without the `mcp` extra.
