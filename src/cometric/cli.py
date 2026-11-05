@@ -128,6 +128,11 @@ def main(argv: list[str] | None = None) -> int:
     lk.add_argument("query")
     lk.add_argument("--pack")
 
+    pr = sub.add_parser("propose", help="candidate structures for a deal profile")
+    pr.add_argument("request", help="JSON or YAML file: {packs, deal_profile, options}")
+    pr.add_argument("--expand", action="append", default=[], help="candidate id to expand")
+    pr.add_argument("--max", type=int, help="maximum number of candidates (1 to 6)")
+
     on = sub.add_parser("ontology", help="the ontology as Turtle, or write the full reference")
     on.add_argument("--out", help="directory to write cometric.ttl and the Markdown reference into")
 
@@ -236,6 +241,18 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "lookup":
         _print(packs.lookup_concept(a.query, a.pack))
         return 0
+    if a.cmd == "propose":
+        from .core.propose import propose_structures
+
+        req = _read(a.request)
+        opts = dict(req.get("options") or {})
+        if a.expand:
+            opts["expand"] = a.expand
+        if a.max:
+            opts["max_candidates"] = a.max
+        out = propose_structures(req.get("packs"), req.get("deal_profile"), opts)
+        _print(out)
+        return 0 if out.get("status") == "ok" else 1
     if a.cmd == "ontology":
         from .core import ontology
 

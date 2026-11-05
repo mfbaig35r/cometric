@@ -22,6 +22,13 @@ MODELS: dict[str, type[BaseModel]] = {
     "assumption": models.Assumption,
 }
 
+
+def _propose_models() -> dict[str, type[BaseModel]]:
+    from .propose import DealProfile, ProposeOptions
+
+    return {"deal_profile": DealProfile, "propose_options": ProposeOptions}
+
+
 SEARCH_SPEC_SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "SearchSpec",
@@ -193,10 +200,11 @@ def describe_schema(model: str) -> dict:
         return SEARCH_SPEC_SCHEMA
     if model in EXTRA_SCHEMAS:
         return EXTRA_SCHEMAS[model]
-    if model not in MODELS:
+    models_ = {**MODELS, **_propose_models()}
+    if model not in models_:
         raise KeyError(f"no model {model!r}; models: {model_names()}")
-    return MODELS[model].model_json_schema(by_alias=True)
+    return models_[model].model_json_schema(by_alias=True)
 
 
 def model_names() -> list[str]:
-    return sorted([*MODELS, *EXTRA_SCHEMAS, "search_spec"])
+    return sorted([*MODELS, *_propose_models(), *EXTRA_SCHEMAS, "search_spec"])

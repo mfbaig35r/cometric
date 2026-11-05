@@ -18,6 +18,7 @@ from .core.api import (
 from .core.engine import ENGINE_VERSION
 from .core.models import SCHEMA_VERSION
 from .core.packs import describe_pack, list_packs, list_vocabulary, lookup_concept
+from .core.propose import propose_structures
 from .core.schema import describe_schema
 from .core.templates import get_template, list_templates
 from .core.validation import validate_engagement
@@ -46,6 +47,7 @@ __all__ = [
     "list_vocabulary",
     "lookup_concept",
     "price_floor",
+    "propose_structures",
     "reconcile",
     "search_structures",
     "validate_engagement",

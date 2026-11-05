@@ -1298,6 +1298,26 @@ cmv:term.origin a skos:Concept ;
     skos:definition "Every assumption is OBSERVED, CONTRACTED, ESTIMATED, ILLUSTRATIVE, or INTERNAL_POLICY."@en ;
     skos:inScheme cmv:Glossary .
 
+cmv:term.volume_shortfall a skos:Concept ;
+    skos:prefLabel "volume_shortfall"@en ;
+    skos:definition "Who absorbs volume below expected: CLIENT (pays for unused capacity or a minimum; its effective unit price rises), PROVIDER (its contribution falls), SHARED, or NONE_ADVERSE. The meaning derive_risk_exposure measures."@en ;
+    skos:inScheme cmv:Glossary .
+
+cmv:term.volume_excess a skos:Concept ;
+    skos:prefLabel "volume_excess"@en ;
+    skos:definition "Who absorbs volume above expected: PROVIDER (more work for a fixed or capped fee), CLIENT, SHARED, or NONE_ADVERSE (paid per unit at the agreed rate)."@en ;
+    skos:inScheme cmv:Glossary .
+
+cmv:term.spend_variability a skos:Concept ;
+    skos:prefLabel "spend_variability"@en ;
+    skos:definition "How the client's spend moves with volume: FIXED, BOUNDED (capped or banded), or VARIABLE."@en ;
+    skos:inScheme cmv:Glossary .
+
+cmv:term.structure_proposal a skos:Concept ;
+    skos:prefLabel "structure_proposal"@en ;
+    skos:definition "propose_structures output: candidates grouped by who absorbs a volume shortfall, never ranked, with labelled placeholders instead of figures. Pending human review."@en ;
+    skos:inScheme cmv:Glossary .
+
 # --- core model ----------------------------------------------------------------------------
 
 cm:Engagement a owl:Class ;

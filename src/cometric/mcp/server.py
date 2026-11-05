@@ -31,6 +31,10 @@ Start with quickstart(): it returns the conventions, and quickstart(<tool>) retu
 runnable argument object for that tool. describe_schema('paths') explains every reference syntax.
 
 Typical flow:
+0. For a new deal, propose_structures(packs, deal_profile) lists candidate structures grouped by
+   who absorbs a volume shortfall (never ranked), with trade-offs and evidence strength; expand
+   the ones the user wants and fill their placeholders. Ask the user for what the profile needs;
+   do not invent volumes, priorities, or constraints.
 1. list_templates / get_template to start from a skeleton; describe_schema for exact shapes.
 2. Fill every "<required>" or "<required: what to supply>" value; validate_engagement and repair using each error's JSON Pointer `path`.
 3. calculate_periods (detail: summary | periods | line_items) with a scenario and a cost policy
@@ -235,6 +239,16 @@ def build_server(http: bool = False) -> MCPServer:
         return api.derive_risk_exposure(results, base_scenario_id, tolerance_policy)
 
     @tool(
+        description="Candidate commercial structures for a deal profile (service, unit of work, volume, cost shape, 1 to 3 client priorities, provider risk limit, term), grouped by who absorbs a volume shortfall and never ranked. Each carries risk allocation, fit and tension with the priorities, trade-offs, evidence strength, and the inputs to supply. options.expand returns skeleton engagements with shared scenarios for compare_arrangements. Proposes no figures."
+    )
+    def propose_structures(
+        packs: list[str], deal_profile: dict[str, Any], options: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
+        from cometric.core.propose import propose_structures as run
+
+        return run(packs, deal_profile, options)
+
+    @tool(
         description="Deterministic grid search over declared parameters; returns the trade-off frontier. Show the spec to the user first."
     )
     def search_structures(search_spec: dict[str, Any]) -> dict[str, Any]:
@@ -423,6 +437,24 @@ def build_server(http: bool = False) -> MCPServer:
             "Show the spec to the user and get confirmation before calling search_structures. Present the frontier, the binding "
             "constraints, and the counts. The result is pending human review.\n"
             f"\nGoal:\n{goal}"
+        )
+
+    @server.prompt(
+        name="propose_structures",
+        description="Turn a deal description into candidate structures, then compare the ones the user picks.",
+    )
+    def propose_structures_prompt(deal: str) -> str:
+        return (
+            "Build a deal_profile (describe_schema deal_profile) from the description. Ask the user only for what is "
+            "missing: the unit of work and any complexity tiers, volume certainty and any expected/low/high figures, "
+            "the cost shape, one to three client priorities in order, the provider's limit on volume risk, and the term. "
+            "Do not invent figures. Call propose_structures and explain each candidate in plain language: who absorbs a "
+            "volume shortfall, which priorities it serves and where it falls short, what its labels assume, and how strong "
+            "the evidence is. Say that the order is by risk group, not preference. When the user picks candidates, expand "
+            "them, ask for every input listed (requires_inputs and common_inputs), fill the skeletons, and run "
+            "compare_arrangements on their shared scenarios; use derive_risk_exposure to check each volume_shortfall "
+            "label. Everything is pending human review.\n"
+            f"\nDeal:\n{deal}"
         )
 
     @server.prompt(description="Find and quantify negotiation exchanges for a proposed concession.")

@@ -143,12 +143,36 @@ def payloads() -> dict[str, dict]:
             },
         },
         "check_commercial_constraints": {"engagement": e},
+        "propose_structures": {
+            "packs": ["alsp"],
+            "deal_profile": {
+                "service_category": "CONTRACTS",
+                "unit_of_work": {
+                    "kind": "COUNT",
+                    "description": "Contract review requests",
+                    "tiers": ["high", "medium", "low"],
+                },
+                "volume": {
+                    "certainty": "RANGE",
+                    "expected": "1200",
+                    "low": "400",
+                    "high": "1500",
+                    "period": "YEAR",
+                },
+                "cost_profile": {"shape": "MIXED", "fixed_team": True},
+                "client_priorities": ["budget_certainty", "pay_for_use"],
+                "provider_constraints": {"max_volume_risk": "SHARED"},
+                "term": {"months": 24, "client_can_terminate_early": True},
+            },
+            "options": {"max_candidates": 4},
+        },
     }
 
 
 NOTES = {
     "counting_rules": 'Rates: an assumption with "basis": "RATE" applies every month unchanged. Derived quantities: scenario "derived": [{"name": "billable", "unit": "doc", "rounding": "NONE", "expression": {"product": [{"q": "submitted"}, {"difference": [{"const": "1"}, {"q": "reissue_rate"}]}]}}]. See cometric://examples/pattern_counting_rules.',
     "termination": 'Add "termination_date": "2027-09-30" to a scenario to run an early exit; each minimum needs a termination_rule (PRORATE, REMAINDER_DUE, WAIVED). See cometric://examples/pattern_termination.',
+    "propose_then_compare": 'propose_structures lists candidates; call it again with "options": {"expand": [candidate ids]} for skeletons. Fill every placeholder (each candidate\'s requires_inputs plus common_inputs; never invent figures), then compare_arrangements on the skeletons\' shared scenarios, and derive_risk_exposure to check each candidate\'s volume_shortfall label.',
     "patterns": "Worked engagements: cometric://examples/pattern_tiered_minimum, pattern_transition_credit, pattern_partial_and_hours, pattern_termination; ALSP template tiered_units_annual_minimum (get_template with pack=alsp).",
     "search_dry_run": 'Add "dry_run": true to a search_spec to get grid size, calculation count, and estimated time; show it to the user before the real run.',
     "search_linked_parameters": 'One parameter can write several places: {"name": "uplift", "pointers": [p1, p2], "transform": "scale", "values": ["0", "0.05"]} applies base x (1 + uplift) at each pointer.',

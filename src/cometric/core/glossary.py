@@ -16,4 +16,8 @@ GLOSSARY = {
     "price_floor": "(DIRECT_DELIVERY + ENGAGEMENT_AVOIDABLE costs + risk premium) / (1 - target margin). A decision formula, not a benchmark.",
     "evidence_class": "A_DIRECT, B_CORROBORATED, C_INFERENCE, D_PROPOSED. Independent of prevalence.",
     "origin": "Every assumption is OBSERVED, CONTRACTED, ESTIMATED, ILLUSTRATIVE, or INTERNAL_POLICY.",
+    "volume_shortfall": "Who absorbs volume below expected: CLIENT (pays for unused capacity or a minimum; its effective unit price rises), PROVIDER (its contribution falls), SHARED, or NONE_ADVERSE. The meaning derive_risk_exposure measures.",
+    "volume_excess": "Who absorbs volume above expected: PROVIDER (more work for a fixed or capped fee), CLIENT, SHARED, or NONE_ADVERSE (paid per unit at the agreed rate).",
+    "spend_variability": "How the client's spend moves with volume: FIXED, BOUNDED (capped or banded), or VARIABLE.",
+    "structure_proposal": "propose_structures output: candidates grouped by who absorbs a volume shortfall, never ranked, with labelled placeholders instead of figures. Pending human review.",
 }
