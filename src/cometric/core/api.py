@@ -170,7 +170,7 @@ def calculate_periods(
         },
         "term": data["term"],
         "years": data["years"],
-        "definitions": definitions(e, result),
+        "definitions": definitions(e, result, s),
     }
     if "termination" in result.extras:
         out["termination"] = result.extras["termination"]
@@ -193,7 +193,7 @@ QUANTITY_SPREADING = (
 )
 
 
-def definitions(e: Engagement, result: CalculationResult) -> dict:
+def definitions(e: Engagement, result: CalculationResult, s: Scenario | None = None) -> dict:
     """The conventions a reader needs to quote these figures correctly."""
     term = result.data["term"]
     basis = term.get("client_value_quantity")
@@ -243,6 +243,23 @@ def definitions(e: Engagement, result: CalculationResult) -> dict:
         out["allowances"] = recognition
     if minimums:
         out["minimums"] = minimums
+    if s is not None:
+        rates = sorted({a.name for a in s.assumptions if a.basis == "RATE"})
+        if rates:
+            out["rate_assumptions"] = rates
+        if s.derived:
+            from .quantities import expr_text
+
+            out["derived_quantities"] = [
+                {
+                    "name": d.name,
+                    "unit": d.unit,
+                    "formula": expr_text(d.expression),
+                    "rounding": d.rounding,
+                    "description": d.description,
+                }
+                for d in s.derived
+            ]
     return out
 
 
@@ -823,18 +840,37 @@ def validate_search_spec(spec: Any, issues: Issues) -> None:
         if not isinstance(p.get("name"), str):
             issues.error("SCHEMA", "parameter needs a name", path + "/name")
         names.append(p.get("name"))
-        ptrs = p.get("pointers") if "pointers" in p else [p.get("pointer")]
-        if (
-            not isinstance(ptrs, list)
-            or not ptrs
-            or not all(isinstance(x, str) and x.startswith("/") for x in ptrs)
-        ):
-            issues.error(
-                "SCHEMA",
-                "parameter needs pointer (a JSON Pointer into the engagement, starting with /) or pointers (a list of them)",
-                path + ("/pointers" if "pointers" in p else "/pointer"),
-                example="/arrangement_versions/0/components/0/fixed_amount",
-            )
+        if "assumption" in p:
+            if not isinstance(p["assumption"], str):
+                issues.error(
+                    "SCHEMA",
+                    "assumption is the name of a scenario assumption to set in every scenario",
+                    path + "/assumption",
+                )
+            elif not any(
+                a.get("name") == p["assumption"]
+                for sc in (spec.get("scenarios") or [])
+                if isinstance(sc, dict)
+                for a in sc.get("assumptions", [])
+            ):
+                issues.error(
+                    "UNKNOWN_QUANTITY",
+                    f"no scenario has an assumption named {p['assumption']!r}",
+                    path + "/assumption",
+                )
+        else:
+            ptrs = p.get("pointers") if "pointers" in p else [p.get("pointer")]
+            if (
+                not isinstance(ptrs, list)
+                or not ptrs
+                or not all(isinstance(x, str) and x.startswith("/") for x in ptrs)
+            ):
+                issues.error(
+                    "SCHEMA",
+                    "parameter needs pointer (a JSON Pointer into the engagement, starting with /), pointers (a list of them), or assumption (a scenario assumption name)",
+                    path + ("/pointers" if "pointers" in p else "/pointer"),
+                    example="/arrangement_versions/0/components/0/fixed_amount",
+                )
         if p.get("transform", "set") not in ("set", "scale", "add"):
             issues.error(
                 "SCHEMA",
@@ -917,7 +953,7 @@ def search_structures(search_spec: dict) -> dict:
     max_returned = int(spec.get("max_returned", 20))
     try:
         grids = [_param_values(p) for p in params]
-        writes = [_param_writes(base_engagement, p) for p in params]
+        writes = [[] if "assumption" in p else _param_writes(base_engagement, p) for p in params]
     except _SpecError as exc:
         return to_jsonable({"status": "invalid", "issues": {"errors": [exc.as_issue()]}})
     except (KeyError, ValueError) as exc:
@@ -957,12 +993,20 @@ def search_structures(search_spec: dict) -> dict:
     for combo in itertools.product(*grids):
         counts["enumerated"] += 1
         eng = copy.deepcopy(base_engagement)
+        cand_scenarios = scenarios
         values = {}
         for p, write, v in zip(params, writes, combo, strict=True):
             for ptr, transform in write:
                 _set_pointer(eng, ptr, transform(v))
+            if "assumption" in p:
+                if cand_scenarios is scenarios:
+                    cand_scenarios = copy.deepcopy(scenarios)
+                for sc in cand_scenarios:
+                    for a in sc.get("assumptions", []):
+                        if a.get("name") == p["assumption"]:
+                            a["value"] = v
             values[p["name"]] = v
-        ev = _evaluate_candidate(eng, scenarios, cost_policy)
+        ev = _evaluate_candidate(eng, cand_scenarios, cost_policy)
         if not ev["valid"]:
             counts["invalid"] += 1
             for r in ev["results"]:

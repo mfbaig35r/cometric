@@ -1,0 +1,51 @@
+scheme: counting_rules
+title: Counting rules for billable legal work units
+concepts:
+- id: CNT-001
+  label: Re-issued documents counted once
+  synonyms: [re-submissions, duplicate submissions]
+  definition: >
+    A document sent for review again (a re-issue or re-submission) is billed only the first time.
+    Billable units are submitted units less the re-issued share.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [reviewed_document, accepted_contract_review]
+  caveats: ["Whether a materially changed re-issue counts as new work is a contract question; record the rule in the unit's counting_rule."]
+  source_ref: "pack:alsp"
+  attributes:
+    modelling: >
+      Declare the re-issue rate as a RATE assumption (unit ratio) and a derived quantity
+      billable = submitted x (1 - reissue_rate). Search the rate with a parameter that sets the
+      assumption.
+    pattern: pattern_counting_rules
+- id: CNT-002
+  label: Bundles billed once at their highest tier
+  synonyms: [document families, packets billed as one]
+  definition: >
+    A bundle of related documents is billed as one unit at the tier of its most complex document,
+    instead of document by document.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [reviewed_document, matter]
+  caveats: ["Monthly totals cannot show which documents arrive together. The share of documents in bundles and the documents per bundle are assumptions; label their origin and test their sensitivity."]
+  source_ref: "pack:alsp"
+  attributes:
+    modelling: >
+      Declare the bundled share of lower-tier documents and documents per bundle as RATE
+      assumptions. Derive bundled = unique x share for each lower tier, subtract it from that
+      tier, and add bundles = (sum of bundled) / documents_per_bundle to the highest tier.
+    pattern: pattern_counting_rules
+- id: CNT-003
+  label: Work handed back part-way
+  synonyms: [partial completion, returned work]
+  definition: >
+    Work the client withdraws part-way is billed as its own unit at an agreed fraction of the full
+    rate, or not at all.
+  evidence_class: C_INFERENCE
+  prevalence: UNVERIFIED
+  related: [accepted_contract_review]
+  caveats: ["The fraction, and whether it depends on how far the work progressed, is contract-specific."]
+  source_ref: "pack:alsp"
+  attributes:
+    modelling: A separate unit and component priced at the agreed fraction; see pattern_partial_and_hours.
+    pattern: pattern_partial_and_hours

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Counting rules: assumptions with `basis: RATE` apply every month unchanged; scenarios can declare `derived` quantities (sum, difference, product, quotient over other quantities and constants), evaluated each month in dependency order, with explicit rounding for COUNT units. Results list derived formulas under `definitions`.
+- Search parameters can set a named scenario assumption in every scenario (`"assumption": "reissue_rate"`).
+- ALSP pack: counting-rule concepts (CNT-001 to CNT-003) and `pattern_counting_rules`.
+
 ## 0.3.0 (2026-11-05)
 
 ### Breaking changes

@@ -395,6 +395,125 @@ def patterns(t: dict) -> dict[str, dict]:
             "base": {"contractual_fee": str(base9 - (base9 - 3_000_000) // 10 + 100_000)},
         },
     }
+    # 6. counting rules: re-issues counted once, bundles billed once at the highest tier
+    from decimal import Decimal as Dm
+
+    e6 = copy.deepcopy(filled)
+    e6["engagement_id"] = "PATTERN-COUNTING-RULES"
+    monthly = {"tier_1": Dm(50), "tier_2": Dm(20), "tier_3": Dm(60), "tier_4": Dm(80)}
+    reissue, share, per_bundle = Dm("0.05"), Dm("0.10"), Dm(4)
+    unique = {t: v * (1 - reissue) for t, v in monthly.items()}
+    bundled = {t: unique[t] * share for t in TIERS[:3]}
+    billable = {t: unique[t] - bundled[t] for t in TIERS[:3]}
+    billable["tier_4"] = unique["tier_4"] + sum(bundled.values()) / per_bundle
+    month_fee = sum(billable[t] * Dm(RATES[t]) for t in TIERS)
+    gross6 = month_fee * 12
+    fee6 = gross6 - (gross6 - 3_000_000) * Dm("0.10")
+    sub = {"submitted_" + t.split("_")[1]: str(int(v) * 12) for t, v in monthly.items()}
+    assumptions = [
+        {
+            "name": n,
+            "value": v,
+            "unit": "tier_" + n.split("_")[1],
+            "time_period": "2027",
+            "origin": "ILLUSTRATIVE",
+        }
+        for n, v in sub.items()
+    ]
+    assumptions += [
+        {
+            "name": "reissue_rate",
+            "value": "0.05",
+            "unit": "ratio",
+            "time_period": "TERM",
+            "basis": "RATE",
+            "origin": "ESTIMATED",
+        },
+        {
+            "name": "bundle_share",
+            "value": "0.10",
+            "unit": "ratio",
+            "time_period": "TERM",
+            "basis": "RATE",
+            "origin": "ESTIMATED",
+        },
+        {
+            "name": "docs_per_bundle",
+            "value": "4",
+            "unit": "ratio",
+            "time_period": "TERM",
+            "basis": "RATE",
+            "origin": "ESTIMATED",
+        },
+    ]
+    derived = []
+    for t in TIERS:
+        k = t.split("_")[1]
+        derived.append(
+            {
+                "name": f"unique_{k}",
+                "unit": t,
+                "rounding": "NONE",
+                "description": "submitted less re-issues (re-issued documents are billed once)",
+                "expression": {
+                    "product": [
+                        {"q": f"submitted_{k}"},
+                        {"difference": [{"const": "1"}, {"q": "reissue_rate"}]},
+                    ]
+                },
+            }
+        )
+    for t in TIERS[:3]:
+        k = t.split("_")[1]
+        derived.append(
+            {
+                "name": f"bundled_{k}",
+                "unit": t,
+                "rounding": "NONE",
+                "description": "documents that arrive inside a bundle",
+                "expression": {"product": [{"q": f"unique_{k}"}, {"q": "bundle_share"}]},
+            }
+        )
+        derived.append(
+            {
+                "name": t,
+                "unit": t,
+                "rounding": "NONE",
+                "description": "billable documents in this tier",
+                "expression": {"difference": [{"q": f"unique_{k}"}, {"q": f"bundled_{k}"}]},
+            }
+        )
+    derived.append(
+        {
+            "name": "bundles",
+            "unit": "tier_4",
+            "rounding": "NONE",
+            "description": "bundles, each billed once at the highest tier",
+            "expression": {
+                "quotient": [
+                    {"sum": [{"q": "bundled_1"}, {"q": "bundled_2"}, {"q": "bundled_3"}]},
+                    {"q": "docs_per_bundle"},
+                ]
+            },
+        }
+    )
+    derived.append(
+        {
+            "name": "tier_4",
+            "unit": "tier_4",
+            "rounding": "NONE",
+            "description": "billable highest-tier documents plus bundles",
+            "expression": {"sum": [{"q": "unique_4"}, {"q": "bundles"}]},
+        }
+    )
+    out["pattern_counting_rules"] = {
+        "case": "pattern_counting_rules",
+        "title": "The tiered minimum with counting rules: 5% re-issues billed once; 10% of lower-tier documents arrive in bundles of 4, each billed once at the highest tier",
+        "engagement": e6,
+        "scenarios": [{"id": "base", "assumptions": assumptions, "derived": derived}],
+        "cost_policies": {},
+        "expected": {"base": {"contractual_fee": format(fee6, "f")}},
+    }
     return out
 
 

@@ -1,0 +1,513 @@
+{
+  "case": "pattern_counting_rules",
+  "title": "The tiered minimum with counting rules: 5% re-issues billed once; 10% of lower-tier documents arrive in bundles of 4, each billed once at the highest tier",
+  "engagement": {
+    "schema_version": "0.2",
+    "engagement_id": "PATTERN-COUNTING-RULES",
+    "name": "Tiered contract review with an annual minimum",
+    "currency": "USD",
+    "start_date": "2027-01-01",
+    "end_date": "2027-12-31",
+    "packs": [
+      {
+        "id": "alsp"
+      }
+    ],
+    "unit_definitions": [
+      {
+        "code": "tier_1",
+        "kind": "COUNT",
+        "counting_rule": "One completed tier 1 review of one eligible document, classified by the agreed complexity criteria",
+        "acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection"
+      },
+      {
+        "code": "tier_2",
+        "kind": "COUNT",
+        "counting_rule": "One completed tier 2 review of one eligible document, classified by the agreed complexity criteria",
+        "acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection"
+      },
+      {
+        "code": "tier_3",
+        "kind": "COUNT",
+        "counting_rule": "One completed tier 3 review of one eligible document, classified by the agreed complexity criteria",
+        "acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection"
+      },
+      {
+        "code": "tier_4",
+        "kind": "COUNT",
+        "counting_rule": "One completed tier 4 review of one eligible document, classified by the agreed complexity criteria",
+        "acceptance_rule": "Accepted on client sign-off or 5 business days after delivery without rejection"
+      }
+    ],
+    "services": [
+      {
+        "id": "service",
+        "unit_definition_id": "tier_1",
+        "service_category": "CONTRACTS"
+      }
+    ],
+    "arrangement_versions": [
+      {
+        "id": "v1",
+        "effective_from": "2027-01-01",
+        "components": [
+          {
+            "id": "price_tier_1",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.tier_1",
+            "unit": "tier_1",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_1"
+          },
+          {
+            "id": "price_tier_2",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.tier_2",
+            "unit": "tier_2",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_2"
+          },
+          {
+            "id": "price_tier_3",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.tier_3",
+            "unit": "tier_3",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_3"
+          },
+          {
+            "id": "price_tier_4",
+            "service_id": "service",
+            "calculation_method": "UNIT_OUTPUT",
+            "billing_basis": "OUTPUT",
+            "charge_cadence": "USAGE_TRIGGERED",
+            "currency": "USD",
+            "quantity_source": "scenario.tier_4",
+            "unit": "tier_4",
+            "effective_period": {
+              "from": "2027-01-01",
+              "to": null
+            },
+            "depends_on": [],
+            "rate_schedule_id": "rate_tier_4"
+          }
+        ],
+        "rate_schedules": [
+          {
+            "id": "rate_tier_1",
+            "currency": "USD",
+            "unit": "tier_1",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "4000"
+              }
+            ]
+          },
+          {
+            "id": "rate_tier_2",
+            "currency": "USD",
+            "unit": "tier_2",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "2000"
+              }
+            ]
+          },
+          {
+            "id": "rate_tier_3",
+            "currency": "USD",
+            "unit": "tier_3",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "1000"
+              }
+            ]
+          },
+          {
+            "id": "rate_tier_4",
+            "currency": "USD",
+            "unit": "tier_4",
+            "tier_method": "MARGINAL",
+            "tier_scope": "ALL_ELIGIBLE",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tiers": [
+              {
+                "from": "0",
+                "to": null,
+                "rate": "500"
+              }
+            ]
+          }
+        ],
+        "commitments": [
+          {
+            "id": "annual_minimum",
+            "kind": "MINIMUM_SPEND",
+            "amount": "3000000",
+            "aggregation_scope": "ENGAGEMENT",
+            "accumulation_period": "CONTRACT_YEAR",
+            "tested_against": "GROSS",
+            "shortfall_rule": "PERIOD_END_TRUE_UP",
+            "termination_rule": "PRORATE"
+          }
+        ],
+        "adjustments": [
+          {
+            "id": "discount_above_minimum",
+            "type": "DISCOUNT",
+            "applies_to": [
+              "price_tier_1",
+              "price_tier_2",
+              "price_tier_3",
+              "price_tier_4"
+            ],
+            "percent": "0.10",
+            "threshold": "3000000",
+            "threshold_scope": "EXCESS_ONLY",
+            "accumulation_period": "CONTRACT_YEAR"
+          }
+        ]
+      }
+    ],
+    "client_value_unit": "tier_1+tier_2+tier_3+tier_4",
+    "delivery_plan": {
+      "cost_components": []
+    }
+  },
+  "scenarios": [
+    {
+      "id": "base",
+      "assumptions": [
+        {
+          "name": "submitted_1",
+          "value": "600",
+          "unit": "tier_1",
+          "time_period": "2027",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "submitted_2",
+          "value": "240",
+          "unit": "tier_2",
+          "time_period": "2027",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "submitted_3",
+          "value": "720",
+          "unit": "tier_3",
+          "time_period": "2027",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "submitted_4",
+          "value": "960",
+          "unit": "tier_4",
+          "time_period": "2027",
+          "origin": "ILLUSTRATIVE"
+        },
+        {
+          "name": "reissue_rate",
+          "value": "0.05",
+          "unit": "ratio",
+          "time_period": "TERM",
+          "basis": "RATE",
+          "origin": "ESTIMATED"
+        },
+        {
+          "name": "bundle_share",
+          "value": "0.10",
+          "unit": "ratio",
+          "time_period": "TERM",
+          "basis": "RATE",
+          "origin": "ESTIMATED"
+        },
+        {
+          "name": "docs_per_bundle",
+          "value": "4",
+          "unit": "ratio",
+          "time_period": "TERM",
+          "basis": "RATE",
+          "origin": "ESTIMATED"
+        }
+      ],
+      "derived": [
+        {
+          "name": "unique_1",
+          "unit": "tier_1",
+          "rounding": "NONE",
+          "description": "submitted less re-issues (re-issued documents are billed once)",
+          "expression": {
+            "product": [
+              {
+                "q": "submitted_1"
+              },
+              {
+                "difference": [
+                  {
+                    "const": "1"
+                  },
+                  {
+                    "q": "reissue_rate"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "unique_2",
+          "unit": "tier_2",
+          "rounding": "NONE",
+          "description": "submitted less re-issues (re-issued documents are billed once)",
+          "expression": {
+            "product": [
+              {
+                "q": "submitted_2"
+              },
+              {
+                "difference": [
+                  {
+                    "const": "1"
+                  },
+                  {
+                    "q": "reissue_rate"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "unique_3",
+          "unit": "tier_3",
+          "rounding": "NONE",
+          "description": "submitted less re-issues (re-issued documents are billed once)",
+          "expression": {
+            "product": [
+              {
+                "q": "submitted_3"
+              },
+              {
+                "difference": [
+                  {
+                    "const": "1"
+                  },
+                  {
+                    "q": "reissue_rate"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "unique_4",
+          "unit": "tier_4",
+          "rounding": "NONE",
+          "description": "submitted less re-issues (re-issued documents are billed once)",
+          "expression": {
+            "product": [
+              {
+                "q": "submitted_4"
+              },
+              {
+                "difference": [
+                  {
+                    "const": "1"
+                  },
+                  {
+                    "q": "reissue_rate"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "bundled_1",
+          "unit": "tier_1",
+          "rounding": "NONE",
+          "description": "documents that arrive inside a bundle",
+          "expression": {
+            "product": [
+              {
+                "q": "unique_1"
+              },
+              {
+                "q": "bundle_share"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tier_1",
+          "unit": "tier_1",
+          "rounding": "NONE",
+          "description": "billable documents in this tier",
+          "expression": {
+            "difference": [
+              {
+                "q": "unique_1"
+              },
+              {
+                "q": "bundled_1"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bundled_2",
+          "unit": "tier_2",
+          "rounding": "NONE",
+          "description": "documents that arrive inside a bundle",
+          "expression": {
+            "product": [
+              {
+                "q": "unique_2"
+              },
+              {
+                "q": "bundle_share"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tier_2",
+          "unit": "tier_2",
+          "rounding": "NONE",
+          "description": "billable documents in this tier",
+          "expression": {
+            "difference": [
+              {
+                "q": "unique_2"
+              },
+              {
+                "q": "bundled_2"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bundled_3",
+          "unit": "tier_3",
+          "rounding": "NONE",
+          "description": "documents that arrive inside a bundle",
+          "expression": {
+            "product": [
+              {
+                "q": "unique_3"
+              },
+              {
+                "q": "bundle_share"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tier_3",
+          "unit": "tier_3",
+          "rounding": "NONE",
+          "description": "billable documents in this tier",
+          "expression": {
+            "difference": [
+              {
+                "q": "unique_3"
+              },
+              {
+                "q": "bundled_3"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bundles",
+          "unit": "tier_4",
+          "rounding": "NONE",
+          "description": "bundles, each billed once at the highest tier",
+          "expression": {
+            "quotient": [
+              {
+                "sum": [
+                  {
+                    "q": "bundled_1"
+                  },
+                  {
+                    "q": "bundled_2"
+                  },
+                  {
+                    "q": "bundled_3"
+                  }
+                ]
+              },
+              {
+                "q": "docs_per_bundle"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tier_4",
+          "unit": "tier_4",
+          "rounding": "NONE",
+          "description": "billable highest-tier documents plus bundles",
+          "expression": {
+            "sum": [
+              {
+                "q": "unique_4"
+              },
+              {
+                "q": "bundles"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "cost_policies": {},
+  "expected": {
+    "base": {
+      "contractual_fee": "3497272.500000"
+    }
+  }
+}

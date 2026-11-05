@@ -216,6 +216,18 @@ class Origin(StrEnum):
     INTERNAL_POLICY = "INTERNAL_POLICY"
 
 
+class AssumptionBasis(StrEnum):
+    TOTAL = "TOTAL"  # the value is a total for the time period, spread across its months
+    RATE = "RATE"  # the value applies to every month of the time period unchanged
+
+
+class DerivedRounding(StrEnum):
+    NONE = "NONE"  # keep fractional values (expected-value counts)
+    HALF_UP = "HALF_UP"
+    DOWN = "DOWN"
+    UP = "UP"
+
+
 class Distribution(StrEnum):
     FLAT = "FLAT"
     PROFILE = "PROFILE"

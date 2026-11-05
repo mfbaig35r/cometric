@@ -54,3 +54,14 @@ To keep a transition fee outside the minimum, give the minimum `aggregation_scop
 | base | 3,154,000 |
 
 Other termination rules: `REMAINDER_DUE` charges this period's full minimum and every later period's; `WAIVED` charges none. Outcome fees and rebates whose period termination cuts short are not charged, with a `TERMINATED_MID_PERIOD` warning, because the contract decides what is owed.
+
+## 6. Counting rules
+
+`pattern_counting_rules`. Pattern 1's volumes with two counting rules, written as derived quantities so every assumption is visible:
+
+- **Re-issues billed once:** a `RATE` assumption `reissue_rate` of 5%, and `unique_k = submitted_k x (1 - reissue_rate)` for each tier.
+- **Bundles billed once at the highest tier:** `bundle_share` (10% of lower-tier documents arrive in bundles) and `docs_per_bundle` (4) as `RATE` assumptions. Each lower tier keeps `unique_k - bundled_k`; tier 4 gets `unique_4 + bundles`, where `bundles = (bundled_1 + bundled_2 + bundled_3) / docs_per_bundle`.
+
+Monthly billable units become 42.75 / 17.1 / 51.3 / 79.0875 instead of 50 / 20 / 60 / 80, so the year bills 3,552,525 before the discount and 3,497,272.50 after it, against 3,972,000 without the rules. The counts are fractional expected values (`rounding: NONE`); use `HALF_UP`, `DOWN`, or `UP` to bill whole units each month.
+
+Monthly totals cannot show which documents arrive together, so the bundle share and size are assumptions, not facts. Search them by adding a parameter such as `{"name": "reissue", "assumption": "reissue_rate", "values": ["0", "0.05", "0.10"]}`.

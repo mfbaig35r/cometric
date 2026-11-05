@@ -170,7 +170,8 @@ EXTRA_SCHEMAS = {
             + ", ".join(RESULT_METRICS)
             + ".",
             "rule_paths": "Dotted paths into the engagement; [*] expands lists, e.g. arrangement_versions[*].components[*].billing_basis.",
-            "search_parameters": "JSON Pointers into the engagement, e.g. /arrangement_versions/0/components/0/fixed_amount.",
+            "search_parameters": 'JSON Pointers into the engagement, e.g. /arrangement_versions/0/components/0/fixed_amount; or "assumption": <name> to set a scenario assumption in every scenario.',
+            "derived_quantities": "Scenario derived quantities are referenced by name like assumptions; expressions use {q}, {const}, {sum}, {difference}, {product}, {quotient}.",
             "error_paths": "JSON Pointers into the call's arguments, e.g. /engagement/arrangement_versions/0/components/1/unit.",
             "by_reference": "On the stdio server started with COMETRIC_ALLOWED_ROOT, any engagement, scenario, or actuals argument may be a file path under that root instead of an object; a casebook fixture file is unwrapped to its engagement.",
         },

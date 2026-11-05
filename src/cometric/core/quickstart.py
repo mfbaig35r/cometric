@@ -147,6 +147,7 @@ def payloads() -> dict[str, dict]:
 
 
 NOTES = {
+    "counting_rules": 'Rates: an assumption with "basis": "RATE" applies every month unchanged. Derived quantities: scenario "derived": [{"name": "billable", "unit": "doc", "rounding": "NONE", "expression": {"product": [{"q": "submitted"}, {"difference": [{"const": "1"}, {"q": "reissue_rate"}]}]}}]. See cometric://examples/pattern_counting_rules.',
     "termination": 'Add "termination_date": "2027-09-30" to a scenario to run an early exit; each minimum needs a termination_rule (PRORATE, REMAINDER_DUE, WAIVED). See cometric://examples/pattern_termination.',
     "patterns": "Worked engagements: cometric://examples/pattern_tiered_minimum, pattern_transition_credit, pattern_partial_and_hours, pattern_termination; ALSP template tiered_units_annual_minimum (get_template with pack=alsp).",
     "search_dry_run": 'Add "dry_run": true to a search_spec to get grid size, calculation count, and estimated time; show it to the user before the real run.',

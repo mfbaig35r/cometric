@@ -13,6 +13,7 @@ from .enums import (
     AccumulationPeriod,
     AdjustmentType,
     AggregationScope,
+    AssumptionBasis,
     Avoidability,
     BillingBasis,
     BreachMode,
@@ -23,6 +24,7 @@ from .enums import (
     CostBehavior,
     CostCategory,
     CostPeriod,
+    DerivedRounding,
     Distribution,
     MarginLayer,
     Origin,
@@ -421,6 +423,10 @@ class Assumption(Model):
     unit: str
     time_period: str = Field(description="YYYY-MM, YYYY, YYYY-MM..YYYY-MM, or TERM")
     origin: Origin
+    basis: AssumptionBasis = Field(
+        default=AssumptionBasis.TOTAL,
+        description="TOTAL (default): value is the total for time_period, spread across its months. RATE: value applies to every month unchanged (use for rates and shares such as a re-issue rate).",
+    )
     distribution: Distribution = Distribution.FLAT
     profile: list[Dec] = []
 
@@ -437,10 +443,33 @@ class Assumption(Model):
         raise ValueError("time_period must be YYYY-MM, YYYY, YYYY-MM..YYYY-MM, or TERM")
 
 
+class DerivedQuantity(Model):
+    """A quantity computed each month from other quantities, e.g. billable units after a counting rule.
+
+    expression: {"q": name} | {"const": "1"} | {"sum": [e, ...]} | {"difference": [a, b]} |
+    {"product": [e, ...]} | {"quotient": [a, b]}. Derived quantities may use other derived ones.
+    """
+
+    name: str
+    unit: str
+    expression: dict
+    rounding: DerivedRounding | None = Field(
+        default=None,
+        description="Required for COUNT units: NONE keeps fractional expected values; HALF_UP, DOWN, or UP round each month",
+    )
+    description: str | None = Field(
+        default=None, description="The counting rule or assumption this expresses, in words"
+    )
+
+
 class Scenario(Model):
     id: str
     horizon: Horizon | None = None
     assumptions: list[Assumption] = []
+    derived: list[DerivedQuantity] = Field(
+        default=[],
+        description="Quantities computed each month from assumptions, e.g. counting rules; usable anywhere a quantity_source is",
+    )
     breach_mode: BreachMode | None = None
     termination_date: date | None = Field(
         default=None,
