@@ -137,8 +137,6 @@ def composition_labels(shape: Shape, model: Realization, levers: list[Realizatio
         "volume_excess": base.get("volume_excess"),
         "spend_variability": base.get("spend_variability"),
     }
-    if shape.cost_shape == "MOSTLY_VARIABLE" and base.get("variable_cost_shortfall"):
-        labels["volume_shortfall"] = base["variable_cost_shortfall"]
     if shape.tiers:
         labels["mix"] = base.get("mix")
     if shape.early_exit:
@@ -415,7 +413,7 @@ def scenario_stubs(shape: Shape, extra_assumptions: list[dict]) -> list[dict]:
         assumptions = [
             {
                 "name": f"share.{t}",
-                "value": R(f"share of volume in tier {t}, as a fraction"),
+                "value": R(f"share of volume as a fraction, tier {t}"),
                 "unit": "ratio",
                 "time_period": "TERM",
                 "basis": "RATE",
@@ -596,6 +594,11 @@ def check_realizations(pack: Pack) -> list[str]:
     lever_ids = {
         str(c["id"]) for p in chain for c in (p.schemes.get("levers", {}).get("concepts") or [])
     }
+    heuristics = {
+        str(c["id"])
+        for p in chain
+        for c in (p.schemes.get("selection_heuristics", {}).get("concepts") or [])
+    }
     keys: set[str] = set()
     model_rs, lever_rs = [], []
     for i, r in enumerate(pack.realizations):
@@ -609,6 +612,9 @@ def check_realizations(pack: Pack) -> list[str]:
         keys.add(key)
         concept = str(r.get("concept") or key)
         kind = r.get("kind")
+        for ref in (r.get("mitigates") or []) + (r.get("mitigates_when_tiers") or []):
+            if ref not in heuristics:
+                problems.append(f"{where}: mitigates unknown heuristic {ref!r}")
         if kind == "model":
             model_rs.append(Realization(key, pack.id, r))
             if concept not in models:
@@ -622,9 +628,7 @@ def check_realizations(pack: Pack) -> list[str]:
                 if axis not in labels:
                     problems.append(f"{where}: labels.{axis} is required")
             for axis, value in labels.items():
-                allowed = AXIS_VALUES.get(
-                    "volume_shortfall" if axis == "variable_cost_shortfall" else axis
-                )
+                allowed = AXIS_VALUES.get(axis)
                 if allowed is None:
                     problems.append(f"{where}: unknown label axis {axis!r}")
                 elif value not in allowed:

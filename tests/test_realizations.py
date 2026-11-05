@@ -27,11 +27,14 @@ def test_p17_unknown_concept_and_bad_label_are_rejected():
     bad = copy.deepcopy(load_pack("base").realizations)
     model = next(r for r in bad if r["id"] == "PM-011")
     model["labels"]["volume_shortfall"] = "SOMEONE"
-    bad.append({"id": "CL-NOPE", "kind": "lever", "effects": {"mood": {"A": "B"}}})
+    bad.append(
+        {"id": "CL-NOPE", "kind": "lever", "effects": {"mood": {"A": "B"}}, "mitigates": ["SEL-X"]}
+    )
     problems = R.check_realizations(_pack_with(bad))
     assert any("PM-011" in p and "SOMEONE" in p for p in problems)
     assert any("CL-NOPE is not a lever" in p for p in problems)
     assert any("unknown effect axis 'mood'" in p for p in problems)
+    assert any("mitigates unknown heuristic 'SEL-X'" in p for p in problems)
 
 
 def test_p17_a_fragment_that_does_not_calculate_is_rejected():
@@ -70,7 +73,7 @@ def test_labels_follow_lever_effects_and_cost_shape():
     variable = R.composition_labels(
         _shape(cost_shape="MOSTLY_VARIABLE", fixed_team=False), unit, []
     )
-    assert variable["volume_shortfall"] == "NONE_ADVERSE"
+    assert variable["volume_shortfall"] == "PROVIDER"  # contribution still falls with volume
     assert variable["early_exit"] == "NONE_ADVERSE"
     both = R.composition_labels(_shape(), unit, [cap, minimum])
     assert both["volume_shortfall"] == "SHARED"

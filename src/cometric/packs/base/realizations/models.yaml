@@ -1,6 +1,7 @@
 # Pricing-model realizations for propose_structures (spec A7.1). Labels are pack assertions
-# (D_PROPOSED): who absorbs a deviation when the provider carries fixed delivery cost.
-# variable_cost_shortfall replaces volume_shortfall when costs are mostly variable.
+# (D_PROPOSED) with the meaning derive_risk_exposure uses: the provider is adverse when its
+# contribution falls, the client when its effective unit price rises. label_assumes states what
+# a label depends on in the figures.
 realizations:
 - id: PM-001
   kind: model
@@ -10,7 +11,6 @@ realizations:
   features: [variable, time_priced]
   labels:
     volume_shortfall: PROVIDER
-    variable_cost_shortfall: NONE_ADVERSE
     volume_excess: NONE_ADVERSE
     spend_variability: VARIABLE
     mix: CLIENT
@@ -37,7 +37,6 @@ realizations:
   features: [variable, time_priced, capped]
   labels:
     volume_shortfall: PROVIDER
-    variable_cost_shortfall: NONE_ADVERSE
     volume_excess: PROVIDER
     spend_variability: BOUNDED
     mix: PROVIDER
@@ -113,13 +112,13 @@ realizations:
 
 - id: PM-011
   kind: model
+  mitigates_when_tiers: [SEL-006]
   label: Per-unit pricing
   unit_kinds: [COUNT]
   pricing_unit: per_tier
   features: [variable, unit_priced]
   labels:
     volume_shortfall: PROVIDER
-    variable_cost_shortfall: NONE_ADVERSE
     volume_excess: NONE_ADVERSE
     spend_variability: VARIABLE
     mix: CLIENT
@@ -145,18 +144,19 @@ realizations:
 
 - id: PM-014
   kind: model
+  mitigates_when_tiers: [SEL-006]
   label: Volume-banded unit pricing
   unit_kinds: [COUNT]
   pricing_unit: per_tier
   features: [variable, unit_priced, volume_bands]
+  label_assumes: Expected volume reaches the cheaper band.
   labels:
-    volume_shortfall: PROVIDER
-    variable_cost_shortfall: NONE_ADVERSE
+    volume_shortfall: SHARED
     volume_excess: NONE_ADVERSE
     spend_variability: VARIABLE
     mix: CLIENT
   tradeoffs:
-  - The unit price falls as volume grows within the contract year, so savings arrive with scale.
+  - The unit price falls as volume grows within the contract year; if volume falls, the client loses the cheaper band and the provider loses revenue.
   evidence_class: D_PROPOSED
   source_ref: cometric:design
   fragment:
@@ -186,7 +186,6 @@ realizations:
   features: [variable, unit_priced, weighted]
   labels:
     volume_shortfall: PROVIDER
-    variable_cost_shortfall: NONE_ADVERSE
     volume_excess: NONE_ADVERSE
     spend_variability: VARIABLE
     mix: CLIENT
@@ -213,6 +212,7 @@ realizations:
 
 - id: PM-023
   kind: model
+  label_assumes: The allowance is set near expected volume.
   label: Base fee with an allowance plus overage
   unit_kinds: [COUNT, HOURS]
   pricing_unit: total

@@ -10185,7 +10185,7 @@ pack-base:realization.PM-001 a cm:Realization ;
     cm:pack pack-base:pack ;
     cm:realizes pack-base:PM-001 ;
     cm:kind "model" ;
-    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
     cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"TIME\", \"calculation_method\": \"TIME\", \"charge_cadence\": \"MONTHLY\", \"id\": \"time\", \"quantity_source\": \"scenario.hours\", \"role_rates\": [{\"rate\": \"<required: hourly rate>\", \"role\": \"delivery\"}]}]}}"^^rdf:JSON ;
     cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
     cm:sourceRef "cometric:design" .
@@ -10196,7 +10196,7 @@ pack-base:realization.PM-020 a cm:Realization ;
     cm:pack pack-base:pack ;
     cm:realizes pack-base:PM-020 ;
     cm:kind "model" ;
-    cm:riskLabels "{\"mix\": \"PROVIDER\", \"spend_variability\": \"BOUNDED\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"PROVIDER\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:riskLabels "{\"mix\": \"PROVIDER\", \"spend_variability\": \"BOUNDED\", \"volume_excess\": \"PROVIDER\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
     cm:fragment "{\"once\": {\"adjustments\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"amount\": \"<required: fee cap per contract year>\", \"applies_to\": [\"time\"], \"id\": \"fee_cap\", \"type\": \"CAP\"}], \"components\": [{\"billing_basis\": \"TIME\", \"calculation_method\": \"TIME\", \"charge_cadence\": \"MONTHLY\", \"id\": \"time\", \"quantity_source\": \"scenario.hours\", \"role_rates\": [{\"rate\": \"<required: hourly rate>\", \"role\": \"delivery\"}]}]}}"^^rdf:JSON ;
     cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
     cm:sourceRef "cometric:design" .
@@ -10229,7 +10229,7 @@ pack-base:realization.PM-011 a cm:Realization ;
     cm:pack pack-base:pack ;
     cm:realizes pack-base:PM-011 ;
     cm:kind "model" ;
-    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
     cm:fragment "{\"per_unit\": {\"components\": [{\"billing_basis\": \"OUTPUT\", \"calculation_method\": \"UNIT_OUTPUT\", \"charge_cadence\": \"USAGE_TRIGGERED\", \"id\": \"price_{u}\", \"quantity_source\": \"scenario.{q}\", \"rate_schedule_id\": \"rate_{u}\", \"unit\": \"{u}\"}], \"rate_schedules\": [{\"id\": \"rate_{u}\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: unit rate{t}>\", \"to\": null}], \"unit\": \"{u}\"}]}}"^^rdf:JSON ;
     cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
     cm:sourceRef "cometric:design" .
@@ -10240,7 +10240,7 @@ pack-base:realization.PM-014 a cm:Realization ;
     cm:pack pack-base:pack ;
     cm:realizes pack-base:PM-014 ;
     cm:kind "model" ;
-    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"SHARED\"}"^^rdf:JSON ;
     cm:fragment "{\"per_unit\": {\"components\": [{\"billing_basis\": \"OUTPUT\", \"calculation_method\": \"UNIT_OUTPUT\", \"charge_cadence\": \"USAGE_TRIGGERED\", \"id\": \"price_{u}\", \"quantity_source\": \"scenario.{q}\", \"rate_schedule_id\": \"rate_{u}\", \"unit\": \"{u}\"}], \"rate_schedules\": [{\"accumulation_period\": \"CONTRACT_YEAR\", \"id\": \"rate_{u}\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: unit rate below the band boundary{t}>\", \"to\": \"<required: volume band boundary per contract year{t}>\"}, {\"from\": \"<required: volume band boundary per contract year{t}>\", \"rate\": \"<required: unit rate above the band boundary{t}>\", \"to\": null}], \"unit\": \"{u}\"}]}}"^^rdf:JSON ;
     cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
     cm:sourceRef "cometric:design" .
@@ -10251,7 +10251,7 @@ pack-base:realization.PM-015 a cm:Realization ;
     cm:pack pack-base:pack ;
     cm:realizes pack-base:PM-015 ;
     cm:kind "model" ;
-    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"variable_cost_shortfall\": \"NONE_ADVERSE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
+    cm:riskLabels "{\"mix\": \"CLIENT\", \"spend_variability\": \"VARIABLE\", \"volume_excess\": \"NONE_ADVERSE\", \"volume_shortfall\": \"PROVIDER\"}"^^rdf:JSON ;
     cm:fragment "{\"once\": {\"components\": [{\"billing_basis\": \"OUTPUT\", \"calculation_method\": \"WEIGHTED_UNIT_OUTPUT\", \"charge_cadence\": \"USAGE_TRIGGERED\", \"id\": \"price_weighted\", \"quantity_source\": \"scenario.units\", \"rate_schedule_id\": \"rate_weighted\", \"unit\": \"weighted_units\", \"weight_table_id\": \"complexity\"}], \"rate_schedules\": [{\"id\": \"rate_weighted\", \"tiers\": [{\"from\": \"0\", \"rate\": \"<required: rate per weighted unit>\", \"to\": null}], \"unit\": \"weighted_units\"}]}}"^^rdf:JSON ;
     cm:evidenceClass cmv:EvidenceClass.D_PROPOSED ;
     cm:sourceRef "cometric:design" .

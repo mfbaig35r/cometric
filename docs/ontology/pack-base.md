@@ -3379,13 +3379,13 @@ How each pricing model and lever becomes engagement terms in a structure proposa
 | [CL-P12](#cl-p12) `CL-P12` Annual indexation | lever | any | none |
 | [CL-P14](#cl-p14) `CL-P14.fee` Termination fee | lever | any | early_exit: PROVIDER to CLIENT, SHARED to CLIENT, NONE_ADVERSE to CLIENT |
 | [CL-P14](#cl-p14) `CL-P14.prorated` Prorated minimum on early exit | lever | minimum | early_exit: PROVIDER to SHARED, NONE_ADVERSE to SHARED |
-| [PM-001](#pm-001) `PM-001` Hourly time and materials | model | HOURS | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
-| [PM-020](#pm-020) `PM-020` Capped time and materials | model | HOURS | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: PROVIDER; spend_variability: BOUNDED; mix: PROVIDER |
+| [PM-001](#pm-001) `PM-001` Hourly time and materials | model | HOURS | volume_shortfall: PROVIDER; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-020](#pm-020) `PM-020` Capped time and materials | model | HOURS | volume_shortfall: PROVIDER; volume_excess: PROVIDER; spend_variability: BOUNDED; mix: PROVIDER |
 | [PM-004](#pm-004) `PM-004` Dedicated team priced per FTE | model | COUNT, HOURS, FTE_MONTHS | volume_shortfall: CLIENT; volume_excess: PROVIDER; spend_variability: FIXED; mix: PROVIDER |
 | [PM-007](#pm-007) `PM-007` Fixed-fee managed service | model | COUNT, HOURS | volume_shortfall: CLIENT; volume_excess: PROVIDER; spend_variability: FIXED; mix: PROVIDER |
-| [PM-011](#pm-011) `PM-011` Per-unit pricing | model | COUNT | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
-| [PM-014](#pm-014) `PM-014` Volume-banded unit pricing | model | COUNT | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
-| [PM-015](#pm-015) `PM-015` Complexity-weighted unit pricing | model | COUNT (needs tiers) | volume_shortfall: PROVIDER; variable_cost_shortfall: NONE_ADVERSE; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-011](#pm-011) `PM-011` Per-unit pricing | model | COUNT | volume_shortfall: PROVIDER; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-014](#pm-014) `PM-014` Volume-banded unit pricing | model | COUNT | volume_shortfall: SHARED; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
+| [PM-015](#pm-015) `PM-015` Complexity-weighted unit pricing | model | COUNT (needs tiers) | volume_shortfall: PROVIDER; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: CLIENT |
 | [PM-023](#pm-023) `PM-023` Base fee with an allowance plus overage | model | COUNT, HOURS | volume_shortfall: CLIENT; volume_excess: NONE_ADVERSE; spend_variability: VARIABLE; mix: PROVIDER |
 
 ## Rules

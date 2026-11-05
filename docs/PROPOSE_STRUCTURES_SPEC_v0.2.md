@@ -56,7 +56,7 @@ All bearer values reuse the core `RiskBearer` vocabulary, so labels can be compa
 | `mix` (only when the profile has complexity tiers) | Work shifts toward complex items. Who absorbs it? | `CLIENT` (priced per tier or by weight), `PROVIDER` (one price or a fixed fee) |
 | `early_exit` (only when the client can terminate early) | The client leaves mid-term. Who absorbs stranded cost? | `CLIENT` (termination fee or remainder due), `SHARED` (minimum prorated), `PROVIDER` (no recovery) |
 
-`volume_shortfall` labels assume the provider carries material fixed delivery cost. When `cost_profile.shape` is `MOSTLY_VARIABLE`, models declaring `variable_cost_shortfall` use that label instead (usually `NONE_ADVERSE`).
+Labels mean what `derive_risk_exposure` measures: the provider is adverse when its contribution falls, the client when its effective unit price rises. Contribution falls with volume under any volume-priced structure, whatever the cost shape, so cost shape does not change `volume_shortfall`. Some labels depend on how the figures are set (an allowance near expected volume, a minimum below expected spend); each candidate states these in `label_assumes`. Test P16 checks the labels against the derived exposure for filled skeletons; checking them caught one wrong draft label (banded pricing shares a shortfall, because the client loses the cheaper band).
 
 ## A4. Inputs
 
@@ -109,8 +109,8 @@ Validation follows 0.4.0 behavior: unknown fields and values are errors naming t
 4. **Risk labels.** Start from the model's labels; apply each lever's `effects` (an explicit from-to map per axis) in lever-id order. No arithmetic.
 5. **Exclusion.** Drop compositions that break `provider_constraints.max_volume_risk`, a composition rule (A7.5), or an evaluable pack rule whose assessment is in the exclusion set (`ECONOMICALLY_CONFLICTING`, `NOT_ECONOMICALLY_DEFENSIBLE`, `NOT_VALID_FOR_RIGOROUS_MODELING`, `STRUCTURALLY_WEAK`) when run on the composition's skeleton. Rules at WARNING severity annotate instead. `excluded` reports each rule once with the count of compositions it removed and one example.
 6. **Fit.** For each profile priority, the priority's `fits` and `tension` predicates (A7.3) evaluate against the composition's labels and levers. Every candidate lists both `fits_priorities` and `tension_with_priorities`.
-7. **Selection.** Group by `volume_shortfall` in the order `CLIENT`, `SHARED`, `PROVIDER`, `NONE_ADVERSE`. Within a group, prefer the composition that fits the most priorities, compared in the profile's priority order; then fewer tensions; then fewer levers; then lexical composition id. Pick round-robin across groups until `max_candidates`; a second pick in a group must use a different base model. This preference decides only what is listed. Within a group the output is ordered by composition id, not by preference.
-8. **Annotation.** Attach evidence (A6.3), heuristic notes (SEL ids favoring or cautioning the base model, with their caution text), matching offers (OFFER-A to C by risk shape), WARNING-level rule results, and a similar template where one declares the same composition.
+7. **Selection.** Group by `volume_shortfall` in the order `CLIENT`, `SHARED`, `PROVIDER`, `NONE_ADVERSE`. Within a group, prefer the composition that fits the most priorities, compared in the profile's priority order; then fewer tensions; then fewer levers; then lexical composition id. Pick round-robin across groups until `max_candidates`; a further pick in a group must use a different base model, and among equally fitting options one with a different spend shape is taken. This preference decides only what is listed. Within a group the output is ordered by composition id, not by preference.
+8. **Annotation.** Attach evidence (A6.3), heuristic notes (SEL ids whose `profile_signal` fires and that favor or caution the base model; a caution is omitted when the model or a lever declares that it `mitigates` that heuristic), WARNING-level rule results and validation approvals, and a similar template where one declares the same composition.
 9. **Skeleton** (expanded candidates only). Assemble from realizations and the profile (A8), then run `validate_engagement`. Any error other than `REQUIRED_FIELD` on a labelled placeholder is a defect.
 
 ## A6. Output
@@ -133,11 +133,12 @@ Validation follows 0.4.0 behavior: unknown fields and values are errors naming t
       "fits_priorities": ["pay_for_use"],
       "tension_with_priorities": [{"priority": "budget_certainty", "note": "Spend moves with volume above the minimum."}],
       "tradeoffs": ["The provider is protected below the minimum; the client pays for unused volume up to it."],
-      "notes": [{"source": "base:SEL-003", "kind": "caution", "text": "Pure per-unit pricing without a minimum if staffing cannot flex"}],
+      "label_assumes": ["The minimum is below expected spend."],
+      "notes": ["base:SEL-008 favors this for: Strong client flexibility preference"],
       "requires_inputs": ["unit rate, tier high", "unit rate, tier medium", "unit rate, tier low", "minimum spend per year", "monthly team cost", "cost per unit"],
       "evidence": [
-        {"concept": "base:PM-011", "evidence_class": "A_DIRECT", "prevalence": "ESTABLISHED_COMMON", "prevalence_source": "alsp", "claims": 3, "verified_sources": 2},
-        {"concept": "base:CL-R01", "evidence_class": "B_CORROBORATED", "prevalence": "UNVERIFIED", "claims": 2, "verified_sources": 1, "flag": "WEAK"}
+        {"concept": "base:PM-011", "class": "A_DIRECT", "prevalence": "ESTABLISHED_COMMON", "in": "alsp", "claims": 4, "verified": 3},
+        {"concept": "base:CL-R01", "class": "B_CORROBORATED", "prevalence": "UNVERIFIED", "claims": 3, "verified": 2, "flag": "WEAK"}
       ],
       "rules": [],
       "similar_template": "alsp:tiered_units_annual_minimum",
@@ -158,13 +159,13 @@ Ids and values in this example are illustrative until the pack data in A7 is aut
 
 - Candidate ids are canonical composition ids (`PM-011+CL-R01`), stable across calls; with several declared packs they are pack-qualified.
 - `fits_priorities` and `tension_with_priorities` use only the profile's priorities and are both always present.
-- `requires_inputs` lists every placeholder label in the candidate's skeleton, so it is complete even when the skeleton is not expanded.
+- `requires_inputs` lists the candidate's own terms (fees, rates, minimums, caps); `common_inputs` lists what every candidate shares (header, unit rules, costs, scenario volumes). Labels that differ only by tier are listed once as "(each tier)". Together they cover every placeholder, so the list is complete even when the skeleton is not expanded.
 - **No figures:** no monetary amount or percentage appears that the profile did not supply. Evidence is reported as ids and status only (pack text such as offers contains illustrative amounts); `list_applicable_evidence` returns the statements.
 - The fingerprint covers the profile, options other than `expand`, declared pack ids and versions, engine version, and schema version.
 
 ### A6.3 Evidence
 
-For the base model and each lever: evidence class and prevalence (the declared pack's overlay when present, else `base`, with `prevalence_source`), the number of claims, and the number of verified sources. `flag: "WEAK"` when the class is C or D, prevalence is `UNVERIFIED`, or no source is verified. Values are reported as stored; never combined into a score.
+For the base model and each lever: evidence class and prevalence (the declared pack's overlay when present, else `base`; `in` names the overlaying pack), the number of claims, and the number of verified sources. `flag: "WEAK"` when the class is C or D, prevalence is `UNVERIFIED`, or no source is verified. Values are reported as stored; never combined into a score.
 
 ### A6.4 Expanded skeletons
 
@@ -184,16 +185,16 @@ All new records carry `evidence_class: D_PROPOSED` and `source_ref: cometric:des
 
 New directory `packs/base/realizations/`. Each realization names a concept, the unit kinds it fits, its risk labels, and an engagement fragment with placeholders and symbolic ids.
 
-| Model | Realization | Unit kinds | Shortfall (fixed cost / variable cost) | Excess | Spend | Mix |
+| Model | Realization | Unit kinds | Shortfall | Excess | Spend | Mix |
 |---|---|---|---|---|---|---|
-| PM-001 Hourly time and materials | `TIME` with role rates | HOURS | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | n/a |
-| PM-020 Capped time and materials | `TIME` + `CAP` adjustment | HOURS | PROVIDER / NONE_ADVERSE | PROVIDER | BOUNDED | n/a |
+| PM-001 Hourly time and materials | `TIME` with role rates | HOURS | PROVIDER | NONE_ADVERSE | VARIABLE | n/a |
+| PM-020 Capped time and materials | `TIME` + `CAP` adjustment | HOURS | PROVIDER | PROVIDER | BOUNDED | n/a |
 | PM-004 Dedicated FTE | `DEDICATED_RESOURCE` | FTE_MONTHS, HOURS, COUNT | CLIENT | PROVIDER | FIXED | PROVIDER |
 | PM-007 Fixed-fee managed service | `FIXED_RECURRING` | COUNT, HOURS | CLIENT | PROVIDER | FIXED | PROVIDER |
-| PM-011 Per unit | `UNIT_OUTPUT`, one rate per unit type | COUNT | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | CLIENT with tiers |
-| PM-014 Tiered volume pricing | `UNIT_OUTPUT`, marginal volume tiers | COUNT | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | CLIENT with tiers |
-| PM-015 Complexity-weighted units | `WEIGHTED_UNIT_OUTPUT` + weight table (requires tiers) | COUNT | PROVIDER / NONE_ADVERSE | NONE_ADVERSE | VARIABLE | CLIENT |
-| PM-023 Hybrid fixed plus variable | `FIXED_RECURRING` + entitlement + `ALLOWANCE_OVERAGE` | COUNT, HOURS | CLIENT | NONE_ADVERSE | VARIABLE | PROVIDER below the allowance |
+| PM-011 Per unit | `UNIT_OUTPUT`, one rate per unit type | COUNT | PROVIDER | NONE_ADVERSE | VARIABLE | CLIENT with tiers |
+| PM-014 Volume-banded unit pricing | `UNIT_OUTPUT`, marginal volume bands | COUNT | SHARED (assumes expected volume reaches the cheaper band) | NONE_ADVERSE | VARIABLE | CLIENT with tiers |
+| PM-015 Complexity-weighted units | `WEIGHTED_UNIT_OUTPUT` + weight table (requires tiers) | COUNT | PROVIDER | NONE_ADVERSE | VARIABLE | CLIENT |
+| PM-023 Hybrid fixed plus variable | `FIXED_RECURRING` + entitlement + `ALLOWANCE_OVERAGE` | COUNT, HOURS | CLIENT (assumes the allowance is near expected volume) | NONE_ADVERSE | VARIABLE | PROVIDER below the allowance |
 
 Deferred because the engine records but does not compute their commitment kinds (`COMMITMENT_NOT_COMPUTED`): capacity reservation (PM-009, `RESERVED_CAPACITY`), prepaid credits (PM-031, `PREPAID_CREDIT`), and take-or-pay (PM-034 and lever CL-R02, `MINIMUM_VOLUME`). A proposal must never offer a term its figures ignore.
 
@@ -275,7 +276,7 @@ Proposing any figure; ranking or recommending; market or competitor claims beyon
 | P10 | With early termination possible, every skeleton has an early-exit scenario and a CL-P14 candidate is considered. |
 | P11 | Every candidate shows evidence per concept; weak support is flagged. |
 | P12 | Unknown fields or values are errors naming the nearest valid value. |
-| P13 | Summary output for four candidates stays under 6,000 characters. |
+| P13 | Summary output for four candidates stays under 8,000 characters (0.1 said 6,000; the summary now carries common inputs, label assumptions, and evidence for every lever, and the example measures about 7,300). |
 | P14 | The order note is present; no output text calls the order a ranking. |
 | P15 | `max_volume_risk: NONE` returns only CLIENT-shortfall candidates. |
 | P16 | For the fixture fills, `derive_risk_exposure` on the low scenario agrees with each candidate's declared `volume_shortfall`. |

@@ -3,6 +3,8 @@
 realizations:
 - id: CL-R01
   kind: lever
+  label_assumes: The minimum is below expected spend.
+  mitigates: [SEL-003]
   label: Minimum spend commitment
   requires_features: [variable]
   excludes_features: [fixed]
