@@ -48,7 +48,17 @@ def last_day(m: Month) -> date:
     return date(m[0], m[1], days_in_month(m))
 
 
-def period_key(period: AccumulationPeriod, m: Month, anchor: Month) -> tuple:
+def contract_year(m: Month, anchor: Month, anchor_day: int = 1) -> int:
+    """Contract year of month m, counting anniversaries of the start date.
+
+    A month belongs to the contract year that contains its first day, so with a start on the
+    16th, the anniversary month itself still belongs to the previous contract year.
+    """
+    offset = month_index(m) - month_index(anchor) - (1 if anchor_day > 1 else 0)
+    return max(0, offset // 12)
+
+
+def period_key(period: AccumulationPeriod, m: Month, anchor: Month, anchor_day: int = 1) -> tuple:
     if period == AccumulationPeriod.MONTH:
         return ("M", m)
     if period == AccumulationPeriod.QUARTER:
@@ -56,26 +66,33 @@ def period_key(period: AccumulationPeriod, m: Month, anchor: Month) -> tuple:
     if period == AccumulationPeriod.YEAR:
         return ("Y", m[0])
     if period == AccumulationPeriod.CONTRACT_YEAR:
-        return ("CY", (month_index(m) - month_index(anchor)) // 12)
+        return ("CY", contract_year(m, anchor, anchor_day))
     return ("T",)
 
 
-def is_period_end(period: AccumulationPeriod, m: Month, anchor: Month, last: Month) -> bool:
+def is_period_end(
+    period: AccumulationPeriod, m: Month, anchor: Month, last: Month, anchor_day: int = 1
+) -> bool:
     """True when m is the final month of its accumulation period within the engagement."""
     if m == last:
         return True
     nxt = from_index(month_index(m) + 1)
-    return period_key(period, nxt, anchor) != period_key(period, m, anchor)
+    return period_key(period, nxt, anchor, anchor_day) != period_key(period, m, anchor, anchor_day)
 
 
 def period_truncated(
-    period: AccumulationPeriod, m: Month, anchor: Month, horizon_last: Month, engagement_last: Month
+    period: AccumulationPeriod,
+    m: Month,
+    anchor: Month,
+    horizon_last: Month,
+    engagement_last: Month,
+    anchor_day: int = 1,
 ) -> bool:
     """True when the horizon ends before this period's natural end (true-up falls outside)."""
     if m != horizon_last or m == engagement_last:
         return False
     nxt = from_index(month_index(m) + 1)
-    return period_key(period, nxt, anchor) == period_key(period, m, anchor)
+    return period_key(period, nxt, anchor, anchor_day) == period_key(period, m, anchor, anchor_day)
 
 
 @dataclass(frozen=True)

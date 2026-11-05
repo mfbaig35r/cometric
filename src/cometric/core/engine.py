@@ -42,6 +42,7 @@ from .money import MINOR_UNITS, ONE, ZERO, allocate_exact, allocate_weighted, qu
 from .periods import (
     DaySpan,
     Month,
+    contract_year,
     is_period_end,
     month_index,
     month_of,
@@ -136,6 +137,7 @@ class Segment:
     span: DaySpan
     version: ArrangementVersion | None
     factor: Decimal  # share of the month's days
+    full_month: bool = False  # True when a FULL_MONTH_FROM_* policy gave this version the month
 
 
 @dataclass
@@ -180,9 +182,15 @@ class Calculator:
         self.eng_last = month_of(engagement.end_date)
         hz_from = scenario.horizon.from_ if scenario.horizon else engagement.start_date
         hz_to = scenario.horizon.to if scenario.horizon else engagement.end_date
+        self.anchor_day = engagement.start_date.day
         self.first = max(month_of(hz_from), self.anchor)
         self.last = min(month_of(hz_to), self.eng_last)
+        # Reported months are the horizon. Simulation always starts at the engagement start so
+        # allowances, tiers, minimums, caps, and outcome periods carry into the horizon.
         self.months = months_between(self.first, self.last)
+        self.sim_months = months_between(self.anchor, self.last)
+        self.reported = set(self.months)
+        self.posted_once: set[tuple] = set()
         self.fee_lines: list[FeeLine] = []
         self.cost_lines: list[CostLine] = []
         self.ledgers: dict[str, EntitlementLedger] = {}
@@ -195,6 +203,15 @@ class Calculator:
         self.unit_kinds = {u.code: u.kind for u in engagement.unit_definitions}
 
     # -- helpers --------------------------------------------------------------------------
+
+    def pk(self, period, m: Month) -> tuple:
+        return period_key(period, m, self.anchor, self.anchor_day)
+
+    def is_end(self, period, m: Month) -> bool:
+        return is_period_end(period, m, self.anchor, self.eng_last, self.anchor_day)
+
+    def truncated(self, period, m: Month) -> bool:
+        return period_truncated(period, m, self.anchor, self.last, self.eng_last, self.anchor_day)
 
     def r(self, amount: Decimal) -> Decimal:
         if self.money.rounding_level == RoundingLevel.LINE_ITEM:
@@ -276,42 +293,64 @@ class Calculator:
                 raw.append((ov, v))
         raw.sort(key=lambda x: x[0].start)
         # fill gaps with unpriced spans so boundaries are explicit
-        filled: list[tuple[DaySpan, ArrangementVersion | None]] = []
+        filled: list[list] = []
         cursor = ms.start
         for span, v in raw:
             if span.start > cursor:
                 filled.append(
-                    (DaySpan(cursor, span.start.fromordinal(span.start.toordinal() - 1)), None)
+                    [
+                        DaySpan(cursor, span.start.fromordinal(span.start.toordinal() - 1)),
+                        None,
+                        False,
+                    ]
                 )
-            filled.append((span, v))
+            filled.append([span, v, False])
             cursor = span.end.fromordinal(span.end.toordinal() + 1)
         if cursor <= ms.end:
-            filled.append((DaySpan(cursor, ms.end), None))
+            filled.append([DaySpan(cursor, ms.end), None, False])
         # apply proration policy at each mid-month boundary
         i = 1
         while i < len(filled):
-            (sa, va), (sb, vb) = filled[i - 1], filled[i]
+            (sa, va, fa), (sb, vb, fb) = filled[i - 1], filled[i]
             policy = (vb.proration_policy if vb else None) or (va.proration_policy if va else None)
             if va is vb:
-                filled[i - 1 : i + 1] = [(DaySpan(sa.start, sb.end), va)]
+                filled[i - 1 : i + 1] = [[DaySpan(sa.start, sb.end), va, fa or fb]]
                 continue
             if policy == ProrationPolicy.FULL_MONTH_FROM_NEXT:
-                filled[i - 1 : i + 1] = [(DaySpan(sa.start, sb.end), va)]
+                filled[i - 1 : i + 1] = [[DaySpan(sa.start, sb.end), va, True]]
                 continue
             if policy == ProrationPolicy.FULL_MONTH_FROM_CURRENT:
-                filled[i - 1 : i + 1] = [(DaySpan(sa.start, sb.end), vb)]
+                filled[i - 1 : i + 1] = [[DaySpan(sa.start, sb.end), vb, True]]
                 continue
             i += 1
         dim = Decimal(ms.days)
-        return [Segment(span, v, Decimal(span.days) / dim) for span, v in filled]
+        return [Segment(span, v, Decimal(span.days) / dim, full) for span, v, full in filled]
 
     # -- run ------------------------------------------------------------------------------
 
     def run(self) -> CalculationResult:
-        quantities = build_quantities(self.e, self.s, self.months, self.issues)
+        term_months = months_between(self.anchor, self.eng_last)
+        quantities = build_quantities(self.e, self.s, term_months, self.issues)
         if self.issues.has_errors:
             raise CometricError(self.issues)
         self.quantities = quantities
+        self._check_triggers(quantities)
+        if self.first > self.anchor:
+            pre = [m for m in self.sim_months if m not in self.reported]
+            has_pre = any(
+                quantities.values.get(n, {}).get(m) for n in quantities.values for m in pre
+            )
+            if has_pre:
+                self.issues.info(
+                    "PRE_HORIZON_SIMULATED",
+                    f"months before the horizon ({month_str(pre[0])} to {month_str(pre[-1])}) were simulated so allowances, tiers, minimums, caps, and outcome periods carry into it; they are not reported",
+                )
+            else:
+                self.issues.warn(
+                    "PRE_HORIZON_QUANTITIES_MISSING",
+                    f"the horizon starts after the engagement does, and the scenario has no quantities for {month_str(pre[0])} to {month_str(pre[-1])}; accumulators start the horizon as if nothing was consumed before it",
+                    "/scenario/horizon",
+                )
         plan = self.e.delivery_plan
         if plan is not None and plan.standard_rate_card:
             base = (plan.worked_hours_source or "").removeprefix("scenario.")
@@ -326,7 +365,7 @@ class Calculator:
                 raise CometricError(self.issues)
         self._derive_demand_hours(quantities)
         per_month: dict[Month, dict] = {}
-        for m in self.months:
+        for m in self.sim_months:
             self._capacity(m, quantities)
             segs = self.segments(m)
             self._fees_for_month(m, segs, quantities)
@@ -339,7 +378,15 @@ class Calculator:
         for m in self.months:
             per_month[m] = self._month_totals(m)
         data = self._aggregate(per_month, quantities)
-        ledger = [e.as_dict() for led in self.ledgers.values() for e in led.entries]
+        reported = {month_str(m) for m in self.months}
+        self.fee_lines = [ln for ln in self.fee_lines if ln.period in reported]
+        self.cost_lines = [ln for ln in self.cost_lines if ln.period in reported]
+        ledger = [
+            e.as_dict()
+            for led in self.ledgers.values()
+            for e in led.entries
+            if e.period in reported
+        ]
         status = "ok" if self.feasible else "infeasible"
         return CalculationResult(
             data, self.fee_lines, self.cost_lines, ledger, self.issues, self.feasible, status
@@ -363,15 +410,16 @@ class Calculator:
         # open entitlement periods for this month (once per month)
         for v in {id(s.version): s.version for s in priced}.values():
             for ent in v.entitlements:
-                key = period_key(ent.accumulation_period, m, self.anchor)
+                key = self.pk(ent.accumulation_period, m)
                 led = self.ledgers.get(ent.id) or EntitlementLedger(ent)
                 self.ledgers[ent.id] = led
                 led.start_month(m, key, ent, v.id)
         for idx, seg in enumerate(priced):
             share = (lambda q, _i=idx: self._split(q, priced, _i)) if split else (lambda q: q)
-            self._price_segment(m, seg, share, quantities, first=idx == 0)
+            self._price_segment(m, seg, share, quantities)
         self._period_end_overage(m, last_version)
         self._period_end_outcome(m, last_version)
+        self._indexation(m)
         self._adjustments(m, last_version)
 
     def _split(self, q: Decimal, priced: list[Segment], idx: int) -> Decimal:
@@ -380,32 +428,54 @@ class Calculator:
         shares = allocate_weighted(q, weights, scale)
         return shares[idx]
 
-    def _price_segment(
-        self, m: Month, seg: Segment, share, quantities: Quantities, first: bool = True
-    ) -> None:
+    def _price_segment(self, m: Month, seg: Segment, share, quantities: Quantities) -> None:
         v = seg.version
         assert v is not None
         schedules = {r.id: r for r in v.rate_schedules}
         ents = {e.id: e for e in v.entitlements}
         vi = self.e.arrangement_versions.index(v)
         label = f"{seg.span.start.isoformat()}..{seg.span.end.isoformat()}"
-        for ci, c in enumerate(v.components):
+        # Components are processed in id order so results never depend on list order (the
+        # fingerprint sorts components), e.g. when two components draw on one entitlement.
+        for ci, c in sorted(enumerate(v.components), key=lambda t: t[1].id):
             path = pointer("engagement", "arrangement_versions", vi, "components", ci)
             cspan = DaySpan(c.effective_period.from_, c.effective_period.to or self.e.end_date)
-            ov = overlap(cspan, seg.span)
-            if ov is None:
-                continue
-            factor = Decimal(ov.days) / Decimal(month_span(m).days)
+            if seg.full_month:
+                # FULL_MONTH_FROM_* gives the version the whole month: component dates inside the
+                # month snap to it, so the component is either in for the month or out.
+                if overlap(cspan, month_span(m)) is None:
+                    continue
+                factor = ONE
+            else:
+                ov = overlap(cspan, seg.span)
+                if ov is None:
+                    continue
+                factor = Decimal(ov.days) / Decimal(month_span(m).days)
             kw = {"segment": label, "version": v.id}
             meth = c.calculation_method
             if meth == CalculationMethod.FIXED_RECURRING:
                 base = self._fixed_month_amount(c, m)
                 if base is None:
                     continue
-                amt = base * factor
-                self.fee(m, 4, c.id, c.id, "fixed", amt, f"{base} x {factor:.6f} of month", **kw)
+                cad = c.charge_cadence
+                if cad == ChargeCadence.ONE_TIME:
+                    if (c.id, "one_time") in self.posted_once:
+                        continue
+                    self.posted_once.add((c.id, "one_time"))
+                    self.fee(m, 4, c.id, c.id, "fixed", base, "one-time fee", **kw)
+                    continue
+                # Monthly amounts prorate by the component's days; quarterly and annual shares are
+                # anchored at the component start and keep their declared total, so they prorate
+                # only by the version's share of a split month.
+                f = (
+                    factor
+                    if cad == ChargeCadence.MONTHLY
+                    else (ONE if seg.full_month else seg.factor)
+                )
+                self.fee(m, 4, c.id, c.id, "fixed", base * f, f"{base} x {f:.6f} of month", **kw)
             elif meth == CalculationMethod.FIXED_PROJECT:
-                if first:
+                if (c.id, m) not in self.posted_once:
+                    self.posted_once.add((c.id, m))
                     for p in c.payment_schedule:
                         if p.month == month_str(m):
                             self.fee(
@@ -467,7 +537,7 @@ class Calculator:
                         )
                     )
                 sched = schedules[c.rate_schedule_id]
-                key = ("tier", sched.id, period_key(sched.accumulation_period, m, self.anchor))
+                key = ("tier", sched.id, self.pk(sched.accumulation_period, m))
                 before = self.acc_add(key, q)
                 amt = incremental(before, q, sched.tiers, sched.tier_method)
                 self.fee(
@@ -488,7 +558,7 @@ class Calculator:
                 led = self.ledgers[ent.id]
                 in_allow, excess = led.consume(m, q)
                 sched = schedules[c.rate_schedule_id]
-                elig_key = ("elig", sched.id, period_key(sched.accumulation_period, m, self.anchor))
+                elig_key = ("elig", sched.id, self.pk(sched.accumulation_period, m))
                 elig_before = self.acc_add(elig_key, q)
                 if ent.overage_recognition == Recognition.PERIOD_END:
                     self.pending_overage[c.id] = self.pending_overage.get(c.id, ZERO) + excess
@@ -497,32 +567,37 @@ class Calculator:
             elif meth == CalculationMethod.OUTCOME_ADJUSTMENT:
                 o = c.outcome
                 measured = share(self.qty(quantities, o.metric, m, path + "/outcome/metric"))
-                self.acc_add(
-                    ("outcome", c.id, period_key(o.accumulation_period, m, self.anchor)), measured
-                )
+                self.acc_add(("outcome", c.id, self.pk(o.accumulation_period, m)), measured)
             else:
                 self.issues.error(
                     "METHOD_NOT_SUPPORTED", f"{meth} is post-v1", path + "/calculation_method"
                 )
                 raise CometricError(self.issues)
-        # indexation applies to this segment's priced lines
-        for adj in v.adjustments:
-            if adj.type != AdjustmentType.INDEXATION or adj.percent is None:
+
+    INDEXABLE_KINDS = ("fixed", "resource", "time", "unit", "overage")
+
+    def _indexation(self, m: Month) -> None:
+        """Indexation from the second contract year on every rate-based or recurring step-4 line,
+        including period-end overage. Fixed project payments and outcome fees are not indexed."""
+        years = contract_year(m, self.anchor, self.anchor_day)
+        if years <= 0:
+            return
+        ps = month_str(m)
+        versions = {v.id: v for v in self.e.arrangement_versions}
+        for line in [
+            ln
+            for ln in self.fee_lines
+            if ln.period == ps and ln.step == 4 and ln.kind in self.INDEXABLE_KINDS
+        ]:
+            v = versions.get(line.version or "")
+            if v is None:
                 continue
-            years = (month_index(m) - month_index(self.anchor)) // 12
-            if years <= 0:
-                continue
-            mult = (ONE + adj.percent) ** years - ONE
-            for line in [
-                ln
-                for ln in self.fee_lines
-                if ln.period == month_str(m)
-                and ln.step == 4
-                and ln.segment == label
-                and ln.kind != "indexation"
-            ]:
+            for adj in v.adjustments:
+                if adj.type != AdjustmentType.INDEXATION or adj.percent is None:
+                    continue
                 if adj.applies_to and line.component not in adj.applies_to:
                     continue
+                mult = (ONE + adj.percent) ** years - ONE
                 self.fee(
                     m,
                     4,
@@ -531,7 +606,7 @@ class Calculator:
                     "indexation",
                     line.amount * mult,
                     f"{line.amount} x ((1+{adj.percent})^{years} - 1)",
-                    segment=label,
+                    segment=line.segment,
                     version=v.id,
                 )
 
@@ -539,7 +614,7 @@ class Calculator:
         self, m: Month, c: FeeComponent, sched, excess: Decimal, elig_position: Decimal, **kw
     ) -> None:
         if sched.tier_scope == TierScope.EXCESS_ONLY:
-            key = ("tier", sched.id, period_key(sched.accumulation_period, m, self.anchor))
+            key = ("tier", sched.id, self.pk(sched.accumulation_period, m))
             before = self.acc_add(key, excess)
             amt = incremental(before, excess, sched.tiers, sched.tier_method)
             formula = (
@@ -556,17 +631,15 @@ class Calculator:
             if c.calculation_method != CalculationMethod.OUTCOME_ADJUSTMENT or c.outcome is None:
                 continue
             o = c.outcome
-            if period_truncated(o.accumulation_period, m, self.anchor, self.last, self.eng_last):
+            if self.truncated(o.accumulation_period, m):
                 self.issues.warn(
                     "TRUE_UP_OUTSIDE_HORIZON",
                     f"outcome fee for {c.id} is measured after the horizon",
                 )
                 continue
-            if not is_period_end(o.accumulation_period, m, self.anchor, self.eng_last):
+            if not self.is_end(o.accumulation_period, m):
                 continue
-            total = self.acc.get(
-                ("outcome", c.id, period_key(o.accumulation_period, m, self.anchor)), ZERO
-            )
+            total = self.acc.get(("outcome", c.id, self.pk(o.accumulation_period, m)), ZERO)
             higher = o.direction == OutcomeDirection.HIGHER_IS_BETTER
             if o.form == OutcomeForm.SHARE:
                 improvement = (total - o.baseline) if higher else (o.baseline - total)
@@ -597,14 +670,14 @@ class Calculator:
             ent = ents.get(c.entitlement_id or "")
             if ent is None or ent.overage_recognition != Recognition.PERIOD_END:
                 continue
-            if period_truncated(ent.accumulation_period, m, self.anchor, self.last, self.eng_last):
+            if self.truncated(ent.accumulation_period, m):
                 self.issues.warn(
                     "TRUE_UP_OUTSIDE_HORIZON",
                     f"overage true-up for {c.id} falls after the horizon",
                     "",
                 )
                 continue
-            if is_period_end(ent.accumulation_period, m, self.anchor, self.eng_last):
+            if self.is_end(ent.accumulation_period, m):
                 pending = self.pending_overage.pop(c.id, ZERO)
                 self._price_overage(
                     m, c, schedules[c.rate_schedule_id], pending, ZERO, version=v.id
@@ -620,7 +693,7 @@ class Calculator:
         if cad == ChargeCadence.MONTHLY:
             return amt
         if cad == ChargeCadence.QUARTERLY:
-            return allocate_exact(amt, 3, self.scale)[(m[1] - 1) % 3]
+            return allocate_exact(amt, 3, self.scale)[idx % 3]
         if cad == ChargeCadence.ANNUAL:
             return allocate_exact(amt, 12, self.scale)[idx % 12]
         if cad == ChargeCadence.ONE_TIME:
@@ -660,14 +733,23 @@ class Calculator:
             if adj.type != AdjustmentType.COLLAR:
                 continue
             c = comps[adj.component_id]
-            q = self.qty(self.quantities, c.quantity_source, m, "")
+            if c.calculation_method == CalculationMethod.WEIGHTED_UNIT_OUTPUT:
+                q = self.weighted_qty(
+                    self.quantities, c.quantity_source or "", c.weight_table_id, m, ""
+                )
+            else:
+                q = self.qty(self.quantities, c.quantity_source, m, "")
             base, alt = schedules[c.rate_schedule_id], schedules[adj.outside_rate_schedule_id]
+            # Step 4 priced this month's units at the schedule's cumulative position; remove the
+            # same amount it charged for the repriced units, not a price measured from zero.
+            after = self.acc.get(("tier", base.id, self.pk(base.accumulation_period, m)), q)
+            before = after - q
             if adj.upper is not None and q > adj.upper:
                 extra = q - adj.upper
-                amt = price(extra, alt.tiers, alt.tier_method) - (
-                    price(q, base.tiers, base.tier_method)
-                    - price(adj.upper, base.tiers, base.tier_method)
+                charged = price(before + q, base.tiers, base.tier_method) - price(
+                    before + adj.upper, base.tiers, base.tier_method
                 )
+                amt = price(extra, alt.tiers, alt.tier_method) - charged
                 self.fee(
                     m,
                     5,
@@ -675,11 +757,14 @@ class Calculator:
                     c.id,
                     "collar",
                     amt,
-                    f"{extra} units above band repriced on {alt.id}",
+                    f"{extra} units above band: remove {charged}, reprice on {alt.id}",
                     quantity=extra,
                 )
             elif adj.lower is not None and q < adj.lower:
-                amt = price(q, alt.tiers, alt.tier_method) - price(q, base.tiers, base.tier_method)
+                charged = price(before + q, base.tiers, base.tier_method) - price(
+                    before, base.tiers, base.tier_method
+                )
+                amt = price(q, alt.tiers, alt.tier_method) - charged
                 self.fee(
                     m,
                     5,
@@ -687,7 +772,7 @@ class Calculator:
                     c.id,
                     "collar",
                     amt,
-                    f"{q} units below band repriced on {alt.id}",
+                    f"{q} units below band: remove {charged}, reprice on {alt.id}",
                     quantity=q,
                 )
         # step 6: discounts and rebates
@@ -702,9 +787,13 @@ class Calculator:
                     )
             elif adj.type == AdjustmentType.REBATE and adj.percent is not None:
                 scope = set(adj.applies_to) if adj.applies_to else None
-                key = ("rebate", adj.id, period_key(adj.accumulation_period, m, self.anchor))
+                key = ("rebate", adj.id, self.pk(adj.accumulation_period, m))
                 self.acc_add(key, self._subtotal(m, 5, scope, False))
-                if is_period_end(adj.accumulation_period, m, self.anchor, self.eng_last):
+                if self.truncated(adj.accumulation_period, m):
+                    self.issues.warn(
+                        "TRUE_UP_OUTSIDE_HORIZON", f"rebate {adj.id} is settled after the horizon"
+                    )
+                elif self.is_end(adj.accumulation_period, m):
                     period_total = self.acc[key]
                     if adj.threshold is None or period_total >= adj.threshold:
                         self.fee(
@@ -764,7 +853,7 @@ class Calculator:
                 continue
             scope = set(adj.applies_to) if adj.applies_to else None
             month_total = self._subtotal(m, 8, scope, scope is None)
-            key = ("cap", adj.id, period_key(adj.accumulation_period, m, self.anchor))
+            key = ("cap", adj.id, self.pk(adj.accumulation_period, m))
             before = self.acc_add(key, month_total)
             after = before + month_total
             reduction = max(ZERO, after - adj.amount) - max(ZERO, before - adj.amount)
@@ -791,7 +880,7 @@ class Calculator:
             )
         basis = step_basis or (5 if com.tested_against == TestedAgainst.GROSS else 6)
         tested = self._subtotal(m, basis, scope, unattributed)
-        key = ("min", com.id, period_key(com.accumulation_period, m, self.anchor))
+        key = ("min", com.id, self.pk(com.accumulation_period, m))
         if com.shortfall_rule == ShortfallRule.PER_SEGMENT:
             shortfall = max(ZERO, com.amount - tested)
             if shortfall > 0:
@@ -806,12 +895,12 @@ class Calculator:
                 )
             return
         self.acc_add(key, tested)
-        if period_truncated(com.accumulation_period, m, self.anchor, self.last, self.eng_last):
+        if self.truncated(com.accumulation_period, m):
             self.issues.warn(
                 "TRUE_UP_OUTSIDE_HORIZON", f"minimum true-up for {com.id} falls after the horizon"
             )
             return
-        if is_period_end(com.accumulation_period, m, self.anchor, self.eng_last):
+        if self.is_end(com.accumulation_period, m):
             total = self.acc[key]
             shortfall = max(ZERO, com.amount - total)
             if shortfall > 0:
@@ -827,11 +916,32 @@ class Calculator:
 
     # -- capacity -------------------------------------------------------------------------
 
+    def _check_triggers(self, quantities: Quantities) -> None:
+        """A performance trigger the scenario does not provide is an error, never a silent 0."""
+        for vi, v in enumerate(self.e.arrangement_versions):
+            for ai, adj in enumerate(v.adjustments):
+                if adj.type not in (
+                    AdjustmentType.SLA_CREDIT,
+                    AdjustmentType.BONUS,
+                    AdjustmentType.HOLDBACK,
+                ):
+                    continue
+                if adj.trigger and not quantities.has(adj.trigger.removeprefix("scenario.")):
+                    self.issues.error(
+                        "MISSING_ASSUMPTION",
+                        f'{adj.type} {adj.id} is triggered by {adj.trigger!r}, which the scenario does not provide; give it explicitly (for example "0" for TERM)',
+                        pointer(
+                            "engagement", "arrangement_versions", vi, "adjustments", ai, "trigger"
+                        ),
+                    )
+        if self.issues.has_errors:
+            raise CometricError(self.issues)
+
     def _derive_demand_hours(self, quantities: Quantities) -> None:
         plan = self.e.delivery_plan
         if plan is None or not plan.production_standards:
             return
-        for m in self.months:
+        for m in self.sim_months:
             hours = ZERO
             for ps in plan.production_standards:
                 name = f"{ps.unit}.{ps.band}" if ps.band else ps.unit
@@ -852,17 +962,17 @@ class Calculator:
             return
         mode = self._breach_mode()
         for li, lim in enumerate(plan.capacity):
-            st = self.capacity_state.setdefault(
-                lim.id,
-                {
-                    "demand": ZERO,
-                    "served": ZERO,
-                    "overflow": ZERO,
-                    "capacity": ZERO,
-                    "periods": set(),
-                },
-            )
-            key = period_key(lim.accumulation_period, m, self.anchor)
+            fresh = {
+                "demand": ZERO,
+                "served": ZERO,
+                "overflow": ZERO,
+                "capacity": ZERO,
+                "periods": set(),
+            }
+            real = self.capacity_state.setdefault(lim.id, dict(fresh, periods=set()))
+            # months before the horizon carry the accumulators but are not reported
+            st = real if m in self.reported else fresh
+            key = self.pk(lim.accumulation_period, m)
             if key not in st["periods"]:
                 st["periods"].add(key)
                 st["capacity"] += lim.amount
@@ -1018,7 +1128,7 @@ class Calculator:
                 )
             elif b == CostBehavior.TIERED_VARIABLE:
                 q = self._driver(quantities, cc.driver, m, path + "/driver")
-                key = ("ctier", cc.id, period_key(cc.accumulation_period, m, self.anchor))
+                key = ("ctier", cc.id, self.pk(cc.accumulation_period, m))
                 before = self.acc_add(key, q)
                 from .enums import TierMethod
 
@@ -1070,14 +1180,19 @@ class Calculator:
         amt = cc.amount or ZERO
         if cc.period == CostPeriod.MONTHLY:
             return amt
-        anchor = month_of(cc.effective_period.from_) if cc.effective_period else self.anchor
-        idx = month_index(m) - month_index(anchor)
+        start = (
+            max(month_of(cc.effective_period.from_), self.anchor)
+            if cc.effective_period
+            else self.anchor
+        )
         if cc.period == CostPeriod.ANNUAL:
-            return allocate_exact(amt, 12, self.scale)[idx % 12]
-        term_months = months_between(self.anchor, self.eng_last)
-        return allocate_exact(amt, len(term_months), self.scale)[
-            month_index(m) - month_index(self.anchor)
-        ]
+            return allocate_exact(amt, 12, self.scale)[(month_index(m) - month_index(start)) % 12]
+        # TERM: spread over the months the cost is in effect, so its declared total is kept
+        end = self.eng_last
+        if cc.effective_period and cc.effective_period.to:
+            end = min(month_of(cc.effective_period.to), self.eng_last)
+        active = months_between(start, end)
+        return allocate_exact(amt, len(active), self.scale)[month_index(m) - month_index(start)]
 
     def _one_time(self, cc: CostComponent, m: Month) -> tuple[Decimal, Decimal]:
         schedule = [(ln.month, ln.amount) for ln in cc.incurred_schedule] or [
@@ -1110,8 +1225,14 @@ class Calculator:
             return s
 
         layers = {layer: tot(c.rounded for c in costs if c.layer == layer) for layer in MarginLayer}
+        in_contribution = (MarginLayer.DIRECT_DELIVERY, MarginLayer.ENGAGEMENT_AVOIDABLE)
         incurred_adj = sum(
-            ((c.incurred - c.rounded) for c in costs if c.incurred is not None), ZERO
+            (
+                (c.incurred - c.rounded)
+                for c in costs
+                if c.incurred is not None and c.layer in in_contribution
+            ),
+            ZERO,
         )
         worked, standard = self._worked_and_standard(m)
         return {

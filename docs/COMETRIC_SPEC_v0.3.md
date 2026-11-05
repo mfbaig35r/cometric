@@ -57,6 +57,7 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-22 | App. D | Evidence verification status replaces the v0.2 priority list. |
 | V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (unreleased fix after 0.1.0). |
 | V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (unreleased, after 0.1.0). |
+| V3-25 | 4.1, 4.3, 4.5, 4.6, 5.2, 6.1, 8.4, 9 | Rules clarified by the full engine review (0.2.0): full-month proration, horizon simulation, one-time fees, indexation scope and contract years, required performance triggers, term-cost spreading, incurred view, component order. |
 
 ## 1. Purpose and intended decisions
 
@@ -355,7 +356,7 @@ Each fee component MUST declare: `id`, `service_id`, `calculation_method`, `bill
 
 `ALLOWANCE_OVERAGE` components MUST list their entitlement in `depends_on`. The entitlement's `granted_by` names the component that grants it (typically a `FIXED_RECURRING` base).
 
-**Fixed amounts with longer cadences.** `[V3-06]` A `FIXED_RECURRING` amount with `QUARTERLY` or `ANNUAL` cadence is spread across the months of its quarter or contract year by exact allocation (§4.7), anchored at the component's effective date; `ONE_TIME` falls in the first month. A billing or cash schedule, if needed, is separate (§5.1).
+**Fixed amounts with longer cadences.** `[V3-06]` A `FIXED_RECURRING` amount with `QUARTERLY` or `ANNUAL` cadence is spread across the months of its quarter or contract year by exact allocation (§4.7), anchored at the component's effective month, so its declared total is kept even when the component starts mid-month; it is reduced only by its version's share of a split month. `ONE_TIME` is charged in full in its first month and never prorated. `MONTHLY` amounts prorate by the component's days in the month. `[V3-25]` A billing or cash schedule, if needed, is separate (§5.1).
 
 **Outcome adjustment.** `[V3-02]` The outcome fee is its own component; any base fee is a separate component. The scenario supplies the measured outcome per month as the quantity named by `outcome.metric`. The engine accumulates it over `outcome.accumulation_period` and charges the fee in the period's final month:
 
@@ -400,6 +401,8 @@ Within an accumulation period the engine keeps a running accumulator. Each such 
 | `CUMULATIVE` | The effect is recognized in the month the accumulator crosses the threshold. Example: an annual allowance of 12,000 units is consumed month by month; overage fees begin in the month cumulative consumption passes 12,000. |
 | `PERIOD_END` | The effect is computed and recognized in the final month of the accumulation period (true-up). |
 | `PER_SEGMENT` | Only valid when `accumulation_period = MONTH`; each month stands alone. |
+
+**Horizon starting after the engagement.** `[V3-25]` The engine always simulates from the engagement's first month, so allowances, tier counters, minimums, caps, rebates, and outcome periods carry into the horizon; only horizon months are reported. Assumptions stated for a year or `TERM` are spread over the engagement's months, not just the horizon. If the scenario has no quantities before the horizon, `PRE_HORIZON_QUANTITIES_MISSING` warns that accumulators start the horizon empty.
 
 Applicability `[V3-08]`: allowances support all three rules (`PER_SEGMENT` only with `MONTH`); minimum commitments use their `shortfall_rule` (`PERIOD_END_TRUE_UP`, or `PER_SEGMENT` with `MONTH`); outcome fees use `PERIOD_END` only; tier counters and capacity limits are always cumulative. A true-up whose period ends after the horizon is not charged and raises `TRUE_UP_OUTSIDE_HORIZON`.
 
@@ -455,8 +458,8 @@ Step semantics as built `[V3-10]`:
 - **Split months.** Steps 3 and 4 run per day segment. Steps 5 to 9 run once per month with the adjustments and commitments of the version in force at the month's last priced segment.
 - **Collar.** Evaluated per month on that month's measured quantity. Above `upper`, units above the band are repriced on the alternate schedule; below `lower`, all units are repriced on it.
 - **Discount** applies a percentage to each component's step-5 subtotal (all components unless `applies_to` is set). **Rebate** credits a percentage of the accumulated period subtotal at period end when it meets `threshold`.
-- **Indexation** adds, from the second contract year, `(1 + percent)^n - 1` times each step-4 line, where n is the number of completed contract years.
-- **Performance.** `SLA_CREDIT` and `BONUS` multiply `percent` × the step-7 subtotal × a scenario trigger quantity (for example, misses in the month), limited by `cap_percent` of that subtotal. `HOLDBACK` withholds `percent` of the subtotal unless the trigger quantity releases it (1).
+- **Indexation** adds, from the second contract year, `(1 + percent)^n - 1` times each step-4 fixed, resource, time, unit, and overage line (including period-end overage), where n is the contract year. Project payments and outcome fees are not indexed. A month belongs to the contract year containing its first day, counting anniversaries of the engagement start date. `[V3-25]`
+- **Performance.** A trigger quantity the scenario does not provide is an error with a pointer to the adjustment's `trigger`, never a silent zero. `[V3-25]` `SLA_CREDIT` and `BONUS` multiply `percent` × the step-7 subtotal × a scenario trigger quantity (for example, misses in the month), limited by `cap_percent` of that subtotal. `HOLDBACK` withholds `percent` of the subtotal unless the trigger quantity releases it (1).
 - **Cap** accumulates the pre-cap total over its period and reduces the month in which the cap is crossed and any month after.
 
 ### 4.6 Amendments and proration
@@ -468,8 +471,10 @@ Effective dates may fall on any day. When any version, component, or commitment 
 | Policy | Fixed amounts | Metered quantities |
 |---|---|---|
 | `CALENDAR_DAYS` | amount × segment_days / days_in_month | Supplied per segment; if only a monthly quantity is supplied, it is split by days and the split quantity is tagged `ESTIMATED` |
-| `FULL_MONTH_FROM_NEXT` | New terms apply from the first day of the following month | Same |
+| `FULL_MONTH_FROM_NEXT` | New terms apply from the first day of the following month; the outgoing version bills the whole month | Same |
 | `FULL_MONTH_FROM_CURRENT` | New terms apply to the whole month containing the effective date | Same |
+
+Under the two full-month policies, component effective dates inside that month snap to the version's whole-month assignment: a component is either in for the month or out, never prorated by days. Fixed project payments and one-time fees post once in the month, whichever segment their component falls in. `[V3-25]`
 
 If all boundaries fall on month starts, `proration_policy` may be omitted. Otherwise at least one of the two versions meeting at a mid-month boundary must declare it; the incoming version's policy wins if both do. Omission on both is a validation error (P-07, T-018). `[V3-11]`
 
@@ -543,7 +548,9 @@ The reference policy uses the amortized view of one-time costs (`transition_view
 
 Zero-fee periods MUST return a null margin with an explanation, not divide by zero (T-008). Portfolio and overhead allocations MUST NOT be merged into contribution.
 
-**Transition cost timing.** One-time costs carry an `incurred_schedule`. The engine reports two views: **incurred** (cost in the month it occurs; used for cumulative contribution and transition payback month) and **amortized** (spread over a declared period using exact allocation; used where a fixture or policy states annualized transition cost). The cost policy states which view feeds `contribution_profit`.
+**Term costs.** A `FIXED` cost with `period = TERM` is spread over the months it is in effect (its own effective period within the engagement), so its declared total is kept. `[V3-25]`
+
+**Transition cost timing.** One-time costs carry an `incurred_schedule`. The engine reports two views: **incurred** (cost in the month it occurs; used for cumulative contribution and transition payback month) and **amortized** (spread over a declared period using exact allocation; used where a fixture or policy states annualized transition cost). The cost policy states which view feeds `contribution_profit`. The incurred-view adjustment applies only to one-time costs in the two layers inside contribution (`DIRECT_DELIVERY`, `ENGAGEMENT_AVOIDABLE`). `[V3-25]`
 
 ### 5.3 Capacity and operational production
 
@@ -954,7 +961,7 @@ Canonical JSON:
 - arrays keep declared order, except arrays whose order is semantically irrelevant (components, entitlements, rate schedules, commitments, adjustments, cost components, units, services, versions, assumptions, and similar sets), which are sorted by `id`, `code`, `role`, or `name` plus period;
 - run ids, timestamps, and host information excluded.
 
-The engine is deterministic: no floating point, no wall-clock reads, no randomness, no reliance on hash-map iteration order.
+The engine is deterministic: no floating point, no wall-clock reads, no randomness, no reliance on hash-map iteration order. Components are evaluated in `id` order, so sorting them in the fingerprint is sound: two inputs that differ only in component order produce the same fingerprint and the same results. `[V3-25]`
 
 ### 8.5 Persistence
 
@@ -1014,6 +1021,7 @@ The test suite MUST include:
 | T-039 | Realization `[V3-19]` | Case D with a $200 rate card and 6,000 worked hours → standard value 1,200,000, realization 0.75, write-down 300,000, effective billing rate 150; a rate card without worked hours fails with a pointer to `worked_hours_source` |
 | T-040 | Consulting pack `[V3-19]` | The pack validates; each of its five templates round-trips (T-029); Case H fires CONS-R-001 (approval) and CONS-R-003 |
 | T-041 | Pack templates over MCP `[V3-19]` | `cometric://packs/{pack}/templates/{id}` resolves for every pack template |
+| T-043 | Engine review regressions `[V3-25]` | Full-month policies bill whole months; a project payment in a split month posts; a mid-year horizon carries the annual allowance; one-time and annual fees keep their totals; collars reprice at the cumulative tier position; cumulative and period-end overage index identically and project payments are not indexed; a later-starting term cost keeps its total; the incurred view ignores portfolio costs; a missing trigger is an error; the price floor needs costs; quarterly shares anchor at the component start; contract years honor the start day; component order never changes results |
 | T-042 | Reconciliation `[V3-24]` | Actuals equal to computed figures reconcile; a changed July invoice is reported at month 7 with the mechanism that priced it; the publishable summary contains no amounts, dates, or names; relative tolerance and unknown metrics are honored |
 
 **Property tests** SHOULD verify: non-negative accepted units; non-overlapping effective dates; contiguous tiers; under `MARGINAL` tier schedules with non-negative rates, the pre-credit fee never decreases when eligible consumption increases, holding other terms fixed. Under `ALL_UNITS` schedules the property holds outside every band reported by `TIER_CLIFF` and is not asserted inside them. T-033 runs only when the private research report is present; CI skips it.

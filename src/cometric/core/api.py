@@ -329,6 +329,13 @@ def price_floor(
         r = calculate_periods(engagement, sc, cost_policy)
         if r["status"] not in ("ok", "infeasible"):
             return r
+        if not r.get("costs_evaluated"):
+            issues.error(
+                "COSTS_NOT_EVALUATED",
+                "the price floor needs costs: supply a cost policy and a delivery_plan with cost components",
+                "/engagement/delivery_plan/cost_components",
+            )
+            return to_jsonable({"status": "invalid", "issues": report(issues)})
         t = r["term"]
         cost = Decimal(t["direct_delivery_cost"]) + Decimal(t["engagement_avoidable_cost"])
         floor = (cost + rp) / (1 - m_t)
