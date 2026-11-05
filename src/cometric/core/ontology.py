@@ -706,16 +706,36 @@ def _link(key: str, idx: _Index, here: str, label: bool = True) -> str:
     return f"[{key}]({target}){suffix}"
 
 
-def _mermaid(model: dict[str, list[Field]]) -> str:
-    lines = ["```mermaid", "classDiagram", "    direction LR"]
-    for cls, fields in model.items():
-        for f in fields:
+DIAGRAMS = (
+    ("Engagement", "Engagement"),
+    ("ArrangementVersion", "Arrangement version"),
+    ("DeliveryPlan", "Delivery plan and costs"),
+    ("Scenario", "Scenario"),
+)
+
+
+def _mermaid(model: dict[str, list[Field]], root: str) -> str:
+    """The root's containment tree, stopping at other diagrams' roots. Flowcharts, not class
+    diagrams: GitHub truncates class-diagram labels. References by id are a table, not a diagram."""
+    roots = {r for r, _ in DIAGRAMS}
+    lines = ["```mermaid", "flowchart LR"]
+    members, queue = [], [root]
+    while queue:
+        cls = queue.pop(0)
+        if cls in members:
+            continue
+        members.append(cls)
+        queue += [f.target for f in model[cls] if f.kind == "model" and f.target not in roots]
+    others: list[str] = []
+    for cls in members:
+        for f in model[cls]:
             if f.kind == "model":
-                lines.append(f'    {cls} "1" *-- "{f.cardinality}" {f.target} : {f.name}')
-    for cls, fields in model.items():
-        for f in fields:
-            if f.kind == "ref":
-                lines.append(f'    {cls} ..> "{f.cardinality}" {f.target} : {f.name}')
+                lines.append(f'    {cls} -->|"{f.name} {f.cardinality}"| {f.target}')
+                if f.target not in members and f.target not in others:
+                    others.append(f.target)
+    if others:
+        lines.append("    classDef other fill:#f6f8fa,stroke:#8c959f,stroke-dasharray:4 3")
+        lines.append(f"    class {','.join(others)} other")
     lines.append("```")
     return "\n".join(lines)
 
@@ -762,9 +782,30 @@ def readme_md() -> str:
         "",
         "## Core model",
         "",
-        "Solid lines are containment (the field holds the object). Dotted lines are references by id.",
+        "One diagram per aggregate, showing what each object contains, then a table of the references by id between objects. Labels give the field and its cardinality. Grey dashed boxes are drawn in full in another diagram. `CostPolicy` and `TolerancePolicy` are flat (see [core.md](core.md)).",
         "",
-        _mermaid(model),
+    ]
+    for root, title in DIAGRAMS:
+        out += [f"### {title}", "", _mermaid(model, root), ""]
+    out += [
+        "### References by id",
+        "",
+        "These fields hold another object's id rather than the object itself.",
+        "",
+        "| From | Field | To | Cardinality |",
+        "|---|---|---|---|",
+    ]
+    for cls, fields in model.items():
+        for f in fields:
+            if f.kind == "ref":
+                note = REFERENCE_NOTES.get((cls, f.name))
+                to = f"[{f.target}](core.md#{f.target.lower()})" + (f" ({note})" if note else "")
+                out.append(
+                    f"| [{cls}](core.md#{cls.lower()}) | `{f.name}` | {to} | {f.cardinality} |"
+                )
+    out.append("")
+    out += [
+        "### Classes",
         "",
         "| Class | Meaning |",
         "|---|---|",

@@ -28,59 +28,89 @@ Cometric's ontology has three layers, all generated from the package so they mat
 
 ## Core model
 
-Solid lines are containment (the field holds the object). Dotted lines are references by id.
+One diagram per aggregate, showing what each object contains, then a table of the references by id between objects. Labels give the field and its cardinality. Grey dashed boxes are drawn in full in another diagram. `CostPolicy` and `TolerancePolicy` are flat (see [core.md](core.md)).
+
+### Engagement
 
 ```mermaid
-classDiagram
-    direction LR
-    Engagement "1" *-- "0..*" PackRef : packs
-    Engagement "1" *-- "0..1" MoneyPolicy : money_policy
-    Engagement "1" *-- "0..*" Party : parties
-    Engagement "1" *-- "1..*" UnitDefinition : unit_definitions
-    Engagement "1" *-- "0..*" ComplexityWeightTable : weight_tables
-    Engagement "1" *-- "1..*" Service : services
-    Engagement "1" *-- "1..*" ArrangementVersion : arrangement_versions
-    Engagement "1" *-- "0..1" DeliveryPlan : delivery_plan
-    Engagement "1" *-- "0..*" RiskAllocation : risk_allocations
-    Scenario "1" *-- "0..1" Horizon : horizon
-    Scenario "1" *-- "0..*" Assumption : assumptions
-    Scenario "1" *-- "0..*" DerivedQuantity : derived
-    ComplexityWeightTable "1" *-- "1..*" WeightBand : bands
-    ArrangementVersion "1" *-- "1..*" FeeComponent : components
-    ArrangementVersion "1" *-- "0..*" Entitlement : entitlements
-    ArrangementVersion "1" *-- "0..*" RateSchedule : rate_schedules
-    ArrangementVersion "1" *-- "0..*" Commitment : commitments
-    ArrangementVersion "1" *-- "0..*" Adjustment : adjustments
-    DeliveryPlan "1" *-- "0..*" CapacityLimit : capacity
-    DeliveryPlan "1" *-- "0..*" ResourceRole : roles
-    DeliveryPlan "1" *-- "0..*" ProductionStandard : production_standards
-    DeliveryPlan "1" *-- "0..*" RoleRate : standard_rate_card
-    DeliveryPlan "1" *-- "0..*" CostComponent : cost_components
-    FeeComponent "1" *-- "1" EffectivePeriod : effective_period
-    FeeComponent "1" *-- "0..*" RoleRate : role_rates
-    FeeComponent "1" *-- "0..*" ResourceLine : resources
-    FeeComponent "1" *-- "0..*" PaymentLine : payment_schedule
-    FeeComponent "1" *-- "0..1" OutcomeTerms : outcome
-    Entitlement "1" *-- "0..1" Rollover : rollover
-    RateSchedule "1" *-- "1..*" Tier : tiers
-    CostComponent "1" *-- "0..*" CostTier : tiers
-    CostComponent "1" *-- "0..*" IncurredLine : incurred_schedule
-    CostComponent "1" *-- "0..1" EffectivePeriod : effective_period
-    Service ..> "1" UnitDefinition : unit_definition_id
-    ArrangementVersion ..> "0..1" ArrangementVersion : supersedes_id
-    FeeComponent ..> "1" Service : service_id
-    FeeComponent ..> "0..*" FeeComponent : depends_on
-    FeeComponent ..> "0..1" RateSchedule : rate_schedule_id
-    FeeComponent ..> "0..1" Entitlement : entitlement_id
-    FeeComponent ..> "0..1" ComplexityWeightTable : weight_table_id
-    Entitlement ..> "1" FeeComponent : granted_by
-    Commitment ..> "0..*" FeeComponent : component_ids
-    Commitment ..> "0..1" Service : service_id
-    Adjustment ..> "0..*" FeeComponent : applies_to
-    Adjustment ..> "0..1" FeeComponent : component_id
-    Adjustment ..> "0..1" RateSchedule : outside_rate_schedule_id
-    CapacityLimit ..> "0..*" CostComponent : overflow_replaces
+flowchart LR
+    Engagement -->|"packs 0..*"| PackRef
+    Engagement -->|"money_policy 0..1"| MoneyPolicy
+    Engagement -->|"parties 0..*"| Party
+    Engagement -->|"unit_definitions 1..*"| UnitDefinition
+    Engagement -->|"weight_tables 0..*"| ComplexityWeightTable
+    Engagement -->|"services 1..*"| Service
+    Engagement -->|"arrangement_versions 1..*"| ArrangementVersion
+    Engagement -->|"delivery_plan 0..1"| DeliveryPlan
+    Engagement -->|"risk_allocations 0..*"| RiskAllocation
+    ComplexityWeightTable -->|"bands 1..*"| WeightBand
+    classDef other fill:#f6f8fa,stroke:#8c959f,stroke-dasharray:4 3
+    class ArrangementVersion,DeliveryPlan other
 ```
+
+### Arrangement version
+
+```mermaid
+flowchart LR
+    ArrangementVersion -->|"components 1..*"| FeeComponent
+    ArrangementVersion -->|"entitlements 0..*"| Entitlement
+    ArrangementVersion -->|"rate_schedules 0..*"| RateSchedule
+    ArrangementVersion -->|"commitments 0..*"| Commitment
+    ArrangementVersion -->|"adjustments 0..*"| Adjustment
+    FeeComponent -->|"effective_period 1"| EffectivePeriod
+    FeeComponent -->|"role_rates 0..*"| RoleRate
+    FeeComponent -->|"resources 0..*"| ResourceLine
+    FeeComponent -->|"payment_schedule 0..*"| PaymentLine
+    FeeComponent -->|"outcome 0..1"| OutcomeTerms
+    Entitlement -->|"rollover 0..1"| Rollover
+    RateSchedule -->|"tiers 1..*"| Tier
+```
+
+### Delivery plan and costs
+
+```mermaid
+flowchart LR
+    DeliveryPlan -->|"capacity 0..*"| CapacityLimit
+    DeliveryPlan -->|"roles 0..*"| ResourceRole
+    DeliveryPlan -->|"production_standards 0..*"| ProductionStandard
+    DeliveryPlan -->|"standard_rate_card 0..*"| RoleRate
+    DeliveryPlan -->|"cost_components 0..*"| CostComponent
+    CostComponent -->|"tiers 0..*"| CostTier
+    CostComponent -->|"incurred_schedule 0..*"| IncurredLine
+    CostComponent -->|"effective_period 0..1"| EffectivePeriod
+```
+
+### Scenario
+
+```mermaid
+flowchart LR
+    Scenario -->|"horizon 0..1"| Horizon
+    Scenario -->|"assumptions 0..*"| Assumption
+    Scenario -->|"derived 0..*"| DerivedQuantity
+```
+
+### References by id
+
+These fields hold another object's id rather than the object itself.
+
+| From | Field | To | Cardinality |
+|---|---|---|---|
+| [Service](core.md#service) | `unit_definition_id` | [UnitDefinition](core.md#unitdefinition) | 1 |
+| [ArrangementVersion](core.md#arrangementversion) | `supersedes_id` | [ArrangementVersion](core.md#arrangementversion) | 0..1 |
+| [FeeComponent](core.md#feecomponent) | `service_id` | [Service](core.md#service) | 1 |
+| [FeeComponent](core.md#feecomponent) | `depends_on` | [FeeComponent](core.md#feecomponent) (Components or entitlements of the same version) | 0..* |
+| [FeeComponent](core.md#feecomponent) | `rate_schedule_id` | [RateSchedule](core.md#rateschedule) | 0..1 |
+| [FeeComponent](core.md#feecomponent) | `entitlement_id` | [Entitlement](core.md#entitlement) | 0..1 |
+| [FeeComponent](core.md#feecomponent) | `weight_table_id` | [ComplexityWeightTable](core.md#complexityweighttable) | 0..1 |
+| [Entitlement](core.md#entitlement) | `granted_by` | [FeeComponent](core.md#feecomponent) | 1 |
+| [Commitment](core.md#commitment) | `component_ids` | [FeeComponent](core.md#feecomponent) | 0..* |
+| [Commitment](core.md#commitment) | `service_id` | [Service](core.md#service) | 0..1 |
+| [Adjustment](core.md#adjustment) | `applies_to` | [FeeComponent](core.md#feecomponent) | 0..* |
+| [Adjustment](core.md#adjustment) | `component_id` | [FeeComponent](core.md#feecomponent) | 0..1 |
+| [Adjustment](core.md#adjustment) | `outside_rate_schedule_id` | [RateSchedule](core.md#rateschedule) | 0..1 |
+| [CapacityLimit](core.md#capacitylimit) | `overflow_replaces` | [CostComponent](core.md#costcomponent) | 0..* |
+
+### Classes
 
 | Class | Meaning |
 |---|---|

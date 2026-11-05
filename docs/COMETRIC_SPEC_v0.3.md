@@ -350,7 +350,7 @@ The ontology is a generated view of what the engine accepts, never a separate so
 | Core vocabularies and the glossary | `skos:ConceptScheme` (also an `owl:Class`) with one `skos:Concept` per value | `cmv:` |
 | Packs | One `skos:ConceptScheme` per concept file; concepts carry `skos:broader`, `skos:related`, billing bases, methods, evidence class, prevalence, claims, and caveats. Overlays, rules, claims, and sources are `cm:Overlay`, `cm:Rule`, `cm:Claim`, `cm:Source`. | `pack-<id>:` |
 
-Concept ids are unique within a pack chain, not across packs, so a reference resolves through the referring pack's chain. `cometric ontology --out DIR` also writes a Markdown reference (class diagram, field tables, one page per pack). The copy in `docs/ontology/` is committed; a test regenerates it and fails on any difference, and fails on any reference to an undeclared resource.
+Concept ids are unique within a pack chain, not across packs, so a reference resolves through the referring pack's chain. `cometric ontology --out DIR` also writes a Markdown reference (one diagram per aggregate, a table of references by id, field tables, one page per pack). The copy in `docs/ontology/` is committed; a test regenerates it and fails on any difference, and fails on any reference to an undeclared resource.
 
 ## 4. Contract and fee semantics
 

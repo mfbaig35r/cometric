@@ -98,7 +98,7 @@ cometric validate-pack consulting
 
 ## Ontology
 
-The ontology is published in [`docs/ontology/`](docs/ontology/README.md): a class diagram of the core model, every field and controlled vocabulary, and a page per pack with each concept's definition, evidence class, relations, rules, claims, and sources. [`cometric.ttl`](docs/ontology/cometric.ttl) holds the same content in Turtle (OWL classes for the core model, SKOS concept schemes for vocabularies and packs), for Protégé, rdflib, or any SPARQL store. Both are generated from the package, and a test fails when the committed copy is out of date.
+The ontology is published in [`docs/ontology/`](docs/ontology/README.md): diagrams of the core model, every field and controlled vocabulary, and a page per pack with each concept's definition, evidence class, relations, rules, claims, and sources. [`cometric.ttl`](docs/ontology/cometric.ttl) holds the same content in Turtle (OWL classes for the core model, SKOS concept schemes for vocabularies and packs), for Protégé, rdflib, or any SPARQL store. Both are generated from the package, and a test fails when the committed copy is out of date.
 
 ```bash
 cometric ontology > cometric.ttl          # Turtle to stdout
