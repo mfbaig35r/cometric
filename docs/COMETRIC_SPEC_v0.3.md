@@ -1,6 +1,6 @@
 # Cometric | Commercial Intelligence Engine
 
-**Engineering Requirements v0.3 (as built for 0.1.0)**
+**Engineering Requirements v0.3 (as built for 0.2.0)**
 
 Cometric does three things:
 
@@ -13,7 +13,7 @@ It is built for any service relationship priced through a composite arrangement:
 | | |
 |---|---|
 | Project | Cometric (`cometric` on PyPI; CLI and MCP server `cometric`) |
-| Status | Normative for `cometric` 0.1.0 (released to PyPI 2026-11-04). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
+| Status | Normative for `cometric` 0.2.0 (0.1.0 released to PyPI 2026-11-04). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
 | License | Apache-2.0 |
 | Date | November 4, 2026 |
 | Supersedes | `COMETRIC_SPEC_v0.2.md` (kept for history, with the v0.1 to v0.2 change log) |

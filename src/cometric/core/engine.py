@@ -56,7 +56,7 @@ from .periods import (
 from .quantities import Quantities, build_quantities
 from .tiers import incremental, price
 
-ENGINE_VERSION = "0.1.0"
+ENGINE_VERSION = "0.2.0"
 
 STEP_NAMES = {
     4: "price",

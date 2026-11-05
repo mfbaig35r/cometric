@@ -1,6 +1,6 @@
 # Cometric implementation status
 
-Version `0.1.0` (released 2026-11-04). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below.
+Version `0.2.0` (0.1.0 released 2026-11-04; 0.2.0 adds reconciliation and the fixes from two code reviews). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below.
 
 ## Milestones
 
