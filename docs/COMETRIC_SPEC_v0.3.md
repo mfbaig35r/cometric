@@ -57,6 +57,7 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-22 | App. D | Evidence verification status replaces the v0.2 priority list. |
 | V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (unreleased fix after 0.1.0). |
 | V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (unreleased, after 0.1.0). |
+| V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (unreleased). |
 | V3-26 | 4.5, 5.4, 7.3, 8.3, 9 | From an LLM-driven pricing analysis (unreleased, after 0.2.0): threshold scope for discounts and rebates; unit price only for an unambiguous quantity; a `definitions` block on results; `quickstart`; no unstructured errors; candidate and constraint input forms. |
 | V3-25 | 4.1, 4.3, 4.5, 4.6, 5.2, 6.1, 8.4, 9 | Rules clarified by the full engine review (0.2.0): full-month proration, horizon simulation, one-time fees, indexation scope and contract years, required performance triggers, term-cost spreading, incurred view, component order. |
 
@@ -658,7 +659,7 @@ Given one service and demand profile, the engine SHOULD compare at least:
 - dedicated resource or capacity model;
 - base fee plus output-based overage.
 
-Each comparison MUST show fee, cost, contribution, client effective unit cost, capacity utilization, declared and derived risk exposure (§5.5), and the assumptions that differ. A model can be rejected for infeasibility without being labeled commercially inferior.
+Each comparison MUST show fee, cost, contribution, client effective unit cost, capacity utilization, declared and derived risk exposure (§5.5), and the assumptions that differ, at the requested `detail` (`summary` default: key metrics per scenario and dominance; `standard` adds all summary metrics and risk deviations; `full` adds complete exposure and issues) and `precision` (`display` default, or `exact`). `[V3-27]` A model can be rejected for infeasibility without being labeled commercially inferior.
 
 **Dominance, not ranking.** By default the engine ranks nothing. For each feasible candidate it reports whether another candidate dominates it: at least as good on every comparison metric and strictly better on one. The default metrics are provider contribution (higher is better) and client effective unit price (lower is better), evaluated in every scenario of the set. The non-dominated candidates are returned as a set. A weighted or constrained objective is applied only when the caller supplies one, and the result records it verbatim.
 
@@ -699,7 +700,11 @@ In Cometric, "optimize" means a deterministic search over a space of candidate s
    Callers may declare a different metric set.
 6. If an objective is supplied, also return the best constraint-satisfying candidate(s) under it. Ties are all returned.
 
-**Output:** counts (enumerated, invalid, infeasible, failing constraints, on frontier); every frontier candidate with its parameter values, per-scenario metrics, exposure, and fingerprint; binding constraints for each returned candidate; and the objective, if any, echoed verbatim. If the frontier exceeds the response limit, the result says so and returns candidates in enumeration order up to the limit. It never applies an undeclared ranking to choose which to show.
+**Output** `[V3-27]`: the best results come first. With an objective, `best` lists every candidate tied at the top after applying `objective.tie_breakers` in order, each with its parameter values, objective values, key metrics per scenario, difference from the baseline per scenario, the result of each constraint leaf, provider and client downside per deviation, `grid_edges` (parameters whose winning value is the lowest or highest in the grid), and calculation fingerprints. A `BEST_AT_GRID_EDGE` warning says when the grid should be widened before calling a result optimal. The baseline (default on) is the search_spec engagement as given. Then come counts (enumerated, invalid, infeasible, failing constraints, on frontier), invalid reasons, and the unranked frontier. If the frontier exceeds `max_returned` (default 20), the result says so. It never applies an undeclared ranking.
+
+**Parameters and sizing** `[V3-27]`: a parameter may write one `pointer` or several `pointers`, with `transform` `set` (write the value), `scale` (base × (1 + value)), or `add` (base + value), so "the same uplift on every tier" is one parameter instead of a combinatorial grid. `dry_run: true` returns grid size, calculation count, and an estimated time without running the search, so the user can confirm first.
+
+**Detail and precision** `[V3-27]`: `detail` is `summary` (default: best results in full, frontier as parameter sets, key metrics only, empty nested fields dropped), `standard`, or `full`; `precision` is `display` (default: ratios to 4 places, prices to 2) or `exact`. Fingerprints are unaffected.
 
 **Guardrails.** Results are `PricingRecommendation` records with `approval_state = PENDING_HUMAN_REVIEW` (§6.3). The engine never invents parameter ranges or objectives. An advisory agent may propose a `search_spec`, and the spec must be shown to the user before it runs.
 
@@ -1083,6 +1088,7 @@ v0.1 framed most open decisions as questions for one organization's stakeholders
 - **Q-8 [O] Other commitment kinds.** Which of `MINIMUM_VOLUME`, `RESERVED_CAPACITY`, and `PREPAID_CREDIT` should be computed next, and with what semantics?
 - **Q-9 [O] Mid-period amendments.** Should allowance grants be prorated when a version starts mid-period, and should adjustments split by segment within a month?
 - **Q-10 [O] Custom evaluation orders.** Is there a real contract that needs one?
+- **Q-11 Resolved: memory between calls.** The server stays stateless and read-only. Engagements are passed by reference as file paths under `COMETRIC_ALLOWED_ROOT` (stdio); results carry fingerprints and can be reproduced exactly from their inputs. No engagement store or run ids. `[V3-27]`
 
 ## 12. Decisions recorded in v0.3
 

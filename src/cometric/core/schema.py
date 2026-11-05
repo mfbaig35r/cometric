@@ -40,9 +40,18 @@ SEARCH_SPEC_SCHEMA = {
             "type": "array",
             "items": {
                 "type": "object",
-                "required": ["name", "pointer"],
+                "required": ["name"],
                 "properties": {
                     "name": {"type": "string"},
+                    "pointers": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Write the same value to several places (e.g. the same uplift on every tier)",
+                    },
+                    "transform": {
+                        "enum": ["set", "scale", "add"],
+                        "description": "set writes the value; scale writes base x (1 + value); add writes base + value, where base is the engagement's current value at each pointer",
+                    },
                     "pointer": {
                         "type": "string",
                         "description": "JSON Pointer into the engagement, e.g. /arrangement_versions/0/components/0/fixed_amount",
@@ -70,8 +79,23 @@ SEARCH_SPEC_SCHEMA = {
                 "sense": {"enum": ["max", "min"]},
                 "aggregation": {"enum": ["BASE", "WORST", "MEAN"]},
                 "base_scenario": {"type": "string"},
+                "tie_breakers": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                    "description": "Further {metric, sense, aggregation} keys applied in order when the objective ties",
+                },
             },
         },
+        "include_baseline": {
+            "type": "boolean",
+            "description": "Default true: evaluate the engagement as given and report each best result's difference from it",
+        },
+        "dry_run": {
+            "type": "boolean",
+            "description": "Return grid size, calculation count, and an estimated time without running",
+        },
+        "detail": {"enum": ["summary", "standard", "full"], "description": "Default summary"},
+        "precision": {"enum": ["display", "exact"], "description": "Default display"},
         "frontier_metrics": {
             "type": "array",
             "items": {

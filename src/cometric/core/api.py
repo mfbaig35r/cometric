@@ -12,9 +12,10 @@ from .enums import RiskBearer
 from .fingerprint import fingerprint, to_jsonable
 from .issues import CometricError, Issues
 from .models import MONTH_RE, SCHEMA_VERSION, CostPolicy, Engagement, Scenario, TolerancePolicy
-from .money import ZERO, safe_ratio, to_decimal
+from .money import ZERO, dec_str, safe_ratio, to_decimal
 from .periods import month_index, month_of, parse_month
-from .predicates import PredicateError, evaluate, leaves, resolve
+from .predicates import evaluate, leaves, resolve
+from .present import key_metrics, present
 from .validation import (
     parse_cost_policy,
     parse_engagement,
@@ -129,7 +130,11 @@ def _blank_costs(block: dict) -> None:
 
 
 def calculate_periods(
-    engagement: Any, scenario: Any, cost_policy: Any = None, detail: str = "summary"
+    engagement: Any,
+    scenario: Any,
+    cost_policy: Any = None,
+    detail: str = "summary",
+    precision: str = "exact",
 ) -> dict:
     if detail not in DETAILS:
         detail = "summary"
@@ -176,7 +181,7 @@ def calculate_periods(
         }
         out["ledger"] = result.ledger
     out["issues"] = report(issues)
-    return to_jsonable(out)
+    return present(to_jsonable(out), precision) if precision == "display" else to_jsonable(out)
 
 
 QUANTITY_SPREADING = (
@@ -609,8 +614,14 @@ def compare_arrangements(
     cost_policy: Any,
     objective: dict | None = None,
     tolerance_policy: Any = None,
+    detail: str = "summary",
+    precision: str = "display",
 ) -> dict:
-    """Evaluate candidates on the same scenarios; report dominance, never a ranking (spec 6.2)."""
+    """Evaluate candidates on the same scenarios; report dominance, never a ranking (spec 6.2).
+
+    detail: summary (key metrics per scenario), standard (all summary metrics and risk deviations),
+    or full (adds complete risk exposure and per-scenario issues). precision: display or exact.
+    """
     issues = Issues()
     candidates = normalize_candidates(candidates, issues)
     if not isinstance(scenario_set, list) or not scenario_set:
@@ -673,7 +684,29 @@ def compare_arrangements(
             )
             out["objective"] = objective
             out["best_under_objective"] = [i for i, v in scored.items() if v == best_v]
-    return to_jsonable(out)
+    out["candidates"] = [_shape_candidate(r, detail) for r in out["candidates"]]
+    return present(to_jsonable(out), precision, drop_nulls=detail == "summary")
+
+
+def _shape_candidate(row: dict, detail: str) -> dict:
+    if detail == "full":
+        return row
+    shaped = {k: row[k] for k in ("id", "valid", "feasible", "dominated_by")}
+    if detail == "summary":
+        shaped["scenarios"] = {sid: key_metrics(m) for sid, m in row["scenarios"].items()}
+    else:
+        shaped["scenarios"] = row["scenarios"]
+        exposure = row.get("risk_exposure") or {}
+        shaped["risk"] = [
+            {
+                k: d.get(k)
+                for k in ("scenario_id", "provider_downside", "client_downside", "derived_bearer")
+            }
+            for d in exposure.get("deviations", [])
+        ]
+    if row["issues"]:
+        shaped["errors"] = [e for i in row["issues"] for e in i.get("errors", [])]
+    return shaped
 
 
 def _set_pointer(doc: Any, ptr: str, value: Any) -> None:
@@ -788,12 +821,23 @@ def validate_search_spec(spec: Any, issues: Issues) -> None:
         if not isinstance(p.get("name"), str):
             issues.error("SCHEMA", "parameter needs a name", path + "/name")
         names.append(p.get("name"))
-        if not isinstance(p.get("pointer"), str) or not str(p.get("pointer")).startswith("/"):
+        ptrs = p.get("pointers") if "pointers" in p else [p.get("pointer")]
+        if (
+            not isinstance(ptrs, list)
+            or not ptrs
+            or not all(isinstance(x, str) and x.startswith("/") for x in ptrs)
+        ):
             issues.error(
                 "SCHEMA",
-                "parameter needs a JSON Pointer into the engagement, starting with /",
-                path + "/pointer",
+                "parameter needs pointer (a JSON Pointer into the engagement, starting with /) or pointers (a list of them)",
+                path + ("/pointers" if "pointers" in p else "/pointer"),
                 example="/arrangement_versions/0/components/0/fixed_amount",
+            )
+        if p.get("transform", "set") not in ("set", "scale", "add"):
+            issues.error(
+                "SCHEMA",
+                "transform is set (write the value), scale (base x (1 + value)), or add (base + value)",
+                path + "/transform",
             )
         if "values" in p:
             if not isinstance(p["values"], list) or not p["values"]:
@@ -818,7 +862,23 @@ def validate_search_spec(spec: Any, issues: Issues) -> None:
             issues.error(
                 "BAD_CONSTRAINT", prob, "/constraints", example=SEARCH_SPEC_EXAMPLE["constraints"]
             )
+    if spec.get("detail", "summary") not in ("summary", "standard", "full"):
+        issues.error("SCHEMA", "detail is summary, standard, or full", "/detail")
+    if spec.get("precision", "display") not in ("display", "exact"):
+        issues.error("SCHEMA", "precision is display or exact", "/precision")
     obj = spec.get("objective")
+    for k, tb in enumerate((obj or {}).get("tie_breakers") or [] if isinstance(obj, dict) else []):
+        if not isinstance(tb, dict) or not isinstance(tb.get("metric"), str):
+            issues.error(
+                "SCHEMA",
+                "each tie-breaker needs a metric",
+                f"/objective/tie_breakers/{k}",
+                example={
+                    "metric": "effective_client_unit_price",
+                    "sense": "min",
+                    "aggregation": "BASE",
+                },
+            )
     if obj is not None:
         if not isinstance(obj, dict) or not isinstance(obj.get("metric"), str):
             issues.error(
@@ -839,7 +899,7 @@ def validate_search_spec(spec: Any, issues: Issues) -> None:
 
 
 def search_structures(search_spec: dict) -> dict:
-    """Deterministic grid search returning the trade-off frontier (spec 6.4)."""
+    """Deterministic grid search: best candidates first, then the trade-off frontier (spec 6.4)."""
     pre = Issues()
     validate_search_spec(search_spec, pre)
     if pre.has_errors:
@@ -849,21 +909,31 @@ def search_structures(search_spec: dict) -> dict:
     scenarios = spec["scenarios"]
     cost_policy = spec.get("cost_policy")
     params = spec.get("parameters", [])
-    max_candidates = int(spec.get("max_candidates", 10000))
-    max_candidates = min(max_candidates, 10000)
-    max_returned = int(spec.get("max_returned", 50))
+    detail = spec.get("detail", "summary")
+    precision = spec.get("precision", "display")
+    max_candidates = min(int(spec.get("max_candidates", 10000)), 10000)
+    max_returned = int(spec.get("max_returned", 20))
     try:
         grids = [_param_values(p) for p in params]
+        writes = [_param_writes(base_engagement, p) for p in params]
+    except _SpecError as exc:
+        return to_jsonable({"status": "invalid", "issues": {"errors": [exc.as_issue()]}})
     except (KeyError, ValueError) as exc:
-        return {
-            "status": "invalid",
-            "issues": {
-                "errors": [{"code": "PARAMETER_SPEC", "message": str(exc), "path": "/parameters"}]
-            },
-        }
+        return to_jsonable(
+            {
+                "status": "invalid",
+                "issues": {
+                    "errors": [
+                        {"code": "PARAMETER_SPEC", "message": str(exc), "path": "/parameters"}
+                    ]
+                },
+            }
+        )
     size = 1
     for g in grids:
         size *= len(g)
+    if spec.get("dry_run"):
+        return to_jsonable(_dry_run(spec, params, grids, size, max_candidates))
     if size > max_candidates:
         return {
             "status": "rejected",
@@ -886,22 +956,9 @@ def search_structures(search_spec: dict) -> dict:
         counts["enumerated"] += 1
         eng = copy.deepcopy(base_engagement)
         values = {}
-        for p, v in zip(params, combo, strict=True):
-            try:
-                _set_pointer(eng, p["pointer"], v)
-            except (KeyError, IndexError, ValueError, TypeError):
-                return {
-                    "status": "invalid",
-                    "issues": {
-                        "errors": [
-                            {
-                                "code": "BAD_POINTER",
-                                "message": f"pointer {p['pointer']} does not resolve",
-                                "path": "/parameters",
-                            }
-                        ]
-                    },
-                }
+        for p, write, v in zip(params, writes, combo, strict=True):
+            for ptr, transform in write:
+                _set_pointer(eng, ptr, transform(v))
             values[p["name"]] = v
         ev = _evaluate_candidate(eng, scenarios, cost_policy)
         if not ev["valid"]:
@@ -914,59 +971,71 @@ def search_structures(search_spec: dict) -> dict:
             counts["infeasible"] += 1
             continue
         per = {r["scenario_id"]: _term_summary(r) for r in ev["results"]}
-        exposure = derive_risk_exposure(ev["results"])
         doc = {"scenarios": per, "parameters": values}
-        if constraints is not None:
-            try:
-                if not evaluate(constraints, doc):
-                    counts["failing_constraints"] += 1
-                    continue
-            except PredicateError as exc:
-                return {
-                    "status": "invalid",
-                    "issues": {
-                        "errors": [
-                            {"code": "BAD_CONSTRAINT", "message": str(exc), "path": "/constraints"}
-                        ]
-                    },
-                }
+        if constraints is not None and not evaluate(constraints, doc):
+            counts["failing_constraints"] += 1
+            continue
         counts["evaluated"] += 1
         evaluated.append(
             {
                 "parameters": values,
                 "scenarios": per,
-                "risk_exposure": exposure,
+                "risk_exposure": derive_risk_exposure(ev["results"]),
                 "fingerprints": [r["input_fingerprint"] for r in ev["results"]],
                 "_doc": doc,
             }
         )
-    vectors = {}
-    for i, c in enumerate(evaluated):
-        vectors[str(i)] = _frontier_vector(c, frontier_metrics)
+    vectors = {str(i): _frontier_vector(c, frontier_metrics) for i, c in enumerate(evaluated)}
     dom = dominance(vectors)
     frontier = [evaluated[int(i)] for i in vectors if not dom[i]]
-    for c in frontier:
-        c["binding_constraints"] = _binding(constraints, c["_doc"]) if constraints else []
-    best = None
+
+    baseline = None
+    if spec.get("include_baseline", True):
+        ev = _evaluate_candidate(base_engagement, scenarios, cost_policy)
+        if ev["valid"]:
+            baseline = {
+                "description": "the search_spec engagement as given",
+                "feasible": ev["feasible"],
+                "scenarios": {r["scenario_id"]: _term_summary(r) for r in ev["results"]},
+                "fingerprints": [r["input_fingerprint"] for r in ev["results"]],
+            }
+
+    best, best_values = [], None
     if objective:
-        scored = [(c, _objective_value(c["scenarios"], objective)) for c in evaluated]
-        scored = [(c, v) for c, v in scored if v is not None]
-        if scored:
-            bv = (
-                max(v for _, v in scored)
-                if objective.get("sense", "max") == "max"
-                else min(v for _, v in scored)
-            )
-            best = [c["parameters"] for c, v in scored if v == bv]
-    truncated = len(frontier) > max_returned
-    for c in evaluated:
-        c.pop("_doc", None)
-    out = {
+        ranked = _rank(evaluated, objective)
+        if ranked:
+            top_key = ranked[0][1]
+            winners = [c for c, k in ranked if k == top_key]
+            best_values = [c["parameters"] for c in winners]
+            for c in winners[:max_returned]:
+                best.append(
+                    _best_entry(c, top_key, objective, constraints, params, grids, baseline)
+                )
+
+    edges = sorted(
+        {f"{e['parameter']} at its {e['edge']} bound" for b in best for e in b["grid_edges"]}
+    )
+    warnings = []
+    if edges:
+        warnings.append(
+            {
+                "code": "BEST_AT_GRID_EDGE",
+                "message": "the best result sits at the edge of the grid ("
+                + "; ".join(edges)
+                + "); widen the grid before treating it as optimal",
+            }
+        )
+    out: dict[str, Any] = {
         "status": "ok",
         "approval_state": "PENDING_HUMAN_REVIEW",
         "record_type": "PricingRecommendation",
+        "best": best if objective else None,
+        "best_under_objective": best_values,
+        "objective": objective,
+        "baseline": _shape_baseline(baseline, detail),
         "counts": {**counts, "on_frontier": len(frontier)},
         "invalid_reasons": invalid_reasons,
+        "warnings": warnings,
         "frontier_metrics": frontier_metrics
         or [
             "contribution_profit in base (max)",
@@ -974,13 +1043,211 @@ def search_structures(search_spec: dict) -> dict:
             "largest provider downside (min)",
             "largest client downside (min)",
         ],
-        "frontier": frontier[:max_returned],
-        "frontier_truncated": truncated,
-        "objective": objective,
-        "best_under_objective": best,
-        "note": "Frontier candidates are not ranked. A recommendation needs human review before adoption.",
+        "frontier": [_shape_frontier(c, detail, constraints) for c in frontier[:max_returned]],
+        "frontier_truncated": len(frontier) > max_returned,
+        "note": "Best results follow the objective (and tie-breakers) you supplied; the frontier is unranked. Every result needs human review before adoption."
+        + ("" if objective else " Supply an objective to get a best result."),
     }
-    return to_jsonable(out)
+    return present(to_jsonable(out), precision, drop_nulls=detail == "summary")
+
+
+class _SpecError(Exception):
+    def __init__(self, code: str, message: str, path: str):
+        super().__init__(message)
+        self.code, self.message, self.path = code, message, path
+
+    def as_issue(self) -> dict:
+        return {"code": self.code, "severity": "ERROR", "message": self.message, "path": self.path}
+
+
+def _get_pointer(doc: Any, ptr: str) -> Any:
+    cur = doc
+    for p in [p.replace("~1", "/").replace("~0", "~") for p in ptr.lstrip("/").split("/")]:
+        cur = cur[int(p)] if isinstance(cur, list) else cur[p]
+    return cur
+
+
+def _param_writes(base: dict, p: dict) -> list[tuple[str, Any]]:
+    """Pointers a parameter writes to, each with its transform (set, scale, or add)."""
+    pointers = p.get("pointers") or [p.get("pointer")]
+    transform = p.get("transform", "set")
+    if transform not in ("set", "scale", "add"):
+        raise _SpecError(
+            "PARAMETER_SPEC",
+            f"transform {transform!r} is not set, scale, or add",
+            f"/parameters/{p.get('name')}",
+        )
+    out = []
+    for ptr in pointers:
+        try:
+            current = _get_pointer(base, ptr)
+        except (KeyError, IndexError, ValueError, TypeError):
+            raise _SpecError(
+                "BAD_POINTER", f"pointer {ptr} does not resolve in the engagement", "/parameters"
+            ) from None
+        if transform == "set":
+            out.append((ptr, lambda v: v))
+            continue
+        try:
+            b = to_decimal(current)
+        except ValueError:
+            raise _SpecError(
+                "BAD_POINTER",
+                f"{transform} needs a decimal at {ptr}, found {current!r}",
+                "/parameters",
+            ) from None
+        if transform == "scale":
+            out.append((ptr, lambda v, b=b: dec_str(b * (1 + to_decimal(v)))))
+        else:
+            out.append((ptr, lambda v, b=b: dec_str(b + to_decimal(v))))
+    return out
+
+
+def _rank(evaluated: list[dict], objective: dict) -> list[tuple[dict, tuple]]:
+    """Order candidates by the objective then its tie-breakers; best first."""
+    keys = [objective, *(objective.get("tie_breakers") or [])]
+    ranked = []
+    for c in evaluated:
+        vals = []
+        for k in keys:
+            v = _objective_value(c["scenarios"], k)
+            if v is None:
+                break
+            vals.append(v if k.get("sense", "max") == "max" else -v)
+        else:
+            ranked.append((c, tuple(vals)))
+    ranked.sort(key=lambda t: t[1], reverse=True)
+    return ranked
+
+
+def _grid_edges(values: dict, params: list[dict], grids: list[list[str]]) -> list[dict]:
+    edges = []
+    for p, grid in zip(params, grids, strict=True):
+        try:
+            nums = sorted({to_decimal(g) for g in grid})
+            v = to_decimal(values[p["name"]])
+        except ValueError:
+            continue
+        if len(nums) < 2:
+            continue
+        if v == nums[0]:
+            edges.append({"parameter": p["name"], "edge": "lower", "value": values[p["name"]]})
+        elif v == nums[-1]:
+            edges.append({"parameter": p["name"], "edge": "upper", "value": values[p["name"]]})
+    return edges
+
+
+def _constraint_results(constraints: Any, doc: dict) -> list[dict]:
+    from .predicates import evaluate as eval_pred
+
+    out = []
+    for leaf in leaves(constraints):
+        op = next(k for k in leaf if k != "path")
+        out.append(
+            {
+                "path": leaf["path"],
+                "op": op,
+                "threshold": leaf[op],
+                "leaf_true": eval_pred(leaf, doc),
+                "values": resolve(doc, leaf["path"]),
+            }
+        )
+    return out
+
+
+def _deltas(per: dict, baseline: dict | None) -> dict | None:
+    if not baseline:
+        return None
+    out = {}
+    for sid, metrics in per.items():
+        base = baseline["scenarios"].get(sid) or {}
+        row = {}
+        for k in (
+            "contractual_fee",
+            "contribution_profit",
+            "contribution_margin",
+            "effective_client_unit_price",
+        ):
+            a, b = _d(metrics.get(k)), _d(base.get(k))
+            row[k] = None if a is None or b is None else a - b
+        out[sid] = row
+    return out
+
+
+def _best_entry(
+    c: dict,
+    key: tuple,
+    objective: dict,
+    constraints: Any,
+    params: list,
+    grids: list,
+    baseline: dict | None,
+) -> dict:
+    keys = [objective, *(objective.get("tie_breakers") or [])]
+    return {
+        "parameters": c["parameters"],
+        "objective_values": [
+            {
+                "metric": k["metric"],
+                "aggregation": k.get("aggregation", "BASE"),
+                "sense": k.get("sense", "max"),
+                "value": _objective_value(c["scenarios"], k),
+            }
+            for k in keys
+        ],
+        "scenarios": {sid: key_metrics(m) for sid, m in c["scenarios"].items()},
+        "vs_baseline": _deltas(c["scenarios"], baseline),
+        "constraints": _constraint_results(constraints, c["_doc"]) if constraints else [],
+        "grid_edges": _grid_edges(c["parameters"], params, grids),
+        "risk": [
+            {k: d.get(k) for k in ("scenario_id", "provider_downside", "client_downside")}
+            for d in c["risk_exposure"].get("deviations", [])
+        ],
+        "fingerprints": c["fingerprints"],
+    }
+
+
+def _shape_frontier(c: dict, detail: str, constraints: Any) -> dict:
+    if detail == "summary":
+        return {"parameters": c["parameters"]}
+    entry = {
+        "parameters": c["parameters"],
+        "scenarios": {sid: key_metrics(m) for sid, m in c["scenarios"].items()},
+    }
+    if detail == "full":
+        entry["scenarios"] = c["scenarios"]
+        entry["risk_exposure"] = c["risk_exposure"]
+        entry["fingerprints"] = c["fingerprints"]
+        entry["binding_constraints"] = _binding(constraints, c["_doc"]) if constraints else []
+    return entry
+
+
+def _shape_baseline(baseline: dict | None, detail: str) -> dict | None:
+    if baseline is None or detail == "full":
+        return baseline
+    return {
+        **baseline,
+        "scenarios": {sid: key_metrics(m) for sid, m in baseline["scenarios"].items()},
+    }
+
+
+def _dry_run(spec: dict, params: list, grids: list, size: int, max_candidates: int) -> dict:
+    """Size and estimated time of a search, without running it (spec 6.4)."""
+    import time
+
+    started = time.perf_counter()
+    _evaluate_candidate(spec["engagement"], spec["scenarios"], spec.get("cost_policy"))
+    per_candidate = time.perf_counter() - started
+    return {
+        "status": "dry_run",
+        "grid_size": size,
+        "within_limit": size <= max_candidates,
+        "max_candidates": max_candidates,
+        "values_per_parameter": {p["name"]: len(g) for p, g in zip(params, grids, strict=True)},
+        "calculations": size * len(spec["scenarios"]),
+        "estimated_seconds": round(per_candidate * size, 1),
+        "note": "Show this to the user and confirm before running the search without dry_run.",
+    }
 
 
 def _frontier_vector(c: dict, metrics: list[dict] | None) -> list[tuple[Decimal | None, str]]:

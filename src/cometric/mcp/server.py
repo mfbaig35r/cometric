@@ -213,8 +213,9 @@ def build_server(http: bool = False) -> MCPServer:
         scenario: dict[str, Any] | str,
         cost_policy: dict[str, Any] | str | None = None,
         detail: str = "summary",
+        precision: str = "display",
     ) -> dict[str, Any]:
-        return api.calculate_periods(L(engagement), L(scenario), L(cost_policy), detail)
+        return api.calculate_periods(L(engagement), L(scenario), L(cost_policy), detail, precision)
 
     @tool(
         description="Evaluate candidate arrangements on the same scenarios. Reports dominance; ranks only with a supplied objective."
@@ -225,6 +226,8 @@ def build_server(http: bool = False) -> MCPServer:
         cost_policy: dict[str, Any] | str,
         objective: dict[str, Any] | None = None,
         tolerance_policy: dict[str, Any] | None = None,
+        detail: str = "summary",
+        precision: str = "display",
     ) -> dict[str, Any]:
         return api.compare_arrangements(
             [_load_candidate(c, L) for c in candidates],
@@ -232,6 +235,8 @@ def build_server(http: bool = False) -> MCPServer:
             L(cost_policy),
             objective,
             tolerance_policy,
+            detail,
+            precision,
         )
 
     @tool(

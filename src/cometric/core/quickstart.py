@@ -115,6 +115,9 @@ def payloads() -> dict[str, dict]:
                     "metric": "contribution_profit",
                     "sense": "max",
                     "aggregation": "WORST",
+                    "tie_breakers": [
+                        {"metric": "contribution_profit", "sense": "max", "aggregation": "MEAN"}
+                    ],
                 },
             }
         },
@@ -144,6 +147,9 @@ def payloads() -> dict[str, dict]:
 
 
 NOTES = {
+    "search_dry_run": 'Add "dry_run": true to a search_spec to get grid size, calculation count, and estimated time; show it to the user before the real run.',
+    "search_linked_parameters": 'One parameter can write several places: {"name": "uplift", "pointers": [p1, p2], "transform": "scale", "values": ["0", "0.05"]} applies base x (1 + uplift) at each pointer.',
+    "detail_and_precision": "compare_arrangements and search_structures default to detail=summary and precision=display; ask for detail=full or precision=exact only when needed.",
     "derive_risk_exposure": 'Pass the list of calculate_periods results for low/base/high scenarios: {"results": [r_low, r_base, r_high], "base_scenario_id": "base", "tolerance_policy": {"provider_relative": "0", "client_relative": "0"}}.',
     "lookup_concept": '{"id_or_query": "PM-023"} or a phrase such as {"id_or_query": "take-or-pay"}.',
     "get_template": '{"template_id": "base_plus_overage"}; pack templates: {"template_id": "phased_fixed_fee", "pack": "consulting"}.',

@@ -4,6 +4,10 @@
 
 From an LLM-driven pricing analysis:
 
+- Search: best results first, with full figures per scenario, objective values, constraint results, grid-edge flags (`BEST_AT_GRID_EDGE`), difference from the baseline (the engagement as given), downside per deviation, and fingerprints; `objective.tie_breakers`; `dry_run`; parameters that write several pointers with `set`, `scale`, or `add`.
+- `detail` (summary, standard, full) and `precision` (display, exact) on search and compare, defaulting to summary and display; `precision` on calculate_periods (the MCP tool defaults to display). A typical search answer is about 14% of its full size.
+- The server stays stateless: engagements are passed by reference as file paths; results reproduce from their fingerprints.
+
 - Threshold discounts and rebates take a required `threshold_scope`: `EXCESS_ONLY` ("10% off charges above the minimum") or `ENTIRE_SUBTOTAL`. `DISCOUNT` previously ignored `threshold` entirely. `CAP`, `REBATE`, and threshold `DISCOUNT` now require `accumulation_period` (it silently defaulted to `MONTH`).
 - Effective client unit price (and cost per unit, unit contribution) is null with an `AMBIGUOUS_UNIT_PRICE` warning when more than one quantity is priced and `client_value_unit` is not set; `client_value_unit` accepts `a+b` to sum commensurable units.
 - Every calculation result has a `definitions` block: unit-price basis, quantity spreading, thresholds, allowance recognition, minimums.

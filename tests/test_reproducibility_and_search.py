@@ -149,7 +149,9 @@ def test_t031_structure_search(case):
     assert rc["best_under_objective"] == [
         {"base_fee": "125000", "overage_rate": r} for r in ("100", "120", "140")
     ]
-    assert rc["frontier"][0]["binding_constraints"]
+    assert rc["best"][0]["constraints"]
+    full = search_structures({**constrained, "detail": "full"})
+    assert full["frontier"][0]["binding_constraints"]
     invalid = copy.deepcopy(spec)
     invalid["parameters"][0]["values"] = ["100000", "-5", "abc"]
     ri = search_structures(invalid)
