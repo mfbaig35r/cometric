@@ -1,6 +1,17 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (2026-11-05)
+
+### Breaking changes
+
+- A `DISCOUNT` or `REBATE` with a `threshold` now requires `threshold_scope` (`EXCESS_ONLY` or `ENTIRE_SUBTOTAL`). `DISCOUNT` previously ignored its threshold.
+- `CAP`, `REBATE`, and threshold `DISCOUNT` require `accumulation_period`; it previously defaulted to `MONTH` silently.
+- Effective client unit price, cost per unit, and unit contribution are null, with `AMBIGUOUS_UNIT_PRICE`, when several quantities are priced and `client_value_unit` is not set. Previously they used the first quantity.
+- `search_structures` output is restructured: best results first with full figures; the frontier is parameter sets only at the default `summary` detail.
+- `compare_arrangements` and `search_structures` default to `detail: summary` and `precision: display`; the MCP `calculate_periods` tool defaults to `precision: display`. Use `exact` for unrounded figures.
+- `ENGINE_VERSION` is 0.3.0, so fingerprints of existing inputs change.
+
+### Added and fixed
 
 - Termination scenarios: `termination_date` on a scenario; `termination_rule` (PRORATE, REMAINDER_DUE, WAIVED) on minimum-spend commitments; `termination_fee` on an arrangement version; allowances expire, unamortized one-time costs are written off, and a `termination` block reports the cost of exiting early.
 - ALSP template `tiered_units_annual_minimum` and five worked patterns with hand-computed figures (`docs/PATTERNS.md`).

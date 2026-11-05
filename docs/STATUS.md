@@ -1,6 +1,6 @@
 # Cometric implementation status
 
-Version `0.2.0` (0.1.0 released 2026-11-04; 0.2.0 adds reconciliation and the fixes from two code reviews). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below.
+Version `0.3.0` (0.1.0 released 2026-11-04; 0.2.0 added reconciliation and the fixes from two code reviews; 0.3.0 adds termination scenarios, the ALSP tiered-minimum template and patterns, and the fixes from an LLM-driven pricing analysis). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below.
 
 ## Milestones
 

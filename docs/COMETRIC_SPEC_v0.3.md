@@ -1,6 +1,6 @@
 # Cometric | Commercial Intelligence Engine
 
-**Engineering Requirements v0.3 (as built for 0.2.0)**
+**Engineering Requirements v0.3 (as built for 0.3.0)**
 
 Cometric does three things:
 
@@ -13,7 +13,7 @@ It is built for any service relationship priced through a composite arrangement:
 | | |
 |---|---|
 | Project | Cometric (`cometric` on PyPI; CLI and MCP server `cometric`) |
-| Status | Normative for `cometric` 0.2.0 (0.1.0 released to PyPI 2026-11-04). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
+| Status | Normative for `cometric` 0.3.0 (0.1.0 released 2026-11-04; 0.2.0 and 0.3.0 on 2026-11-05). Open-source project. Where this document and the code disagree, the code's tests are the tiebreaker and the disagreement is a defect in one of them. |
 | License | Apache-2.0 |
 | Date | November 4, 2026 |
 | Supersedes | `COMETRIC_SPEC_v0.2.md` (kept for history, with the v0.1 to v0.2 change log) |
@@ -55,12 +55,12 @@ v0.3 records what was built. Most changes resolve questions v0.2 left implicit; 
 | V3-20 | 11 | Open questions updated; new questions from implementation. |
 | V3-21 | App. C | Case H (consulting); fixtures live in `src/cometric/examples/`. |
 | V3-22 | App. D | Evidence verification status replaces the v0.2 priority list. |
-| V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (unreleased fix after 0.1.0). |
-| V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (unreleased, after 0.1.0). |
-| V3-28 | 4.4, 6.1, 9 | Termination scenarios: `termination_date` on a scenario, `termination_rule` on minimums, `termination_fee` on a version (unreleased). |
-| V3-29 | 3.4, 6.3, App. C | ALSP template `tiered_units_annual_minimum` and five worked patterns (`docs/PATTERNS.md`); "pending human review" defined (unreleased). |
-| V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (unreleased). |
-| V3-26 | 4.5, 5.4, 7.3, 8.3, 9 | From an LLM-driven pricing analysis (unreleased, after 0.2.0): threshold scope for discounts and rebates; unit price only for an unambiguous quantity; a `definitions` block on results; `quickstart`; no unstructured errors; candidate and constraint input forms. |
+| V3-23 | 4.2, 9 | ALL_UNITS cliff bands compare every earlier tier with each threshold, with an inclusive lower bound where a band starts at a tier edge (0.2.0). |
+| V3-24 | 8.3, 9, 10 | `reconcile` operation for M6, with a publishable summary (0.2.0). |
+| V3-28 | 4.4, 6.1, 9 | Termination scenarios: `termination_date` on a scenario, `termination_rule` on minimums, `termination_fee` on a version (0.3.0). |
+| V3-29 | 3.4, 6.3, App. C | ALSP template `tiered_units_annual_minimum` and five worked patterns (`docs/PATTERNS.md`); "pending human review" defined (0.3.0). |
+| V3-27 | 6.2, 6.4, 8.3, 11 | Search returns best results first with full figures, tie-breakers, constraint results, grid-edge warnings, and baseline differences; dry run; linked and scaled parameters; detail and precision levels; the server stays stateless (0.3.0). |
+| V3-26 | 4.5, 5.4, 7.3, 8.3, 9 | From an LLM-driven pricing analysis (0.3.0): threshold scope for discounts and rebates; unit price only for an unambiguous quantity; a `definitions` block on results; `quickstart`; no unstructured errors; candidate and constraint input forms. |
 | V3-25 | 4.1, 4.3, 4.5, 4.6, 5.2, 6.1, 8.4, 9 | Rules clarified by the full engine review (0.2.0): full-month proration, horizon simulation, one-time fees, indexation scope and contract years, required performance triggers, term-cost spreading, incurred view, component order. |
 
 ## 1. Purpose and intended decisions

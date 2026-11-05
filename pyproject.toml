@@ -1,6 +1,6 @@
 [project]
 name = "cometric"
-version = "0.2.0"
+version = "0.3.0"
 description = "Commercial Intelligence Engine: model, simulate, and optimize the economics of service engagements."
 readme = "README.md"
 license = "Apache-2.0"
