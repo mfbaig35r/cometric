@@ -30,8 +30,12 @@ class Issue:
             "message": self.message,
             "path": self.path,
         }
-        if self.detail:
-            d["detail"] = self.detail
+        detail = dict(self.detail)
+        for key in ("expected", "example", "hint"):
+            if key in detail:
+                d[key] = detail.pop(key)
+        if detail:
+            d["detail"] = detail
         return d
 
 

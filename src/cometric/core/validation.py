@@ -50,7 +50,13 @@ def pydantic_issues(
         path = root + "".join(f"/{p}" for p in err["loc"])
         if skip and any(path == s or path.startswith(s + "/") for s in skip):
             continue
-        issues.error("SCHEMA", err["msg"], path)
+        model = root.strip("/").split("/")[0] or "engagement"
+        issues.error(
+            "SCHEMA",
+            err["msg"],
+            path,
+            hint=f"describe_schema('{model}') shows the expected shape; quickstart('calculate_periods') shows a valid {model}",
+        )
 
 
 def parse_engagement(raw: Any, issues: Issues, root: str = "/engagement") -> Engagement | None:
@@ -517,6 +523,38 @@ def _validate_version(e: Engagement, v, vp, units, services, tables, issues: Iss
                     "UNKNOWN_COMPONENT", f"applies_to references {ref!r}", ap("applies_to")
                 )
         t = a.type
+        if a.threshold is not None and t not in (AdjustmentType.DISCOUNT, AdjustmentType.REBATE):
+            issues.error(
+                "FIELD_NOT_USED",
+                f"threshold applies only to DISCOUNT and REBATE, not {t}",
+                ap("threshold"),
+            )
+        if a.threshold is not None and a.threshold_scope is None:
+            issues.error(
+                "THRESHOLD_SCOPE_REQUIRED",
+                'a threshold needs threshold_scope: "EXCESS_ONLY" (percentage applies to the amount above the threshold) or "ENTIRE_SUBTOTAL" (once reached, it applies to the whole period subtotal)',
+                ap("threshold_scope"),
+                example={
+                    "type": "DISCOUNT",
+                    "percent": "0.10",
+                    "threshold": "2500000",
+                    "threshold_scope": "EXCESS_ONLY",
+                    "accumulation_period": "CONTRACT_YEAR",
+                },
+            )
+        if a.threshold_scope is not None and a.threshold is None:
+            issues.error(
+                "FIELD_NOT_USED", "threshold_scope needs a threshold", ap("threshold_scope")
+            )
+        needs_period = t in (AdjustmentType.CAP, AdjustmentType.REBATE) or (
+            t == AdjustmentType.DISCOUNT and a.threshold is not None
+        )
+        if needs_period and a.accumulation_period is None:
+            issues.error(
+                "ACCUMULATION_PERIOD_REQUIRED",
+                f"{t} needs accumulation_period (MONTH, QUARTER, YEAR, CONTRACT_YEAR, or TERM); there is no default",
+                ap("accumulation_period"),
+            )
         if (
             t
             in (

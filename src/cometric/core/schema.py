@@ -85,13 +85,93 @@ SEARCH_SPEC_SCHEMA = {
 }
 
 
+RESULT_METRICS = [
+    "contractual_fee",
+    "overage_fee",
+    "outcome_fee",
+    "commitment_shortfall",
+    "direct_delivery_cost",
+    "engagement_avoidable_cost",
+    "gross_profit",
+    "contribution_profit",
+    "gross_margin",
+    "contribution_margin",
+    "effective_client_unit_price",
+    "effective_client_price_per_used_hour",
+    "commitment_utilization",
+]
+
+EXTRA_SCHEMAS = {
+    "candidate": {
+        "title": "Candidate (compare_arrangements)",
+        "description": "Either a wrapper {id, engagement} or a bare engagement object (its engagement_id becomes the id).",
+        "oneOf": [
+            {
+                "type": "object",
+                "required": ["engagement"],
+                "properties": {
+                    "id": {"type": "string"},
+                    "engagement": {
+                        "type": ["object", "string"],
+                        "description": "Engagement object, or a file path when the stdio server has COMETRIC_ALLOWED_ROOT",
+                    },
+                },
+            },
+            {"type": "object", "required": ["schema_version"], "description": "A bare engagement"},
+        ],
+    },
+    "constraint": {
+        "title": "Constraint / rule predicate",
+        "description": (
+            'Combinators: {"all": [P, ...]}, {"any": [P, ...]}, {"not": P}. Leaf: {"path": PATH, "<op>": VALUE} '
+            'with op one of equals, in, contains, exists, gt, lt, gte, lte; or {"path": PATH, "op": "<=", "value": VALUE}. '
+            'A leaf is true when ANY value at PATH satisfies it, so \'every scenario >= x\' is written {"not": {"path": "scenarios.*.m", "lt": x}}.'
+        ),
+        "examples": [
+            {"not": {"path": "scenarios.*.contribution_margin", "lt": "0.15"}},
+            {
+                "all": [
+                    {"path": "scenarios.base.effective_client_unit_price", "lte": "110"},
+                    {"path": "scenarios.low.contribution_profit", "gt": "0"},
+                ]
+            },
+        ],
+    },
+    "paths": {
+        "title": "Reference conventions",
+        "description": "How each kind of reference is written.",
+        "properties": {
+            "quantity_source": 'Scenario assumption name, optionally prefixed: "scenario.units" or "units". Time and band quantities append .<role> or .<band>.',
+            "constraint_paths": "Dotted paths into {scenarios: {<scenario_id>: metrics}, parameters: {<name>: value}}; * matches any scenario id. Metrics: "
+            + ", ".join(RESULT_METRICS)
+            + ".",
+            "rule_paths": "Dotted paths into the engagement; [*] expands lists, e.g. arrangement_versions[*].components[*].billing_basis.",
+            "search_parameters": "JSON Pointers into the engagement, e.g. /arrangement_versions/0/components/0/fixed_amount.",
+            "error_paths": "JSON Pointers into the call's arguments, e.g. /engagement/arrangement_versions/0/components/1/unit.",
+            "by_reference": "On the stdio server started with COMETRIC_ALLOWED_ROOT, any engagement, scenario, or actuals argument may be a file path under that root instead of an object; a casebook fixture file is unwrapped to its engagement.",
+        },
+    },
+    "actuals": {
+        "title": "Actuals (reconcile)",
+        "type": "object",
+        "properties": {
+            "periods": {"type": "object", "description": '{"YYYY-MM": {metric: "amount"}}'},
+            "term": {"type": "object", "description": '{metric: "amount"}'},
+        },
+        "description": "Amounts are decimal strings or integers. Metrics: contractual_fee, outcome_fee, overage_fee, commitment_shortfall, direct_delivery_cost, engagement_avoidable_cost, gross_profit, contribution_profit, worked_hours, standard_value.",
+    },
+}
+
+
 def describe_schema(model: str) -> dict:
     if model == "search_spec":
         return SEARCH_SPEC_SCHEMA
+    if model in EXTRA_SCHEMAS:
+        return EXTRA_SCHEMAS[model]
     if model not in MODELS:
-        raise KeyError(f"no model {model!r}; models: {sorted([*MODELS, 'search_spec'])}")
+        raise KeyError(f"no model {model!r}; models: {model_names()}")
     return MODELS[model].model_json_schema(by_alias=True)
 
 
 def model_names() -> list[str]:
-    return sorted([*MODELS, "search_spec"])
+    return sorted([*MODELS, *EXTRA_SCHEMAS, "search_spec"])

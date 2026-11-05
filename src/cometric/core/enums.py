@@ -262,6 +262,11 @@ class Prevalence(StrEnum):
     UNVERIFIED = "UNVERIFIED"
 
 
+class ThresholdScope(StrEnum):
+    EXCESS_ONLY = "EXCESS_ONLY"  # the percentage applies only to the amount above the threshold
+    ENTIRE_SUBTOTAL = "ENTIRE_SUBTOTAL"  # once the threshold is reached, it applies to all of it
+
+
 class OutcomeForm(StrEnum):
     SHARE = "SHARE"  # share of measured improvement against a baseline
     SUCCESS = "SUCCESS"  # fixed amount when a target is met

@@ -37,6 +37,7 @@ from .enums import (
     RoundingMode,
     ShortfallRule,
     TestedAgainst,
+    ThresholdScope,
     TierMethod,
     TierScope,
     Topology,
@@ -244,9 +245,21 @@ class Adjustment(Model):
     percent: Dec | None = None
     amount: Dec | None = None
     cap_percent: Dec | None = None
-    trigger: str | None = None
-    threshold: Dec | None = None
-    accumulation_period: AccumulationPeriod = AccumulationPeriod.MONTH
+    trigger: str | None = Field(
+        default=None,
+        description="Scenario quantity that triggers SLA_CREDIT, BONUS, or HOLDBACK in a month",
+    )
+    threshold: Dec | None = Field(
+        default=None,
+        description="DISCOUNT or REBATE only: subtotal over the accumulation period at which the percentage starts to apply",
+    )
+    threshold_scope: ThresholdScope | None = Field(
+        default=None,
+        description='Required with a threshold. EXCESS_ONLY: the percentage applies to the amount above the threshold ("10% off charges above the minimum"). ENTIRE_SUBTOTAL: once the threshold is reached, it applies to the whole period subtotal.',
+    )
+    accumulation_period: AccumulationPeriod | None = Field(
+        default=None, description="Required for CAP, REBATE, and threshold DISCOUNT; no default"
+    )
     component_id: str | None = None
     lower: Dec | None = None
     upper: Dec | None = None
@@ -368,7 +381,10 @@ class Engagement(Model):
     delivery_plan: DeliveryPlan | None = None
     risk_allocations: list[RiskAllocation] = []
     descriptors: dict[str, str] = {}
-    client_value_unit: str | None = None
+    client_value_unit: str | None = Field(
+        default=None,
+        description='Scenario quantity used for effective client unit price: a name, "weighted:<name>[:<table>]", or names joined with + to sum commensurable units ("docs_a+docs_b"). Required when more than one unit type is priced.',
+    )
 
 
 # --- scenarios and policies --------------------------------------------------------------
@@ -382,10 +398,19 @@ class Horizon(Model):
 
 
 class Assumption(Model):
-    name: str
-    value: Dec
+    """A scenario quantity. `value` is the TOTAL for `time_period`, not a per-month rate.
+
+    YYYY-MM puts the whole value in that month. YYYY, YYYY-MM..YYYY-MM, and TERM spread the total
+    across those months of the engagement (FLAT: evenly by exact allocation, whole units for COUNT
+    units with the remainder to the earliest months; PROFILE: by the given weights).
+    """
+
+    name: str = Field(
+        description='Referenced by components as quantity_source ("scenario.<name>" or "<name>"); role or band quantities use <name>.<role> or <name>.<band>'
+    )
+    value: Dec = Field(description="Total for time_period, as a decimal string")
     unit: str
-    time_period: str
+    time_period: str = Field(description="YYYY-MM, YYYY, YYYY-MM..YYYY-MM, or TERM")
     origin: Origin
     distribution: Distribution = Distribution.FLAT
     profile: list[Dec] = []

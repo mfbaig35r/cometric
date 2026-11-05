@@ -5,6 +5,7 @@ No tool writes files, calls a network service, or calls an LLM.
 
 from __future__ import annotations
 
+import functools
 import json
 import os
 from pathlib import Path
@@ -17,12 +18,16 @@ import cometric
 from cometric.core import api, packs, schema, templates
 from cometric.core.engine import ENGINE_VERSION
 from cometric.core.models import SCHEMA_VERSION
+from cometric.core.quickstart import quickstart as quickstart_payloads
 from cometric.core.validation import validate_engagement
 
 EXAMPLES = Path(cometric.__file__).resolve().parent / "examples"
 
 INSTRUCTIONS = """Cometric computes the economics of service engagements deterministically.
 Never do commercial arithmetic yourself: build inputs and let these tools compute.
+
+Start with quickstart(): it returns the conventions, and quickstart(<tool>) returns a complete,
+runnable argument object for that tool. describe_schema('paths') explains every reference syntax.
 
 Typical flow:
 1. list_templates / get_template to start from a skeleton; describe_schema for exact shapes.
@@ -81,6 +86,55 @@ def _load(value: Any, transport_http: bool = False) -> Any:
     return doc
 
 
+def _error(code: str, message: str, path: str = "", hint: str | None = None) -> dict[str, Any]:
+    err = {"code": code, "severity": "ERROR", "message": message, "path": path}
+    if hint:
+        err["hint"] = hint
+    return {
+        "status": "invalid" if code != "INTERNAL_ERROR" else "error",
+        "issues": {"errors": [err], "approvals_required": [], "warnings": [], "info": []},
+    }
+
+
+def _safe(name: str):
+    """Every tool returns a structured result; no exception reaches the client as a blank error."""
+
+    def deco(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            try:
+                return fn(*args, **kwargs)
+            except KeyError as exc:
+                msg = exc.args[0] if exc.args else str(exc)
+                return _error(
+                    "UNKNOWN_NAME", str(msg), hint=f"quickstart('{name}') shows a valid call"
+                )
+            except (ValueError, TypeError) as exc:
+                return _error(
+                    "INVALID_INPUT",
+                    str(exc),
+                    hint=f"quickstart('{name}') shows a valid call; describe_schema lists every input model",
+                )
+            except Exception as exc:  # noqa: BLE001 - surface defects instead of a blank error
+                return _error(
+                    "INTERNAL_ERROR",
+                    f"{type(exc).__name__}: {exc}",
+                    hint="this is a defect in Cometric; report it with the call's arguments",
+                )
+
+        return wrapper
+
+    return deco
+
+
+def _load_candidate(c: Any, loader) -> Any:
+    if isinstance(c, str):
+        return {"engagement": loader(c)}
+    if isinstance(c, dict) and "engagement" in c:
+        return {**c, "engagement": loader(c["engagement"])}
+    return c
+
+
 def build_server(http: bool = False) -> MCPServer:
     server = MCPServer(
         name="cometric",
@@ -91,38 +145,51 @@ def build_server(http: bool = False) -> MCPServer:
     )
     L = lambda v: _load(v, http)  # noqa: E731
 
+    def tool(name: str | None = None, **kw):
+        def register(fn):
+            tool_name = name or fn.__name__
+            return server.tool(name=tool_name, **kw)(_safe(tool_name)(fn))
+
+        return register
+
+    @tool(
+        description="Start here: conventions, and with a tool name a complete runnable argument object for that tool."
+    )
+    def quickstart(tool_name: str | None = None) -> dict[str, Any]:
+        return quickstart_payloads(tool_name)
+
     # --- discovery ---------------------------------------------------------------------
-    @server.tool(
+    @tool(
         description="JSON Schema for an input model: engagement, scenario, cost_policy, search_spec, and parts."
     )
     def describe_schema(model: str) -> dict[str, Any]:
         return schema.describe_schema(model)
 
-    @server.tool(description="Installed domain packs.")
+    @tool(description="Installed domain packs.")
     def list_packs() -> dict[str, Any]:
         return {"packs": packs.list_packs()}
 
-    @server.tool(description="A pack's schemes, rules, evidence counts, templates, and coverage.")
+    @tool(description="A pack's schemes, rules, evidence counts, templates, and coverage.")
     def describe_pack(pack_id: str) -> dict[str, Any]:
         return packs.describe_pack(pack_id)
 
-    @server.tool(description="Engagement templates (core and pack).")
+    @tool(description="Engagement templates (core and pack).")
     def list_templates() -> dict[str, Any]:
         return {"templates": templates.list_templates()}
 
-    @server.tool(
+    @tool(
         description="An engagement skeleton. Fill every '<required>' value; 'examples' shows the shape of each."
     )
     def get_template(template_id: str, pack: str | None = None) -> dict[str, Any]:
         return templates.get_template(template_id, pack)
 
-    @server.tool(
+    @tool(
         description="Values of a controlled vocabulary (core enum or pack scheme) with definitions."
     )
     def list_vocabulary(name: str, pack: str | None = None) -> dict[str, Any]:
         return {"name": name, "values": packs.list_vocabulary(name, pack)}
 
-    @server.tool(
+    @tool(
         description="Look up a concept, rule, or term by id (e.g. PM-023, COMPAT-004) or by text."
     )
     def lookup_concept(id_or_query: str, pack: str | None = None) -> dict[str, Any]:
@@ -131,14 +198,14 @@ def build_server(http: bool = False) -> MCPServer:
         }
 
     # --- engine ------------------------------------------------------------------------
-    @server.tool(
+    @tool(
         name="validate_engagement",
         description="Validate an engagement. Errors carry JSON Pointer paths for repair.",
     )
     def validate_engagement_tool(engagement: dict[str, Any] | str) -> dict[str, Any]:
         return validate_engagement(L(engagement))
 
-    @server.tool(
+    @tool(
         description="Monthly contractual fee, costs, and metrics. detail: summary | periods | line_items. cost_policy: object or 'reference'."
     )
     def calculate_periods(
@@ -149,25 +216,25 @@ def build_server(http: bool = False) -> MCPServer:
     ) -> dict[str, Any]:
         return api.calculate_periods(L(engagement), L(scenario), L(cost_policy), detail)
 
-    @server.tool(
+    @tool(
         description="Evaluate candidate arrangements on the same scenarios. Reports dominance; ranks only with a supplied objective."
     )
     def compare_arrangements(
-        candidates: list[dict[str, Any]],
+        candidates: list[Any],
         scenarios: list[dict[str, Any]],
         cost_policy: dict[str, Any] | str,
         objective: dict[str, Any] | None = None,
         tolerance_policy: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         return api.compare_arrangements(
-            [{**c, "engagement": L(c["engagement"])} for c in candidates],
+            [_load_candidate(c, L) for c in candidates],
             [L(s) for s in scenarios],
             L(cost_policy),
             objective,
             tolerance_policy,
         )
 
-    @server.tool(
+    @tool(
         description="Who absorbs each deviation from the base scenario, from calculate_periods results."
     )
     def derive_risk_exposure(
@@ -177,7 +244,7 @@ def build_server(http: bool = False) -> MCPServer:
     ) -> dict[str, Any]:
         return api.derive_risk_exposure(results, base_scenario_id, tolerance_policy)
 
-    @server.tool(
+    @tool(
         description="Deterministic grid search over declared parameters; returns the trade-off frontier. Show the spec to the user first."
     )
     def search_structures(search_spec: dict[str, Any]) -> dict[str, Any]:
@@ -185,7 +252,7 @@ def build_server(http: bool = False) -> MCPServer:
         spec["engagement"] = L(spec["engagement"])
         return api.search_structures(spec)
 
-    @server.tool(
+    @tool(
         description="Line-item trace for a period (and optional component), recomputed from inputs."
     )
     def explain_fee(
@@ -197,7 +264,7 @@ def build_server(http: bool = False) -> MCPServer:
     ) -> dict[str, Any]:
         return api.explain_fee(L(engagement), L(scenario), L(cost_policy), period, component)
 
-    @server.tool(
+    @tool(
         description="Fee at which contribution margin equals the target, at each scenario volume."
     )
     def price_floor(
@@ -211,7 +278,7 @@ def build_server(http: bool = False) -> MCPServer:
             L(engagement), [L(s) for s in scenarios], L(cost_policy), target_margin, risk_premium
         )
 
-    @server.tool(description="Driver volume at which term contribution is zero.")
+    @tool(description="Driver volume at which term contribution is zero.")
     def break_even(
         engagement: dict[str, Any] | str,
         scenario: dict[str, Any] | str,
@@ -220,7 +287,7 @@ def build_server(http: bool = False) -> MCPServer:
     ) -> dict[str, Any]:
         return api.break_even(L(engagement), L(scenario), L(cost_policy), driver)
 
-    @server.tool(
+    @tool(
         description="Core checks plus pack rules; optional policy {contribution_margin_floor, scenarios, cost_policy}."
     )
     def check_commercial_constraints(
@@ -228,7 +295,7 @@ def build_server(http: bool = False) -> MCPServer:
     ) -> dict[str, Any]:
         return api.check_commercial_constraints(L(engagement), policy)
 
-    @server.tool(
+    @tool(
         description="Compare computed figures with recorded actuals by month and term. publishable_summary carries no amounts, dates, or names."
     )
     def reconcile(
@@ -248,13 +315,15 @@ def build_server(http: bool = False) -> MCPServer:
             tolerance_relative,
         )
 
-    @server.tool(
-        description="Claims and sources behind a concept or claim id, with verification status."
-    )
+    @tool(description="Claims and sources behind a concept or claim id, with verification status.")
     def list_applicable_evidence(claim_or_concept: str, pack: str | None = None) -> dict[str, Any]:
         return applicable_evidence(claim_or_concept, pack)
 
     # --- resources ---------------------------------------------------------------------
+    @server.resource("cometric://quickstart", name="quickstart", mime_type="application/json")
+    def quickstart_resource() -> str:
+        return json.dumps(quickstart_payloads(None), indent=2)
+
     @server.resource("cometric://glossary", name="glossary", mime_type="application/json")
     def glossary() -> str:
         return json.dumps(

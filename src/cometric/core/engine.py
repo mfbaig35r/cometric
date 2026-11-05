@@ -24,6 +24,7 @@ from .enums import (
     RoundingLevel,
     ShortfallRule,
     TestedAgainst,
+    ThresholdScope,
     TierScope,
     TransitionView,
 )
@@ -779,11 +780,56 @@ class Calculator:
         totals5 = self._component_totals(m, 5)
         for adj in v.adjustments:
             if adj.type == AdjustmentType.DISCOUNT and adj.percent is not None:
-                for cid, amt in totals5.items():
-                    if adj.applies_to and cid not in adj.applies_to:
+                in_scope = {
+                    cid: amt
+                    for cid, amt in totals5.items()
+                    if not adj.applies_to or cid in adj.applies_to
+                }
+                if adj.threshold is None:
+                    for cid, amt in in_scope.items():
+                        self.fee(
+                            m,
+                            6,
+                            adj.id,
+                            cid,
+                            "discount",
+                            -adj.percent * amt,
+                            f"-{adj.percent} x {amt}",
+                        )
+                    continue
+                # Threshold discount, recognized cumulatively over its accumulation period: the
+                # month that crosses the threshold takes any catch-up for the whole subtotal.
+                month_total = sum(in_scope.values(), ZERO)
+                key = ("discount", adj.id, self.pk(adj.accumulation_period, m))
+                before = self.acc_add(key, month_total)
+                after = before + month_total
+                eligible = self._threshold_eligible(adj)
+                # Round cumulatively so monthly discounts add up exactly to the period discount,
+                # then split each month's amount across components without losing a cent.
+                mode = str(self.money.rounding_mode)
+                discount = quantize(adj.percent * eligible(after), self.scale, mode) - quantize(
+                    adj.percent * eligible(before), self.scale, mode
+                )
+                if discount == 0 or month_total <= 0:
+                    continue
+                ids = list(in_scope)
+                weights = [max(in_scope[cid], ZERO) for cid in ids]
+                if sum(weights, ZERO) > 0:
+                    shares = allocate_weighted(abs(discount), weights, self.scale)
+                    shares = [x if discount > 0 else -x for x in shares]
+                else:
+                    shares = [discount * in_scope[cid] / month_total for cid in ids]
+                for cid, share in zip(ids, shares, strict=True):
+                    if share == 0:
                         continue
                     self.fee(
-                        m, 6, adj.id, cid, "discount", -adj.percent * amt, f"-{adj.percent} x {amt}"
+                        m,
+                        6,
+                        adj.id,
+                        cid,
+                        "discount",
+                        -share,
+                        f"-{adj.percent} x {adj.threshold_scope} above threshold {adj.threshold}; period subtotal {before} -> {after}",
                     )
             elif adj.type == AdjustmentType.REBATE and adj.percent is not None:
                 scope = set(adj.applies_to) if adj.applies_to else None
@@ -795,15 +841,25 @@ class Calculator:
                     )
                 elif self.is_end(adj.accumulation_period, m):
                     period_total = self.acc[key]
-                    if adj.threshold is None or period_total >= adj.threshold:
+                    base = (
+                        period_total
+                        if adj.threshold is None
+                        else self._threshold_eligible(adj)(period_total)
+                    )
+                    if base > 0:
                         self.fee(
                             m,
                             6,
                             adj.id,
                             None,
                             "rebate",
-                            -adj.percent * period_total,
-                            f"-{adj.percent} x period subtotal {period_total}",
+                            -adj.percent * base,
+                            f"-{adj.percent} x {base} (period subtotal {period_total}"
+                            + (
+                                f", {adj.threshold_scope} above {adj.threshold})"
+                                if adj.threshold is not None
+                                else ")"
+                            ),
                         )
         # step 7: minimums tested gross or net of discounts
         for com in v.commitments:
@@ -867,6 +923,14 @@ class Calculator:
                     -reduction,
                     f"cap {adj.amount} per {adj.accumulation_period}; cumulative {after}",
                 )
+
+    @staticmethod
+    def _threshold_eligible(adj):
+        """Amount a percentage applies to, given a cumulative subtotal x and the threshold scope."""
+        t = adj.threshold
+        if adj.threshold_scope == ThresholdScope.EXCESS_ONLY:
+            return lambda x: max(ZERO, x - t)
+        return lambda x: x if x >= t else ZERO
 
     def _minimum(self, m: Month, com, v: ArrangementVersion, step_basis: int | None = None) -> None:
         if com.aggregation_scope == AggregationScope.ENGAGEMENT:
@@ -1309,47 +1373,73 @@ class Calculator:
                     months.append(self.anchor)
         return min(months) if months else None
 
-    def client_value_quantity(self) -> str | None:
-        if self.e.client_value_unit:
-            return self.e.client_value_unit
+    def priced_quantities(self) -> list[tuple[str, str | None]]:
+        """Distinct (quantity name, unit) pairs priced by output components."""
+        found: dict[str, str | None] = {}
         for v in self.e.arrangement_versions:
             for c in v.components:
-                if (
-                    c.calculation_method
-                    in (CalculationMethod.UNIT_OUTPUT, CalculationMethod.ALLOWANCE_OVERAGE)
-                    and c.quantity_source
+                if not c.quantity_source:
+                    continue
+                if c.calculation_method in (
+                    CalculationMethod.UNIT_OUTPUT,
+                    CalculationMethod.ALLOWANCE_OVERAGE,
                 ):
-                    return c.quantity_source.removeprefix("scenario.")
-                if (
-                    c.calculation_method == CalculationMethod.WEIGHTED_UNIT_OUTPUT
-                    and c.quantity_source
-                ):
-                    return (
+                    found.setdefault(c.quantity_source.removeprefix("scenario."), c.unit)
+                elif c.calculation_method == CalculationMethod.WEIGHTED_UNIT_OUTPUT:
+                    name = (
                         "weighted:"
                         + c.quantity_source.removeprefix("scenario.")
                         + (f":{c.weight_table_id}" if c.weight_table_id else "")
                     )
+                    found.setdefault(name, c.unit)
+        return list(found.items())
+
+    def client_value_quantity(self) -> str | None:
+        """The quantity behind effective client unit price; None when it would be ambiguous."""
+        if self.e.client_value_unit:
+            return self.e.client_value_unit
+        priced = self.priced_quantities()
+        return priced[0][0] if len(priced) == 1 else None
+
+    def _quantity_total(self, name: str, quantities: Quantities) -> Decimal | None:
+        if name.startswith("weighted:"):
+            base, _, table = name[len("weighted:") :].partition(":")
+            try:
+                return sum(
+                    (
+                        self.weighted_qty(quantities, base, table or None, m, "")
+                        for m in self.months
+                    ),
+                    ZERO,
+                )
+            except CometricError:
+                return None
+        if quantities.has(name):
+            return sum((quantities.get(name, m) or ZERO for m in self.months), ZERO)
         return None
 
     def _client_metrics(self, term: dict, quantities: Quantities) -> None:
         name = self.client_value_quantity()
         total_q = None
+        priced = self.priced_quantities()
+        if name is None and len(priced) > 1:
+            listed = ", ".join(f"{n} ({u})" for n, u in priced)
+            self.issues.warn(
+                "AMBIGUOUS_UNIT_PRICE",
+                f"several unit types are priced ({listed}); effective client unit price, cost per unit, and unit contribution are not reported. Set client_value_unit to one quantity, or join commensurable ones with +.",
+                "/engagement/client_value_unit",
+            )
         if name:
-            if name.startswith("weighted:"):
-                rest = name[len("weighted:") :]
-                base, _, table = rest.partition(":")
-                try:
-                    total_q = sum(
-                        (
-                            self.weighted_qty(quantities, base, table or None, m, "")
-                            for m in self.months
-                        ),
-                        ZERO,
-                    )
-                except CometricError:
-                    total_q = None
-            elif quantities.has(name):
-                total_q = sum((quantities.get(name, m) or ZERO for m in self.months), ZERO)
+            parts = [p.strip() for p in name.split("+")]
+            totals = [self._quantity_total(p, quantities) for p in parts]
+            total_q = None if any(t is None for t in totals) else sum(totals, ZERO)
+            units = {quantities.units.get(p) for p in parts if not p.startswith("weighted:")}
+            if len(parts) > 1 and len(units) > 1:
+                self.issues.warn(
+                    "MIXED_UNITS_IN_PRICE",
+                    f"client_value_unit sums quantities in different units ({sorted(u for u in units if u)}); the unit price treats them as one unit",
+                    "/engagement/client_value_unit",
+                )
         fee = term["contractual_fee"]
         cost = term["direct_delivery_cost"] + term["engagement_avoidable_cost"]
         term["client_value_quantity"] = name

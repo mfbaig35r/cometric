@@ -128,8 +128,17 @@ def build_quantities(
                 shares = allocate_weighted(a.value, list(a.profile), scale)
             else:
                 shares = allocate_exact(a.value, len(targets), scale)
-        except ValueError as exc:
-            issues.error("NOT_ALLOCATABLE", str(exc), path + "/value")
+        except ValueError:
+            issues.error(
+                "NOT_ALLOCATABLE",
+                f"{a.value} {a.unit} cannot be spread exactly over {len(targets)} months at {scale} decimal places; "
+                + (
+                    "COUNT units need a whole-number total: round it, give monthly values, or use a non-COUNT unit kind"
+                    if scale == 0
+                    else "give monthly values or a total with fewer decimals"
+                ),
+                path + "/value",
+            )
             continue
         for m, s in zip(targets, shares, strict=True):
             q.set(a.name, m, s)

@@ -165,6 +165,7 @@ def calculate_periods(
         },
         "term": data["term"],
         "years": data["years"],
+        "definitions": definitions(e, result),
     }
     if detail in ("periods", "line_items"):
         out["periods"] = data["periods"]
@@ -176,6 +177,66 @@ def calculate_periods(
         out["ledger"] = result.ledger
     out["issues"] = report(issues)
     return to_jsonable(out)
+
+
+QUANTITY_SPREADING = (
+    "Assumption values are totals for their time_period. A YYYY-MM value falls in that month; "
+    "YYYY, ranges, and TERM spread the total across those months of the engagement (FLAT: evenly by "
+    "exact allocation, whole units for COUNT units, remainder to the earliest months)."
+)
+
+
+def definitions(e: Engagement, result: CalculationResult) -> dict:
+    """The conventions a reader needs to quote these figures correctly."""
+    term = result.data["term"]
+    basis = term.get("client_value_quantity")
+    thresholds, recognition, minimums = [], [], []
+    for v in e.arrangement_versions:
+        for a in v.adjustments:
+            if a.threshold is not None:
+                thresholds.append(
+                    {
+                        "id": a.id,
+                        "type": a.type,
+                        "percent": a.percent,
+                        "threshold": a.threshold,
+                        "scope": a.threshold_scope,
+                        "accumulation_period": a.accumulation_period,
+                    }
+                )
+        for ent in v.entitlements:
+            recognition.append(
+                {
+                    "entitlement": ent.id,
+                    "accumulation_period": ent.accumulation_period,
+                    "overage_recognition": ent.overage_recognition,
+                    "rollover": ent.rollover.policy,
+                }
+            )
+        for c in v.commitments:
+            minimums.append(
+                {
+                    "id": c.id,
+                    "kind": c.kind,
+                    "accumulation_period": c.accumulation_period,
+                    "tested_against": c.tested_against,
+                    "shortfall_rule": c.shortfall_rule,
+                }
+            )
+    out: dict[str, Any] = {
+        "contractual_fee": "Contractual consideration under the arrangement; not recognized revenue.",
+        "client_unit_price_basis": basis
+        if basis
+        else "not reported: no single priced quantity (set client_value_unit)",
+        "quantity_spreading": QUANTITY_SPREADING,
+    }
+    if thresholds:
+        out["thresholds"] = thresholds
+    if recognition:
+        out["allowances"] = recognition
+    if minimums:
+        out["minimums"] = minimums
+    return out
 
 
 def explain_fee(
@@ -484,6 +545,7 @@ def _term_summary(r: dict) -> dict:
             "gross_margin",
             "contribution_margin",
             "effective_client_unit_price",
+            "client_value_quantity",
             "effective_client_price_per_used_hour",
             "commitment_utilization",
             "overage_fee",
@@ -549,6 +611,17 @@ def compare_arrangements(
     tolerance_policy: Any = None,
 ) -> dict:
     """Evaluate candidates on the same scenarios; report dominance, never a ranking (spec 6.2)."""
+    issues = Issues()
+    candidates = normalize_candidates(candidates, issues)
+    if not isinstance(scenario_set, list) or not scenario_set:
+        issues.error(
+            "SCHEMA",
+            "scenarios must be a non-empty list of scenario objects",
+            "/scenarios",
+            example=[{"id": "base", "assumptions": []}],
+        )
+    if issues.has_errors:
+        return to_jsonable({"status": "invalid", "issues": report(issues)})
     rows = {}
     for cand in candidates:
         ev = _evaluate_candidate(cand["engagement"], scenario_set, cost_policy)
@@ -630,8 +703,147 @@ def _param_values(p: dict) -> list[str]:
     return out
 
 
+CANDIDATE_EXAMPLE = {
+    "id": "current",
+    "engagement": {"schema_version": "0.2", "engagement_id": "...", "...": "..."},
+}
+SEARCH_SPEC_EXAMPLE = {
+    "engagement": {"schema_version": "0.2", "...": "..."},
+    "scenarios": [{"id": "base", "assumptions": ["..."]}],
+    "cost_policy": "reference",
+    "parameters": [
+        {
+            "name": "base_fee",
+            "pointer": "/arrangement_versions/0/components/0/fixed_amount",
+            "values": ["90000", "100000"],
+        }
+    ],
+    "constraints": {"not": {"path": "scenarios.*.contribution_margin", "lt": "0.15"}},
+    "objective": {"metric": "contribution_profit", "sense": "max", "aggregation": "WORST"},
+}
+
+
+def normalize_candidates(candidates: Any, issues: Issues) -> list[dict]:
+    """Accept {"id", "engagement"} wrappers or bare engagements; anything else is a clear error."""
+    if not isinstance(candidates, list) or not candidates:
+        issues.error(
+            "SCHEMA",
+            "candidates must be a non-empty list",
+            "/candidates",
+            example=[CANDIDATE_EXAMPLE],
+        )
+        return []
+    out = []
+    for i, c in enumerate(candidates):
+        if isinstance(c, dict) and "engagement" in c:
+            out.append(
+                {"id": str(c.get("id") or f"candidate-{i + 1}"), "engagement": c["engagement"]}
+            )
+        elif isinstance(c, dict) and "schema_version" in c:
+            out.append({"id": str(c.get("engagement_id") or f"candidate-{i + 1}"), "engagement": c})
+        else:
+            issues.error(
+                "SCHEMA",
+                'each candidate is {"id": ..., "engagement": {...}} or a bare engagement object',
+                f"/candidates/{i}",
+                example=CANDIDATE_EXAMPLE,
+            )
+    ids = [c["id"] for c in out]
+    for dup in sorted({x for x in ids if ids.count(x) > 1}):
+        issues.error(
+            "DUPLICATE_ID",
+            f"candidate id {dup!r} is used twice; give each candidate a distinct id",
+            "/candidates",
+        )
+    return out
+
+
+def validate_search_spec(spec: Any, issues: Issues) -> None:
+    from .predicates import check as check_predicate
+
+    if not isinstance(spec, dict):
+        issues.error(
+            "SCHEMA", "search_spec must be an object", "/search_spec", example=SEARCH_SPEC_EXAMPLE
+        )
+        return
+    for key, kind in (("engagement", dict), ("scenarios", list), ("parameters", list)):
+        if not isinstance(spec.get(key), kind) or (kind is list and not spec.get(key)):
+            issues.error(
+                "SCHEMA",
+                f"search_spec.{key} is required ({'an object' if kind is dict else 'a non-empty list'})",
+                f"/{key}",
+                example=SEARCH_SPEC_EXAMPLE,
+            )
+    names = []
+    for i, p in enumerate(spec.get("parameters") or []):
+        path = f"/parameters/{i}"
+        if not isinstance(p, dict):
+            issues.error(
+                "SCHEMA",
+                "a parameter is an object",
+                path,
+                example=SEARCH_SPEC_EXAMPLE["parameters"][0],
+            )
+            continue
+        if not isinstance(p.get("name"), str):
+            issues.error("SCHEMA", "parameter needs a name", path + "/name")
+        names.append(p.get("name"))
+        if not isinstance(p.get("pointer"), str) or not str(p.get("pointer")).startswith("/"):
+            issues.error(
+                "SCHEMA",
+                "parameter needs a JSON Pointer into the engagement, starting with /",
+                path + "/pointer",
+                example="/arrangement_versions/0/components/0/fixed_amount",
+            )
+        if "values" in p:
+            if not isinstance(p["values"], list) or not p["values"]:
+                issues.error(
+                    "SCHEMA", "values must be a non-empty list of decimal strings", path + "/values"
+                )
+        elif not isinstance(p.get("range"), dict) or not {"from", "to", "step"} <= set(p["range"]):
+            issues.error(
+                "SCHEMA",
+                "parameter needs values or range {from, to, step}",
+                path,
+                example={
+                    "name": "rate",
+                    "pointer": "/...",
+                    "range": {"from": "100", "to": "140", "step": "20"},
+                },
+            )
+    for dup in sorted({n for n in names if n is not None and names.count(n) > 1}):
+        issues.error("DUPLICATE_ID", f"parameter name {dup!r} is used twice", "/parameters")
+    if spec.get("constraints") is not None:
+        for prob in check_predicate(spec["constraints"]):
+            issues.error(
+                "BAD_CONSTRAINT", prob, "/constraints", example=SEARCH_SPEC_EXAMPLE["constraints"]
+            )
+    obj = spec.get("objective")
+    if obj is not None:
+        if not isinstance(obj, dict) or not isinstance(obj.get("metric"), str):
+            issues.error(
+                "SCHEMA",
+                "objective needs a metric name",
+                "/objective",
+                example=SEARCH_SPEC_EXAMPLE["objective"],
+            )
+        else:
+            if obj.get("sense", "max") not in ("max", "min"):
+                issues.error("SCHEMA", "objective.sense is max or min", "/objective/sense")
+            if obj.get("aggregation", "BASE") not in ("BASE", "WORST", "MEAN"):
+                issues.error(
+                    "SCHEMA",
+                    "objective.aggregation is BASE, WORST, or MEAN",
+                    "/objective/aggregation",
+                )
+
+
 def search_structures(search_spec: dict) -> dict:
     """Deterministic grid search returning the trade-off frontier (spec 6.4)."""
+    pre = Issues()
+    validate_search_spec(search_spec, pre)
+    if pre.has_errors:
+        return to_jsonable({"status": "invalid", "issues": report(pre)})
     spec = search_spec
     base_engagement = spec["engagement"]
     scenarios = spec["scenarios"]

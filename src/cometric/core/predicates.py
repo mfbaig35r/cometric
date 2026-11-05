@@ -12,6 +12,40 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 OPS = {"equals", "in", "contains", "exists", "gt", "lt", "gte", "lte"}
+OP_ALIASES = {
+    "==": "equals",
+    "=": "equals",
+    "eq": "equals",
+    "equals": "equals",
+    "in": "in",
+    "contains": "contains",
+    "exists": "exists",
+    ">": "gt",
+    "gt": "gt",
+    "<": "lt",
+    "lt": "lt",
+    ">=": "gte",
+    "gte": "gte",
+    "<=": "lte",
+    "lte": "lte",
+}
+LEAF_HELP = (
+    'a leaf is {"path": P, "<op>": V} with op one of '
+    + ", ".join(sorted(OPS))
+    + ', or equivalently {"path": P, "op": "<=", "value": V}'
+)
+
+
+def normalize_leaf(pred: dict) -> dict:
+    """Accept {"path", "op", "value"} as an alias for {"path", "<op>": value}."""
+    if "op" in pred and "path" in pred:
+        op = OP_ALIASES.get(str(pred["op"]))
+        if op is None:
+            raise PredicateError(f"unknown op {pred['op']!r}; {LEAF_HELP}")
+        return {"path": pred["path"], op: pred.get("value")}
+    return pred
+
+
 _SEG = re.compile(r"^([^\[\]]+)((?:\[(?:\*|\d+)\])*)$")
 
 
@@ -94,10 +128,11 @@ def evaluate(pred: Any, doc: Any) -> bool:
     if "not" in pred:
         return not evaluate(pred["not"], doc)
     if "path" not in pred:
-        raise PredicateError("leaf predicate needs a path")
+        raise PredicateError(f"leaf predicate needs a path; {LEAF_HELP}")
+    pred = normalize_leaf(pred)
     ops = [k for k in pred if k != "path"]
     if len(ops) != 1 or ops[0] not in OPS:
-        raise PredicateError(f"leaf needs exactly one operator from {sorted(OPS)}, got {ops}")
+        raise PredicateError(f"leaf needs exactly one operator, got {ops}; {LEAF_HELP}")
     return _leaf(resolve(doc, pred["path"]), ops[0], pred[ops[0]])
 
 
@@ -117,10 +152,14 @@ def check(pred: Any) -> list[str]:
     if "not" in pred:
         return check(pred["not"])
     if "path" not in pred:
-        return ["leaf predicate needs a path"]
+        return [f"leaf predicate needs a path; {LEAF_HELP}"]
+    try:
+        pred = normalize_leaf(pred)
+    except PredicateError as exc:
+        return [str(exc)]
     ops = [k for k in pred if k != "path"]
     if len(ops) != 1 or ops[0] not in OPS:
-        problems.append(f"leaf needs exactly one operator from {sorted(OPS)}")
+        problems.append(f"leaf needs exactly one operator; {LEAF_HELP}")
     try:
         resolve({}, pred["path"])
     except PredicateError as exc:
@@ -136,4 +175,4 @@ def leaves(pred: Any) -> list[dict]:
             return [leaf for p in pred[key] for leaf in leaves(p)]
     if "not" in pred:
         return leaves(pred["not"])
-    return [pred]
+    return [normalize_leaf(pred)]
