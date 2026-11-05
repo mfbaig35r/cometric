@@ -55,6 +55,8 @@ def test_every_resource_resolves():
         "cometric://templates/dedicated_team",
         "cometric://examples/case_a",
         "cometric://examples/spec_example",
+        "cometric://examples/case_h",
+        "cometric://packs/consulting/templates/phased_fixed_fee",
     ]
     for pack in ("base", "alsp"):
         uris += [f"cometric://packs/{pack}/rules", f"cometric://packs/{pack}/coverage"]
@@ -124,3 +126,13 @@ def test_file_paths_confined_to_allowed_root(monkeypatch, tmp_path):
     monkeypatch.delenv("COMETRIC_ALLOWED_ROOT")
     with pytest.raises(ValueError):
         _load("e.json")
+
+
+def test_t041_every_pack_template_resolves():
+    from cometric.core.packs import available_packs, load_pack
+
+    s = build_server()
+    for pack in available_packs():
+        for tid in load_pack(pack).templates:
+            contents = list(run(s.read_resource(f"cometric://packs/{pack}/templates/{tid}")))
+            assert json.loads(contents[0].content)["template_id"] == tid

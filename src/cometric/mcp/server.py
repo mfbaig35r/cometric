@@ -274,6 +274,14 @@ def build_server(http: bool = False) -> MCPServer:
     def template_resource(template_id: str) -> str:
         return json.dumps(templates.get_template(template_id), indent=2)
 
+    @server.resource(
+        "cometric://packs/{pack}/templates/{template_id}",
+        name="pack-template",
+        mime_type="application/json",
+    )
+    def pack_template_resource(pack: str, template_id: str) -> str:
+        return json.dumps(templates.get_template(template_id, pack), indent=2)
+
     @server.resource("cometric://examples/{case}", name="example", mime_type="application/json")
     def example(case: str) -> str:
         path = EXAMPLES / f"{case}.json"

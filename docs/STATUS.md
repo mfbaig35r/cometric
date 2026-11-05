@@ -1,6 +1,6 @@
 # Cometric implementation status
 
-Version `0.1.0.dev0`, built against `COMETRIC_SPEC_v0.2.md`. Date: 2026-11-03.
+Version `0.1.0` (released 2026-11-04). The normative specification is `COMETRIC_SPEC_v0.3.md`, which incorporates every clarification below.
 
 ## Milestones
 
@@ -19,7 +19,7 @@ Version `0.1.0.dev0`, built against `COMETRIC_SPEC_v0.2.md`. Date: 2026-11-03.
 
 ## Clarifications made while implementing
 
-These are decisions the specification left implicit. Each is a candidate for the next spec revision.
+These were decisions v0.2 left implicit. All are now part of `COMETRIC_SPEC_v0.3.md`; the list stays here for history.
 
 1. **Tier counters always recognize cumulatively.** `PERIOD_END` recognition applies to allowances and minimums. A tier schedule's accumulation period sets when its counter resets.
 2. **Tiered overage with `ALL_ELIGIBLE` scope** must use `MARGINAL` tiers and non-`PERIOD_END` recognition in v1. Other combinations are rejected with `UNSUPPORTED_COMBINATION`.

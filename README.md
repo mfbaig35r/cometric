@@ -102,7 +102,7 @@ uv run ruff check src tests scripts && uv run ruff format --check src tests scri
 uv run python scripts/build_fixtures.py   # regenerate casebook fixtures
 ```
 
-The specification is in `docs/COMETRIC_SPEC_v0.2.md`. Implementation status and clarifications are in `docs/STATUS.md`.
+The specification is `docs/COMETRIC_SPEC_v0.3.md` (normative for 0.1.0). Implementation status is in `docs/STATUS.md`.
 
 ## License
 
